@@ -1,0 +1,107 @@
+<!--pages/home/home.wxml-->
+<view class="title">
+  <view class="text">在线招聘</view>
+</view>
+<view class="body">
+  <view class="search-wrapper" style="width: 625rpx; display: flex; box-sizing: border-box; left: 15rpx; top: 0rpx">
+    <image class="icon-search" src="/pages/image/sousuo.png" />
+    <input class="search-input" placeholder="搜索职位/企业" />
+  </view>
+  <view class="right" style="width: 110rpx; display: block; box-sizing: border-box">
+    <image style="position: relative; left: 41rpx; top: 0rpx" class="icon-qiehuan" src="/pages/image/qiehuan.png" mode="" />
+    <view style="font-size: 20rpx; position: relative; left: 25rpx; color:#17abe3; top: 0rpx">招人才</view>
+  </view>
+</view>
+
+<!-- 轮播 -->
+<view class="banner">
+  <swiper indicator-dots="true" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" circular autoplay interval="4000">
+    <swiper-item>
+      <image src="https://developer.qcloudimg.com/http-save/yehe-100000/50c65ad280db00897342d3619066be8b.png"></image>
+    </swiper-item>
+    <swiper-item>
+      <image src="https://developer.qcloudimg.com/http-save/yehe-100000/50c65ad280db00897342d3619066be8b.png"></image>
+    </swiper-item>
+  </swiper>
+</view>
+<view class="tb-3">
+  <view class="tb-3-1">全部职位</view>
+  <view class="tb-3-1">简历库</view>
+  <view class="tb-3-1">商超零售</view>
+  <view class="tb-3-1">普工技工</view>
+  <view class="tb-3-1">联系客服</view>
+</view>
+<!-- 通知 -->
+<view class="notice-bar" bindtap="goNotice">
+  <view class="icon">📢</view>
+  <swiper 
+    class="notice-swiper" 
+    vertical 
+    autoplay 
+    interval="3000" 
+    duration="500" 
+    circular
+  >
+    <swiper-item wx:for="{{notices}}" wx:key="id">
+      <view class="notice-text">{{item.title}}</view>
+    </swiper-item>
+  </swiper>
+  <view class="arrow">更多</view>
+</view>
+
+<!-- 分类 -->
+<scroll-view class="category-scroll" scroll-x>
+  <view 
+    wx:for="{{categories}}" 
+    wx:key="id"
+    class="cat-item {{activeId === item.id ? 'active' : ''}}"
+    bindtap="switchCategory"
+    data-id="{{item.id}}"
+  >
+    <text>{{item.name}}</text>
+  </view>
+</scroll-view>
+<!-- 推荐板块 -->
+<!-- 招聘卡片列表 -->
+<view class="job-list">
+  <view 
+    wx:for="{{jobs}}" 
+    wx:key="id" 
+    class="job-card"
+    bindtap="goDetail"
+    data-id="{{item.id}}"
+  >
+    <!-- 右上角标签 -->
+    <view wx:if="{{item.tag}}" class="tag">{{item.tag}}</view>
+    
+    <!-- 职位标题 -->
+    <view class="title-1">{{item.title}}</view>
+    
+    <!-- 薪资和时间 -->
+    <view class="row">
+      <view class="salary">{{item.salary}} <text class="unit">元/月</text></view>
+      <view class="time">{{item.time}}</view>
+    </view>
+    
+    <!-- 福利标签 -->
+    <view class="welfare-list">
+      <view wx:for="{{item.welfare}}" wx:for-item="w" wx:key="*this" class="welfare">{{w}}</view>
+      <view wx:if="{{item.welfare.length > 3}}" class="welfare more">...</view>
+    </view>
+    
+    <!-- 底部信息 -->
+    <view class="footer">
+      <view class="company">
+        <image class="logo" src="{{item.logo}}" mode="aspectFit"/>
+        <view class="info">
+          <view class="name">{{item.contact}}</view>
+          <view class="firm">
+            {{item.company}}
+            <image wx:if="{{item.verified}}" class="verify" src="/images/verify.png" mode="aspectFit"/>
+          </view>
+        </view>
+      </view>
+      <view class="btn" catchtap="callPhone" data-phone="{{item.phone}}">拨打电话</view>
+    </view>
+  </view>
+</view>
