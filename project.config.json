@@ -12,7 +12,13 @@
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -21,7 +27,6 @@
     "compileWorklet": false,
     "uglifyFileName": false,
     "uploadWithSourceMap": true,
-    "packNpmManually": false,
     "minifyWXSS": true,
     "minifyWXML": true,
     "localPlugins": false,

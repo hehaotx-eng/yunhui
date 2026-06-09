@@ -1,1 +1,289 @@
 /* pages/webs/webs.wxss */
+page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #00a2ff 0%, #0066ff 100%);
+}
+
+.status-bar {
+  width: 100%;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 24rpx;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 600rpx;
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 0 28rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 16rpx;
+  opacity: 0.5;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.search-placeholder {
+  color: #999;
+}
+
+.search-actions {
+  display: flex;
+  margin-left: 20rpx;
+  gap: 24rpx;
+}
+
+.action-btn {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.action-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.filter-bar-wrapper {
+  position: fixed;
+  top: calc(var(--status-bar-height, 44px) + 112rpx);
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.filter-bar {
+  display: flex;
+  white-space: nowrap;
+  padding: 16rpx 0;
+}
+
+.filter-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 28rpx;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.filter-item.active {
+  color: #00a2ff;
+  font-weight: 600;
+}
+
+.filter-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 4rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 6rpx;
+  background: #00a2ff;
+  border-radius: 3rpx;
+}
+
+.filter-arrow {
+  font-size: 18rpx;
+  color: #999;
+  margin-left: 6rpx;
+}
+
+.job-list {
+  padding: 20rpx;
+  padding-top: calc(var(--status-bar-height, 44px) + 112rpx + 80rpx);
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.job-list::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+.filter-bar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+.job-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 16rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.job-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 22rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 0 16rpx 0 16rpx;
+  color: #fff;
+}
+
+.job-tag.best {
+  background: linear-gradient(90deg, #ff7e5f, #feb47b);
+}
+
+.job-tag.fast {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.job-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 14rpx;
+  padding-right: 120rpx;
+  line-height: 1.4;
+}
+
+.job-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.job-salary {
+  font-size: 36rpx;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.salary-unit {
+  font-size: 24rpx;
+  color: #ff6b6b;
+  font-weight: normal;
+}
+
+.job-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.welfare-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.welfare-tag {
+  background: #f5f5f5;
+  color: #666;
+  font-size: 22rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+.welfare-tag.more {
+  background: transparent;
+  padding: 8rpx;
+}
+
+.job-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 16rpx;
+}
+
+.company-info {
+  display: flex;
+  align-items: center;
+}
+
+.company-logo {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 10rpx;
+  background: linear-gradient(135deg, #00a2ff, #0066ff);
+  margin-right: 14rpx;
+}
+
+.company-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.company-contact {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.company-name {
+  font-size: 22rpx;
+  color: #999;
+  display: flex;
+  align-items: center;
+  margin-top: 2rpx;
+}
+
+.verify-badge {
+  font-size: 20rpx;
+  color: #00a2ff;
+  margin-left: 6rpx;
+}
+
+.btn-call {
+  background: #fff5f0;
+  color: #ff6b6b;
+  font-size: 26rpx;
+  padding: 14rpx 28rpx;
+  border-radius: 36rpx;
+}
+
+.load-more, .no-more {
+  text-align: center;
+  padding: 24rpx;
+  font-size: 26rpx;
+  color: #999;
+}

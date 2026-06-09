@@ -1,12 +1,42 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/webs/webs"
+    "pages/webs/webs",
+    "pages/qiye/qiye",
+    "pages/msg/msg",
+    "pages/my/my",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/chat/chat"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Weixin",
     "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/webs/webs",
+        "text": "职位"
+      },
+      {
+        "pagePath": "pages/qiye/qiye",
+        "text": "企业"
+      },
+      {
+        "pagePath": "pages/msg/msg",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的"
+      }
+    ]
   },
   "style": "v2",
   "componentFramework": "glass-easel",

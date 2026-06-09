@@ -1,10 +1,9 @@
 // pages/home/home.js
-Page({
+const { banners, jobs } = require('../../utils/api.js');
 
-  /**
-   * 页面的初始数据
-   */
+Page({
   data: {
+    banners: [],
     notices: [
       { id: 1, title: '系统将于今晚23:00进行维护升级' },
       { id: 2, title: '新用户注册立享8折优惠' },
@@ -21,100 +20,104 @@ Page({
       { id: 7, name: '文职文员', icon: '' },
       { id: 8, name: '直播', icon: '' }
     ],
-    jobs: [
-      {
-        id: 1,
-        tag: '推荐',
-        title: '急聘普工月入8000（五险+夫妻间+提供食宿）',
-        salary: '2230',
-        time: '44分钟前',
-        welfare: ['不限', '年底双薪', '周末双休', '节日福利'],
-        logo: '',
-        contact: '昭昭',
-        company: '沈阳凯利达供水设备厂',
-        verified: true,
-        phone: '13800138000'
-      },{
-        id: 1,
-        tag: '推荐',
-        title: '急聘普工月入8000（五险+夫妻间+提供食宿）',
-        salary: '2230',
-        time: '44分钟前',
-        welfare: ['不限', '年底双薪', '周末双休', '节日福利'],
-        logo: '',
-        contact: '昭昭',
-        company: '沈阳凯利达供水设备厂',
-        verified: true,
-        phone: '13800138000'
-      },{
-        id: 1,
-        tag: '推荐',
-        title: '急聘普工月入8000（五险+夫妻间+提供食宿）',
-        salary: '2230',
-        time: '44分钟前',
-        welfare: ['不限', '年底双薪', '周末双休', '节日福利'],
-        logo: '',
-        contact: '昭昭',
-        company: '沈阳凯利达供水设备厂',
-        verified: true,
-        phone: '13800138000'
-      }
-    ]
+    jobs: [],
+    userInfo: null
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad(options) {
-
+    this.loadBanners();
+    this.loadJobs();
+    this.checkLoginStatus();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow() {
-
+    this.checkLoginStatus();
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  async loadBanners() {
+    try {
+      const data = await banners.getAll();
+      this.setData({ banners: data || [] });
+    } catch (error) {
+      console.error('加载轮播图失败:', error);
+      this.setData({ banners: [] });
+    }
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
+  async loadJobs() {
+    try {
+      const result = await jobs.getAll();
+      if (result && result.data && result.data.length > 0) {
+        this.setData({ jobs: result.data });
+      }
+    } catch (error) {
+      console.error('加载职位失败:', error);
+    }
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
+
+  checkLoginStatus() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.setData({ userInfo });
+    }
+  },
+
+  switchCategory(e) {
+    const id = e.currentTarget.dataset.id;
+    this.setData({ activeId: id });
+  },
+
+  goNotice() {
+    this.showLoginModal();
+  },
+
+  goDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    this.showLoginModal(() => {
+      wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    });
+  },
+
+  callPhone(e) {
+    this.showLoginModal(() => {
+      const phone = e.currentTarget.dataset.phone;
+      wx.makePhoneCall({ phoneNumber: phone });
+    });
+  },
+
+  showLoginModal(callback) {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: true,
+        cancelText: '暂不登录',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/login/login' });
+          }
+        }
+      });
+    } else if (callback) {
+      callback();
+    }
+  },
+
   onPullDownRefresh() {
-
+    wx.stopPullDownRefresh();
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
   onReachBottom() {
-
+    wx.showToast({ title: '已加载全部', icon: 'none' });
   },
 
-  /**
-   * 用户点击右上角分享
-   */
   onShareAppMessage() {
-
+    return {
+      title: '在线招聘',
+      path: '/pages/home/home'
+    };
   }
-})
+});

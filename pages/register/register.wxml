@@ -1,0 +1,90 @@
+<!--pages/register/register.wxml-->
+<view class="register-page">
+  <view class="register-header">
+    <view class="logo">
+      <text class="logo-text">📝</text>
+    </view>
+    <view class="title">注册账号</view>
+  </view>
+
+  <view class="tab-bar">
+    <view 
+      class="tab-item {{activeTab === 'user' ? 'active' : ''}}" 
+      bindtap="switchTab('user')"
+    >
+      <text>👤 我要找工作</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'enterprise' ? 'active' : ''}}" 
+      bindtap="switchTab('enterprise')"
+    >
+      <text>🏢 我要招聘</text>
+    </view>
+  </view>
+
+  <view class="register-form">
+    <view wx:if="{{activeTab === 'user'}}">
+      <view class="form-item">
+        <input class="form-input" placeholder="用户名" bindinput="onUsernameInput" value="{{userForm.username}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="邮箱" bindinput="onEmailInput" value="{{userForm.email}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" type="password" placeholder="密码" bindinput="onPasswordInput" value="{{userForm.password}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" type="password" placeholder="确认密码" bindinput="onConfirmPasswordInput" value="{{userForm.confirmPassword}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="手机号" bindinput="onPhoneInput" value="{{userForm.phone}}" />
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'enterprise'}}">
+      <view class="form-item">
+        <input class="form-input" placeholder="企业名称" bindinput="onEnterpriseNameInput" value="{{enterpriseForm.name}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="联系人" bindinput="onContactInput" value="{{enterpriseForm.contact}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="邮箱" bindinput="onEnterpriseEmailInput" value="{{enterpriseForm.email}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" type="password" placeholder="密码" bindinput="onEnterprisePasswordInput" value="{{enterpriseForm.password}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" type="password" placeholder="确认密码" bindinput="onEnterpriseConfirmPasswordInput" value="{{enterpriseForm.confirmPassword}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="手机号" bindinput="onEnterprisePhoneInput" value="{{enterpriseForm.phone}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="企业地址" bindinput="onAddressInput" value="{{enterpriseForm.address}}" />
+      </view>
+      <view class="form-item">
+        <input class="form-input" placeholder="营业执照号" bindinput="onLicenseInput" value="{{enterpriseForm.license}}" />
+      </view>
+    </view>
+
+    <view class="checkbox-wrap" bindtap="toggleAgree">
+      <view class="checkbox {{agreed ? 'checked' : ''}}">
+        <text wx:if="{{agreed}}">✓</text>
+      </view>
+      <text class="agreement">我已阅读并同意</text>
+      <text class="agreement-link">《用户协议》</text>
+      <text class="agreement">和</text>
+      <text class="agreement-link">《隐私政策》</text>
+    </view>
+
+    <view class="register-btn" bindtap="handleRegister">
+      <text>{{activeTab === 'user' ? '个人注册' : '企业注册'}}</text>
+    </view>
+  </view>
+
+  <view class="login-link">
+    <text>已有账号？</text>
+    <text class="link" bindtap="goLogin">立即登录</text>
+  </view>
+</view>

@@ -1,66 +1,166 @@
-// pages/webs/webs.js
+const { jobs } = require('../../utils/api.js');
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    statusBarHeight: 44,
+    searchKeyword: '',
+    activeFilter: 'latest',
+    filters: [
+      { id: 'latest', name: '最新', hasArrow: false },
+      { id: 'nearby', name: '附近', hasArrow: false },
+      { id: 'area', name: '区域', hasArrow: true },
+      { id: 'category', name: '分类', hasArrow: true },
+      { id: 'salary', name: '薪资', hasArrow: true },
+      { id: 'filter', name: '筛选', hasArrow: true }
+    ],
+    jobs: [],
+    loading: false,
+    page: 1,
+    pageSize: 10,
+    hasMore: true,
+    filterParams: {}
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-
+  onLoad: function (options) {
+    var sysInfo = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 44 });
+    this.loadJobs();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
+  loadJobs: async function () {
+    if (!this.data.hasMore || this.data.loading) return;
 
+    this.setData({ loading: true });
+
+    try {
+      var params = Object.assign({
+        page: this.data.page,
+        pageSize: this.data.pageSize
+      }, this.data.filterParams);
+
+      if (this.data.searchKeyword) {
+        params.keyword = this.data.searchKeyword;
+      }
+
+      var result = await jobs.getAll(params);
+      var list = result.data || [];
+
+      this.setData({
+        jobs: this.data.jobs.concat(list),
+        loading: false,
+        page: this.data.page + 1,
+        hasMore: list.length >= this.data.pageSize
+      });
+    } catch (error) {
+      console.error('加载职位失败:', error);
+      this.setData({ loading: false });
+      wx.showToast({ title: '加载失败', icon: 'none' });
+    }
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
+  onSearchInput: function (e) {
+    this.setData({ searchKeyword: e.detail.value });
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
+  onSearch: function () {
+    this.setData({ jobs: [], page: 1, hasMore: true });
+    this.loadJobs();
   },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
+  switchFilter: function (e) {
+    var id = e.currentTarget.dataset.id;
+    this.setData({ activeFilter: id });
 
+    if (id === 'area') {
+      this.showAreaPicker();
+    } else if (id === 'category') {
+      this.showCategoryPicker();
+    } else if (id === 'salary') {
+      this.showSalaryPicker();
+    } else if (id === 'filter') {
+      this.showFilterModal();
+    } else {
+      this.setData({ filterParams: {} });
+      this.setData({ jobs: [], page: 1, hasMore: true });
+      this.loadJobs();
+    }
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
+  showAreaPicker: function () {
+    var that = this;
+    var areas = ['全部', '大东区', '铁西区', '和平区', '皇姑区', '沈河区', '于洪区', '浑南新区'];
+    wx.showActionSheet({
+      itemList: areas,
+      success: function (res) {
+        var area = areas[res.tapIndex];
+        if (area !== '全部') {
+          that.setData({ filterParams: Object.assign({}, that.data.filterParams, { area: area }) });
+        } else {
+          var params = Object.assign({}, that.data.filterParams);
+          delete params.area;
+          that.setData({ filterParams: params });
+        }
+        that.setData({ jobs: [], page: 1, hasMore: true });
+        that.loadJobs();
+      }
+    });
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
+  showCategoryPicker: function () {
+    var that = this;
+    var categories = ['全部', '市场销售', '行政人事', '客户服务', '普工技工', '财务审计', '文职文员'];
+    wx.showActionSheet({
+      itemList: categories,
+      success: function (res) {
+        var category = categories[res.tapIndex];
+        if (category !== '全部') {
+          that.setData({ filterParams: Object.assign({}, that.data.filterParams, { category: category }) });
+        } else {
+          var params = Object.assign({}, that.data.filterParams);
+          delete params.category;
+          that.setData({ filterParams: params });
+        }
+        that.setData({ jobs: [], page: 1, hasMore: true });
+        that.loadJobs();
+      }
+    });
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
+  showSalaryPicker: function () {
+    var that = this;
+    var salaries = ['全部', '3000以下', '3000-5000', '5000-8000', '8000以上'];
+    wx.showActionSheet({
+      itemList: salaries,
+      success: function (res) {
+        var salary = salaries[res.tapIndex];
+        if (salary !== '全部') {
+          that.setData({ filterParams: Object.assign({}, that.data.filterParams, { salary: salary }) });
+        } else {
+          var params = Object.assign({}, that.data.filterParams);
+          delete params.salary;
+          that.setData({ filterParams: params });
+        }
+        that.setData({ jobs: [], page: 1, hasMore: true });
+        that.loadJobs();
+      }
+    });
+  },
 
+  showFilterModal: function () {
+    wx.showToast({ title: '筛选功能开发中', icon: 'none' });
+  },
+
+  onReachBottom: function () {
+    this.loadJobs();
+  },
+
+  goDetail: function (e) {
+    var id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/detail/detail?id=' + id });
+  },
+
+  callPhone: function (e) {
+    var phone = e.currentTarget.dataset.phone;
+    wx.makePhoneCall({ phoneNumber: phone });
   }
-})
+});

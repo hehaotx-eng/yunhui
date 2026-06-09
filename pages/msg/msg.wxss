@@ -1,0 +1,112 @@
+.msg-page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 300rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.conv-list {
+  background: #fff;
+}
+
+.conv-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.conv-item:active {
+  background: #fafafa;
+}
+
+.conv-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.avatar-text {
+  font-size: 36rpx;
+  color: #999;
+  font-weight: 600;
+}
+
+.conv-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.conv-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.conv-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.conv-time {
+  font-size: 22rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+.conv-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.conv-msg {
+  font-size: 26rpx;
+  color: #b0b0b0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conv-badge {
+  background: #1a1a1a;
+  border-radius: 20rpx;
+  padding: 2rpx 14rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.badge-text {
+  font-size: 20rpx;
+  color: #fff;
+}
