@@ -162,5 +162,23 @@ Page({
   callPhone: function (e) {
     var phone = e.currentTarget.dataset.phone;
     wx.makePhoneCall({ phoneNumber: phone });
+  },
+
+  formatTime: function (dateStr) {
+    if (!dateStr) return '未知';
+    var now = new Date();
+    var date = new Date(dateStr);
+    var diff = now.getTime() - date.getTime();
+    var minutes = Math.floor(diff / 60000);
+    var hours = Math.floor(diff / 3600000);
+    var days = Math.floor(diff / 86400000);
+
+    if (minutes < 60) return minutes + '分钟前';
+    if (hours < 24) return hours + '小时前';
+    if (days < 7) return days + '天前';
+    
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    return month + '月' + day + '日';
   }
 });

@@ -50,40 +50,43 @@
       bindtap="goDetail"
       data-id="{{item.id}}"
     >
-      <view wx:if="{{item.tag}}" class="job-tag {{item.tagType}}">{{item.tag}}</view>
+      <view wx:if="{{item.tags && item.tags.length > 0}}" class="job-tag hot">急聘</view>
       
       <view class="job-title">{{item.title}}</view>
       
       <view class="job-meta">
         <view class="job-salary">{{item.salary}} <text class="salary-unit">元/月</text></view>
-        <view class="job-time">{{item.time}}</view>
+        <view class="job-time">{{formatTime(item.createdAt)}}</view>
       </view>
       
       <view class="welfare-list">
-        <view wx:for="{{item.welfare}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
-        <view wx:if="{{item.welfare.length > 4}}" class="welfare-tag more">...</view>
+        <view class="welfare-tag">{{item.area}}</view>
+        <view wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="welfare-tag">{{tag}}</view>
+        <view wx:if="{{item.tags && item.tags.length > 3}}" class="welfare-tag more">...</view>
       </view>
       
       <view class="job-footer">
         <view class="company-info">
-          <image class="company-logo" src="{{item.logo || '/pages/image/qiehuan.png'}}" mode="aspectFit"/>
+          <view class="company-logo">
+            <text class="logo-text">{{item.enterpriseName && item.enterpriseName.charAt(0) || '企'}}</text>
+          </view>
           <view class="company-detail">
-            <view class="company-contact">{{item.contact}}</view>
+            <view class="company-contact">{{item.contactName}}</view>
             <view class="company-name">
-              {{item.company}}
-              <text wx:if="{{item.verified}}" class="verify-badge">✓</text>
+              {{item.enterpriseName}}
+              <text class="verify-badge">✓</text>
             </view>
           </view>
         </view>
-        <view class="btn-call" catchtap="callPhone" data-phone="{{item.phone}}">拨打电话</view>
+        <view class="btn-call" catchtap="callPhone" data-phone="{{item.contactPhone}}">拨打电话</view>
       </view>
     </view>
-    
-    <view class="load-more" wx:if="{{loading}}">
+
+    <view wx:if="{{loading}}" class="loading-more">
       <text>加载中...</text>
     </view>
-    <view class="no-more" wx:else>
-      <text>已加载全部职位</text>
+    <view wx:if="{{!hasMore && jobs.length > 0}}" class="no-more">
+      <text>没有更多了</text>
     </view>
   </scroll-view>
 </view>

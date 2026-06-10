@@ -1,0 +1,43 @@
+<!--pages/login-phone/login-phone.wxml-->
+<view class="page">
+  <view class="content">
+    <view class="header">
+      <view class="back-btn" bindtap="goBack">‹</view>
+      <text class="page-title">手机号登录</text>
+      <view class="placeholder"></view>
+    </view>
+
+    <view class="form-section">
+      <view class="input-item">
+        <text class="input-icon">📱</text>
+        <input 
+          class="input-field" 
+          placeholder="请输入手机号" 
+          value="{{phone}}"
+          bindinput="onPhoneInput"
+          type="number"
+          maxlength="11"
+        />
+      </view>
+      
+      <view class="input-item">
+        <text class="input-icon">🔒</text>
+        <input 
+          class="input-field" 
+          type="password"
+          placeholder="请输入密码" 
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+      </view>
+      
+      <view class="btn-primary" bindtap="handleLogin">
+        <text>登录</text>
+      </view>
+    </view>
+
+    <view class="tips">
+      <text>新用户登录即注册，无需单独注册</text>
+    </view>
+  </view>
+</view>

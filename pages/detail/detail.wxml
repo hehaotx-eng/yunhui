@@ -1,0 +1,100 @@
+<!--pages/detail/detail.wxml-->
+<view class="page" wx:if="{{job}}">
+
+<view class="header">
+  <view class="header-bg"></view>
+  <view class="header-content">
+    <view class="title-row">
+      <text class="job-title">{{job.title}}</text>
+      <text class="salary">{{job.salary}}</text>
+    </view>
+    <view class="company-name">{{job.enterpriseName}}</view>
+    <view class="meta-row">
+      <view class="meta-item">
+        <text class="meta-icon">📍</text>
+        <text>{{job.area}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-icon">📋</text>
+        <text>{{job.category}}</text>
+      </view>
+    </view>
+    <view class="tags-row">
+      <view class="tag" wx:for="{{job.tags}}" wx:key="*this">{{item}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="date-bar">
+  <text>发布时间：{{formatDate(job.createdAt)}}</text>
+</view>
+
+<view class="section">
+  <view class="section-title">职位描述</view>
+  <view class="section-body">
+    <text class="desc-text">{{job.description || '暂无描述'}}</text>
+  </view>
+</view>
+
+<view class="section">
+  <view class="section-title">任职要求</view>
+  <view class="section-body">
+    <view class="requirements-list" wx:if="{{job.requirements && job.requirements.length > 0}}">
+      <view class="requirement-item" wx:for="{{job.requirements}}" wx:key="*this">
+        <text class="dot">•</text>
+        <text>{{item}}</text>
+      </view>
+    </view>
+    <text class="desc-text" wx:else>暂无任职要求</text>
+  </view>
+</view>
+
+<view class="section">
+  <view class="section-title">企业信息</view>
+  <view class="section-body">
+    <view class="company-info">
+      <view class="company-logo">
+        <text class="logo-text">{{job.enterpriseName && job.enterpriseName.charAt(0) || '企'}}</text>
+      </view>
+      <view class="company-detail">
+        <view class="company-name-text">{{job.enterpriseName}}</view>
+        <view class="company-desc">{{job.enterpriseDescription || '暂无企业简介'}}</view>
+      </view>
+    </view>
+    <view class="company-address">
+      <text class="address-icon">📍</text>
+      <text>{{job.address}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="section contact-section">
+  <view class="section-title">联系方式</view>
+  <view class="contact-info">
+    <view class="contact-row">
+      <text class="contact-label">联系人</text>
+      <text class="contact-value">{{job.contactName}}</text>
+    </view>
+    <view class="contact-row">
+      <text class="contact-label">电话</text>
+      <text class="contact-value">{{job.contactPhone}}</text>
+    </view>
+    <view class="contact-row">
+      <text class="contact-label">公司</text>
+      <text class="contact-value">{{job.enterpriseName}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="bottom-bar">
+  <view class="btn-collect {{isCollected ? 'active' : ''}}" bindtap="toggleCollect">
+    <text class="collect-icon">{{isCollected ? '★' : '☆'}}</text>
+    <text class="collect-text">{{isCollected ? '已收藏' : '收藏'}}</text>
+  </view>
+  <view class="btn-phone" bindtap="callPhone">
+    <text class="phone-icon">📞</text>
+    <text>电话咨询</text>
+  </view>
+</view>
+
+</view>

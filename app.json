@@ -6,8 +6,10 @@
     "pages/msg/msg",
     "pages/my/my",
     "pages/login/login",
+    "pages/login-phone/login-phone",
     "pages/register/register",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/detail/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

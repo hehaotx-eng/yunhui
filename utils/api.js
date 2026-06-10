@@ -65,16 +65,19 @@ function request(options) {
 }
 
 const auth = {
-  login: async (email, password) => {
+  login: async (phone, password) => {
     const data = await request({
       url: '/api/auth/login',
       method: 'POST',
-      data: { email, password },
+      data: { phone, password },
       needAuth: false
     });
     if (data.token) {
       setToken(data.token);
       setUserInfo(data.user);
+      if (data.user?.userType) {
+        wx.setStorageSync('userRole', data.user.userType);
+      }
     }
     return data;
   },
@@ -147,6 +150,29 @@ const banners = {
       method: 'GET',
       needAuth: false
     });
+  },
+
+  create: async (data) => {
+    return request({
+      url: '/api/banners',
+      method: 'POST',
+      data
+    });
+  },
+
+  update: async (id, data) => {
+    return request({
+      url: `/api/banners/${id}`,
+      method: 'PUT',
+      data
+    });
+  },
+
+  delete: async (id) => {
+    return request({
+      url: `/api/banners/${id}`,
+      method: 'DELETE'
+    });
   }
 };
 
@@ -176,9 +202,56 @@ const posts = {
     });
   },
 
+  update: async (id, data) => {
+    return request({
+      url: `/api/posts/${id}`,
+      method: 'PUT',
+      data
+    });
+  },
+
   delete: async (id) => {
     return request({
       url: `/api/posts/${id}`,
+      method: 'DELETE'
+    });
+  }
+};
+
+const users = {
+  getAll: async () => {
+    return request({
+      url: '/api/users',
+      method: 'GET'
+    });
+  },
+
+  getById: async (id) => {
+    return request({
+      url: `/api/users/${id}`,
+      method: 'GET'
+    });
+  },
+
+  create: async (data) => {
+    return request({
+      url: '/api/users',
+      method: 'POST',
+      data
+    });
+  },
+
+  update: async (id, data) => {
+    return request({
+      url: `/api/users/${id}`,
+      method: 'PUT',
+      data
+    });
+  },
+
+  delete: async (id) => {
+    return request({
+      url: `/api/users/${id}`,
       method: 'DELETE'
     });
   }
@@ -225,25 +298,48 @@ const jobs = {
     });
   }
 };
-getUnreadCount: async () => {
-  return request({ url: '/api/conversations/unread-count', method: 'GET' });
-}
-
 
 const enterprises = {
   getAll: async () => {
     return request({
       url: '/api/enterprises',
-      method: 'GET',
-      needAuth: false
+      method: 'GET'
+    });
+  },
+
+  getPending: async () => {
+    return request({
+      url: '/api/enterprises/pending',
+      method: 'GET'
     });
   },
 
   getById: async (id) => {
     return request({
       url: `/api/enterprises/${id}`,
-      method: 'GET',
-      needAuth: false
+      method: 'GET'
+    });
+  },
+
+  verify: async (id) => {
+    return request({
+      url: `/api/enterprises/${id}/verify`,
+      method: 'PUT'
+    });
+  },
+
+  create: async (data) => {
+    return request({
+      url: '/api/enterprises',
+      method: 'POST',
+      data
+    });
+  },
+
+  delete: async (id) => {
+    return request({
+      url: `/api/enterprises/${id}`,
+      method: 'DELETE'
     });
   }
 };
@@ -286,6 +382,7 @@ module.exports = {
   posts,
   jobs,
   enterprises,
+  users,
   conversations,
   messages
 };
