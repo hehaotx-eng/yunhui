@@ -225,6 +225,10 @@ const jobs = {
     });
   }
 };
+getUnreadCount: async () => {
+  return request({ url: '/api/conversations/unread-count', method: 'GET' });
+}
+
 
 const enterprises = {
   getAll: async () => {
