@@ -1,0 +1,90 @@
+<view class="page">
+  <!-- 顶部信息区 -->
+  <view class="header">
+    <view class="header-content">
+      <image class="avatar" src="{{userInfo.avatar || '/images/avatar-placeholder.png'}}" />
+      <view class="user-info">
+        <view class="username">{{userInfo.username || '企业用户'}}</view>
+        <view class="role">企业账号</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容 -->
+  <view class="content">
+    <!-- 数据统计卡片 -->
+    <view class="stats-card">
+      <view class="stat-item" bindtap="goJobs">
+        <view class="stat-value">{{stats.jobs || 0}}</view>
+        <view class="stat-label">发布职位</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="goResumes">
+        <view class="stat-value">{{stats.resumes || 0}}</view>
+        <view class="stat-label">收到简历</view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="goInterviews">
+        <view class="stat-value">{{stats.interviews || 0}}</view>
+        <view class="stat-label">面试安排</view>
+      </view>
+    </view>
+
+    <!-- 功能菜单卡片 -->
+    <view class="menu-card">
+      <view class="menu-item" bindtap="goEnterpriseInfo">
+        <image class="menu-icon" src="/images/icon-enterprise.png"/>
+        <view class="menu-text">企业信息</view>
+        <image class="menu-arrow" src="/images/icon-arrow.png"/>
+      </view>
+      <view class="menu-item" bindtap="goProfile">
+        <image class="menu-icon" src="/images/icon-profile.png"/>
+        <view class="menu-text">个人资料</view>
+        <image class="menu-arrow" src="/images/icon-arrow.png"/>
+      </view>
+      <view class="menu-item" bindtap="goSettings">
+        <image class="menu-icon" src="/images/icon-settings.png"/>
+        <view class="menu-text">账号设置</view>
+        <image class="menu-arrow" src="/images/icon-arrow.png"/>
+      </view>
+      <view class="menu-item" bindtap="goHelp">
+        <image class="menu-icon" src="/images/icon-help.png"/>
+        <view class="menu-text">帮助中心</view>
+        <image class="menu-arrow" src="/images/icon-arrow.png"/>
+      </view>
+    </view>
+
+    <!-- 危险操作卡片 -->
+    <view class="menu-card">
+      <view class="menu-item danger" bindtap="handleLogout">
+        <image class="menu-icon" src="/images/icon-logout.png"/>
+        <view class="menu-text">退出登录</view>
+        <image class="menu-arrow" src="/images/icon-arrow.png"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tabbar -->
+  <view class="tabbar">
+    <view class="tab-item" bindtap="goHome">
+      <image class="tab-icon" src="/images/tab-home.png"/>
+      <view class="tab-text">首页</view>
+    </view>
+    <view class="tab-item" bindtap="goCandidates">
+      <image class="tab-icon" src="/images/tab-candidates.png"/>
+      <view class="tab-text">人才</view>
+    </view>
+    <view class="tab-item" bindtap="goJobs">
+      <image class="tab-icon" src="/images/tab-jobs.png"/>
+      <view class="tab-text">岗位</view>
+    </view>
+    <view class="tab-item" bindtap="goMsg">
+      <image class="tab-icon" src="/images/tab-msg.png"/>
+      <view class="tab-text">消息</view>
+    </view>
+    <view class="tab-item active">
+      <image class="tab-icon" src="/images/tab-my.png"/>
+      <view class="tab-text">我的</view>
+    </view>
+  </view>
+</view>

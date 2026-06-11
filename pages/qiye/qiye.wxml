@@ -1,2 +1,39 @@
-<!--pages/qiye/qiye.wxml-->
-<text>pages/qiye/qiye.wxml</text>
+<view class="page">
+  <view class="header">
+    <view class="header-text">优质企业</view>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-wrapper">
+      <image class="icon-search" src="/pages/image/sousuo.png" />
+      <input class="search-input" placeholder="搜索企业名称 / 行业" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="onSearch" confirm-type="search" />
+    </view>
+  </view>
+
+  <view class="filter-scroll">
+    <view wx:for="{{filters}}" wx:key="id" class="filter-item {{activeFilter === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchFilter">{{item.name}}</view>
+  </view>
+
+  <view class="company-list">
+    <view wx:for="{{enterprises}}" wx:key="id" class="company-card" bindtap="goDetail" data-id="{{item.id}}">
+      <image wx:if="{{item.logo}}" class="logo" src="{{item.logo}}" mode="aspectFill" />
+<view wx:else class="logo-text">{{item.name ? item.name.substring(0,1) : '企'}}</view>
+      <view class="content">
+        <view class="name-row">
+          <text class="name">{{item.name}}</text>
+          <text wx:if="{{item.verified}}" class="verify">已认证</text>
+        </view>
+        <view class="meta">{{item.industry || '行业待完善'}} · {{item.scale || '规模待完善'}}</view>
+        <view class="desc">{{item.description || '企业介绍待完善'}}</view>
+        <view class="address">📍 {{item.address || '地址待完善'}}</view>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon">🏢</view>
+      <view class="empty-text">暂无企业</view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:if="{{showNoMore}}" class="loading">没有更多了</view>
+  </view>
+</view>

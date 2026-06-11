@@ -1,0 +1,237 @@
+/* 页面背景 */
+.page {
+  background-color: #f6f7f9;
+  min-height: 100vh;
+  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+}
+
+/* 顶部 */
+.header {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* 内容区 */
+.content {
+  padding: 16rpx;
+}
+
+/* 搜索框 */
+.search-bar {
+  margin-bottom: 24rpx;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 0 16rpx;
+  height: 64rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+}
+
+.icon-search {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 28rpx;
+  color: #111827;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+/* 筛选横向滚动 */
+.filter-scroll {
+  display: flex;
+  margin-bottom: 24rpx;
+  overflow-x: scroll;
+}
+
+.filter-item {
+  padding: 8rpx 16rpx;
+  background-color: #f5f6f8;
+  color: #667085;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  margin-right: 12rpx;
+}
+
+.filter-item.active {
+  background-color: #ff5c39;
+  color: #ffffff;
+}
+
+/* 候选人列表 */
+.candidate-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 候选人卡片 */
+.candidate-card {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+/* 头像 */
+.avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #111827;
+  margin-right: 16rpx;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 内容区域 */
+.content-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 名称 + 学历 */
+.name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-right: 12rpx;
+}
+
+.education {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+/* 经验 + 城市 */
+.meta {
+  font-size: 24rpx;
+  color: #4b5563;
+  margin-bottom: 12rpx;
+}
+
+/* 技能标签 */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.skill-tag {
+  font-size: 24rpx;
+  color: #667085;
+  background-color: #f5f6f8;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-right: 8rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 右箭头 */
+.arrow {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 12rpx;
+  align-self: center;
+}
+
+/* 空状态 */
+.empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 0;
+  color: #9ca3af;
+  font-size: 28rpx;
+}
+
+.empty-icon {
+  width: 64rpx;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 加载中 */
+.loading {
+  text-align: center;
+  font-size: 28rpx;
+  color: #9ca3af;
+  padding: 32rpx 0;
+}
+
+/* 底部 TabBar */
+.tabbar {
+  height: 88rpx;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -8rpx 24rpx rgba(15,23,42,.03);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab-item.active .tab-text {
+  color: #ff5c39;
+}
+
+.tab-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-bottom: 4rpx;
+}
+
+.tab-text {
+  font-size: 24rpx;
+  color: #4b5563;
+}

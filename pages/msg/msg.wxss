@@ -1,112 +1,286 @@
-.msg-page {
+page {
+  background: #f6f7f9;
+}
+
+.page {
   min-height: 100vh;
-  background: #fff;
 }
 
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 300rpx;
+/* ======================
+   Header
+====================== */
+
+.header {
+  padding: 120rpx 24rpx 24rpx;
 }
 
-.empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 30rpx;
+.header-text {
+  font-size: 48rpx;
+  font-weight: 700;
+
+  color: #111827;
 }
 
-.empty-text {
-  font-size: 32rpx;
-  color: #333;
-  margin-bottom: 16rpx;
-}
+/* ======================
+   Search
+====================== */
 
-.empty-hint {
-  font-size: 26rpx;
-  color: #999;
-}
-
-.conv-list {
-  background: #fff;
-}
-
-.conv-item {
+.search-bar {
   display: flex;
   align-items: center;
-  padding: 28rpx 32rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+
+  padding: 0 24rpx;
+
+  margin-bottom: 20rpx;
 }
 
-.conv-item:active {
-  background: #fafafa;
+.search-wrapper {
+  flex: 1;
+
+  height: 88rpx;
+
+  background: #fff;
+
+  border-radius: 20rpx;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 24rpx;
+
+  box-shadow:
+    0 6rpx 20rpx rgba(15,23,42,.03);
 }
 
-.conv-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 50%;
-  background: #e8e8e8;
+.icon-search {
+  width: 34rpx;
+  height: 34rpx;
+}
+
+.search-input {
+  flex: 1;
+
+  margin-left: 16rpx;
+
+  font-size: 28rpx;
+}
+
+.notice-entry {
+  margin-left: 16rpx;
+
+  height: 88rpx;
+
+  padding: 0 24rpx;
+
+  background: #fff;
+
+  border-radius: 20rpx;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 24rpx;
+
+  color: #111827;
+
+  font-size: 26rpx;
+  font-weight: 600;
+
+  box-shadow:
+    0 6rpx 20rpx rgba(15,23,42,.03);
+}
+
+/* ======================
+   List
+====================== */
+
+.conversation-list {
+  padding: 0 24rpx 40rpx;
+}
+
+/* ======================
+   Conversation Card
+====================== */
+
+.conversation-card {
+  position: relative;
+
+  background: #fff;
+
+  border-radius: 24rpx;
+
+  padding: 24rpx;
+
+  margin-bottom: 16rpx;
+
+  display: flex;
+  align-items: center;
+
+  box-shadow:
+    0 8rpx 24rpx rgba(15,23,42,.03);
+}
+
+/* ======================
+   Avatar
+====================== */
+
+.avatar {
+  width: 88rpx;
+  height: 88rpx;
+
+  border-radius: 20rpx;
+
+  background: #f3f4f6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32rpx;
+  font-weight: 700;
+
+  color: #111827;
+
   flex-shrink: 0;
 }
 
-.avatar-text {
-  font-size: 36rpx;
-  color: #999;
-  font-weight: 600;
-}
+/* ======================
+   Content
+====================== */
 
-.conv-info {
+.content {
   flex: 1;
+
+  margin-left: 20rpx;
+
   overflow: hidden;
 }
 
-.conv-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10rpx;
-}
-
-.conv-name {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #1a1a1a;
-}
-
-.conv-time {
-  font-size: 22rpx;
-  color: #ccc;
-  flex-shrink: 0;
-}
-
-.conv-bottom {
+.top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.conv-msg {
-  font-size: 26rpx;
-  color: #b0b0b0;
+.name {
   flex: 1;
+
+  font-size: 30rpx;
+  font-weight: 700;
+
+  color: #111827;
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.conv-badge {
-  background: #1a1a1a;
-  border-radius: 20rpx;
-  padding: 2rpx 14rpx;
-  margin-left: 16rpx;
-  flex-shrink: 0;
+.time {
+  margin-left: 20rpx;
+
+  font-size: 22rpx;
+
+  color: #9ca3af;
 }
 
-.badge-text {
-  font-size: 20rpx;
+.last {
+  margin-top: 10rpx;
+
+  font-size: 26rpx;
+
+  color: #6b7280;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ======================
+   Badge
+====================== */
+
+.badge {
+  min-width: 36rpx;
+  height: 36rpx;
+
+  padding: 0 10rpx;
+
+  margin-left: 16rpx;
+
+  background: #ff5c39;
+
+  border-radius: 18rpx;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   color: #fff;
+
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+/* ======================
+   Empty
+====================== */
+
+.empty-card {
+  margin: 24rpx;
+
+  background: #fff;
+
+  border-radius: 24rpx;
+
+  padding: 120rpx 40rpx;
+
+  text-align: center;
+
+  box-shadow:
+    0 8rpx 24rpx rgba(15,23,42,.03);
+}
+
+.empty-icon {
+  font-size: 96rpx;
+}
+
+.empty-text {
+  margin-top: 24rpx;
+
+  color: #9ca3af;
+
+  font-size: 28rpx;
+}
+
+.empty-btn {
+  width: 220rpx;
+  height: 76rpx;
+
+  margin: 32rpx auto 0;
+
+  background: #ff5c39;
+
+  border-radius: 14rpx;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* ======================
+   Loading
+====================== */
+
+.loading {
+  text-align: center;
+
+  padding: 50rpx 0;
+
+  font-size: 26rpx;
+
+  color: #9ca3af;
 }

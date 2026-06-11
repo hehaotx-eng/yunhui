@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="header">
+    <view class="header-text">投递管理</view>
+  </view>
+
+  <view class="tabs-scroll">
+    <view wx:for="{{tabs}}" wx:key="id" class="tab {{active === item.id ? 'active' : ''}}" bindtap="switchTab" data-id="{{item.id}}">{{item.name}}</view>
+  </view>
+
+  <view class="application-list">
+    <view wx:for="{{list}}" wx:key="id" class="application-card" bindtap="goDetail" data-id="{{item.jobId}}">
+      <view class="card-header">
+        <view class="status-tag {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</view>
+        <view class="time">{{formatTime(item.createdAt)}}</view>
+      </view>
+      <view class="job-title">{{item.jobTitle || '职位名称'}}</view>
+      <view class="job-salary">{{item.salary || '薪资面议'}}</view>
+      <view class="company-info">
+        <view class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
+        <view class="company-detail">
+          <view class="company-name">{{item.enterpriseName || '企业'}}</view>
+          <view class="company-meta">{{item.area || '地区不限'}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon">📭</view>
+      <view class="empty-text">暂无投递记录</view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+  </view>
+</view>

@@ -1,60 +1,88 @@
-// pages/home/home.js
-const { banners, jobs } = require('../../utils/api.js');
+const { banners, jobs, categories, notifications } = require('../../utils/api.js');
+const { checkAuth } = require('../../utils/auth-check.js');
 
 Page({
   data: {
     banners: [],
-    notices: [
-      { id: 1, title: '系统将于今晚23:00进行维护升级' },
-      { id: 2, title: '新用户注册立享8折优惠' },
-      { id: 3, title: '您的订单已发货，请注意查收' }
-    ],
-    activeId: 1,
-    categories: [
-      { id: 1, name: '全部', icon: '' },
-      { id: 2, name: '市场销售', icon: '' },
-      { id: 3, name: '行政人事', icon: '' },
-      { id: 4, name: '客户服务', icon: '' },
-      { id: 5, name: '普工技工', icon: '' },
-      { id: 6, name: '财务审计', icon: '' },
-      { id: 7, name: '文职文员', icon: '' },
-      { id: 8, name: '直播', icon: '' }
-    ],
+    notices: [],
+    activeId: '',
+    categories: [],
     jobs: [],
-    userInfo: null
+    userInfo: null,
+    loading: false
   },
 
   onLoad(options) {
+    // 检测用户身份
+    const authResult = checkAuth(this, { redirectIfEnterprise: true });
+    if (authResult.blocked) return;
+    
     this.loadBanners();
+    this.loadCategories();
+    this.loadNotices();
     this.loadJobs();
-    this.checkLoginStatus();
+    this.setData({ userInfo: authResult.userInfo });
   },
 
   onShow() {
-    this.checkLoginStatus();
+    // 检测用户身份
+    const authResult = checkAuth(this, { redirectIfEnterprise: true });
+    if (authResult.blocked) return;
+    
+    this.setData({ userInfo: authResult.userInfo });
   },
 
   async loadBanners() {
     try {
       const data = await banners.getAll();
-      this.setData({ banners: data || [] });
+      const bannerList = data && data.data ? data.data : (data || []);
+      this.setData({ banners: bannerList });
     } catch (error) {
       console.error('加载轮播图失败:', error);
       this.setData({ banners: [] });
     }
   },
 
-  async loadJobs() {
+  async loadCategories() {
     try {
-      const result = await jobs.getAll();
-      if (result && result.data && result.data.length > 0) {
-        this.setData({ jobs: result.data });
-      }
+      const data = await categories.getAll();
+      const categoryList = data && data.data ? data.data : (data || []);
+      this.setData({ 
+        categories: categoryList,
+        activeId: categoryList.length > 0 ? categoryList[0].id : ''
+      });
     } catch (error) {
-      console.error('加载职位失败:', error);
+      console.error('加载分类失败:', error);
+      this.setData({ categories: [], activeId: '' });
     }
   },
 
+  async loadNotices() {
+    try {
+      const data = await notifications.getMine({ limit: 5 });
+      console.log('后端返回的通知数据:', data);
+      const noticeList = data && data.data ? data.data : (data || []);
+      console.log('处理后的通知列表:', noticeList);
+      this.setData({ notices: noticeList });
+    } catch (error) {
+      console.error('加载通知失败:', error);
+      this.setData({ notices: [] });
+    }
+  },
+
+  async loadJobs() {
+    this.setData({ loading: true });
+    try {
+      const result = await jobs.getAll({ limit: 10 });
+      const jobList = result && result.data ? result.data : (result || []);
+      this.setData({ jobs: jobList });
+    } catch (error) {
+      console.error('加载职位失败:', error);
+      this.setData({ jobs: [] });
+    } finally {
+      this.setData({ loading: false });
+    }
+  },
 
   checkLoginStatus() {
     const userInfo = wx.getStorageSync('userInfo');
@@ -66,27 +94,41 @@ Page({
   switchCategory(e) {
     const id = e.currentTarget.dataset.id;
     this.setData({ activeId: id });
+    this.loadJobsByCategory(id);
+  },
+
+  async loadJobsByCategory(categoryId) {
+    this.setData({ loading: true });
+    try {
+      const params = { limit: 10 };
+      if (categoryId) {
+        params.categoryId = categoryId;
+      }
+      const result = await jobs.getAll(params);
+      const jobList = result && result.data ? result.data : (result || []);
+      this.setData({ jobs: jobList });
+    } catch (error) {
+      console.error('加载职位失败:', error);
+      this.setData({ jobs: [] });
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
   goNotice() {
-    this.showLoginModal();
+    wx.navigateTo({ url: '/pages/notifications/notifications' });
   },
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
-    this.showLoginModal(() => {
-      wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
-    });
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   },
 
-  callPhone(e) {
-    this.showLoginModal(() => {
-      const phone = e.currentTarget.dataset.phone;
-      wx.makePhoneCall({ phoneNumber: phone });
-    });
+  goAllJobs() {
+    wx.switchTab({ url: '/pages/webs/webs' });
   },
 
-  showLoginModal(callback) {
+  goResumeLibrary() {
     const userInfo = wx.getStorageSync('userInfo');
     if (!userInfo) {
       wx.showModal({
@@ -97,17 +139,68 @@ Page({
         confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
-            wx.navigateTo({ url: '/pages/login/login' });
+            wx.navigateTo({ url: '/pages/login-phone/login-phone' });
           }
         }
       });
-    } else if (callback) {
-      callback();
+      return;
+    }
+    wx.navigateTo({ url: '/pages/candidates/candidates' });
+  },
+
+  goRetail() {
+    wx.navigateTo({ url: '/pages/webs/webs?category=商超零售' });
+  },
+
+  goFactory() {
+    wx.navigateTo({ url: '/pages/webs/webs?category=普工技工' });
+  },
+
+  goContact() {
+    wx.showModal({
+      title: '联系客服',
+      content: '客服电话：400-888-8888',
+      showCancel: false
+    });
+  },
+
+  callPhone(e) {
+    const phone = e.currentTarget.dataset.phone;
+    wx.makePhoneCall({ phoneNumber: phone });
+  },
+
+  goSearch() {
+    wx.navigateTo({ url: '/pages/search/search' });
+  },
+
+  goEnterpriseSwitch() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo && userInfo.userType === 'enterprise') {
+      wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' });
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录企业账号',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+          }
+        }
+      });
     }
   },
 
   onPullDownRefresh() {
-    wx.stopPullDownRefresh();
+    this.loadBanners();
+    this.loadCategories();
+    this.loadNotices();
+    this.loadJobs();
+    setTimeout(() => {
+      wx.stopPullDownRefresh();
+    }, 1000);
   },
 
   onReachBottom() {

@@ -44,14 +44,24 @@ Page({
       
       wx.hideLoading();
       
+      // 更新全局用户状态
+      const app = getApp();
+      app.updateUserState(result.user, result.token);
+      
       if (result.isNewUser) {
         wx.showToast({ title: '新用户，已自动注册', icon: 'success' });
       } else {
         wx.showToast({ title: '登录成功', icon: 'success' });
       }
       
+      const userType = result.user.userType;
+      
       setTimeout(() => {
-        wx.switchTab({ url: '/pages/home/home' });
+        if (userType === 'enterprise' || userType === 'admin') {
+          wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' });
+        } else {
+          wx.switchTab({ url: '/pages/home/home' });
+        }
       }, 1500);
     } catch (error) {
       wx.hideLoading();

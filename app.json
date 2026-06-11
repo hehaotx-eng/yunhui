@@ -5,39 +5,38 @@
     "pages/qiye/qiye",
     "pages/msg/msg",
     "pages/my/my",
+    "pages/detail/detail",
+    "pages/enterprise-detail/enterprise-detail",
+    "pages/favorites/favorites",
+    "pages/applications/applications",
+    "pages/notifications/notifications",
     "pages/login/login",
     "pages/login-phone/login-phone",
     "pages/register/register",
     "pages/chat/chat",
-    "pages/detail/detail"
+    "pages/enterprise-home/enterprise-home",
+    "pages/candidates/candidates",
+    "pages/enterprise-jobs/enterprise-jobs",
+    "pages/enterprise-msg/enterprise-msg",
+    "pages/enterprise-my/enterprise-my",
+    "pages/search/search",
+    "pages/post-job/post-job"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "在线招聘",
     "navigationBarBackgroundColor": "#ffffff"
   },
   "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#00a2ff",
+    "backgroundColor": "#ffffff",
     "list": [
-      {
-        "pagePath": "pages/home/home",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/webs/webs",
-        "text": "职位"
-      },
-      {
-        "pagePath": "pages/qiye/qiye",
-        "text": "企业"
-      },
-      {
-        "pagePath": "pages/msg/msg",
-        "text": "消息"
-      },
-      {
-        "pagePath": "pages/my/my",
-        "text": "我的"
-      }
+      { "pagePath": "pages/home/home", "text": "首页" },
+      { "pagePath": "pages/webs/webs", "text": "职位" },
+      { "pagePath": "pages/qiye/qiye", "text": "企业" },
+      { "pagePath": "pages/msg/msg", "text": "消息" },
+      { "pagePath": "pages/my/my", "text": "我的" }
     ]
   },
   "style": "v2",

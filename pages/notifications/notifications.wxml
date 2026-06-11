@@ -1,0 +1,22 @@
+<view class="page">
+  <!-- <view class="header">
+    <view class="header-text">系统通知</view>
+  </view> -->
+
+  <view class="notification-list">
+    <view wx:for="{{list}}" wx:key="id" class="notification-card {{item.isRead ? '' : 'unread'}}" bindtap="markRead" data-id="{{item.id}}">
+      <view class="notify-icon">{{getNotifyIcon(item.type)}}</view>
+      <view class="notify-content">
+        <view class="notify-title">{{item.title}}</view>
+        <view class="notify-desc">{{item.content}}</view>
+        <view class="notify-time">{{formatTime(item.createdAt)}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon">🔔</view>
+      <view class="empty-text">暂无通知</view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+  </view>
+</view>

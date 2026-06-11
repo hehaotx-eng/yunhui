@@ -1,44 +1,30 @@
-<!--pages/login/login.wxml-->
+
 <view class="page">
-  <view class="content">
-    <view class="logo-section">
-      <view class="logo">
-        <text class="logo-icon">💼</text>
-      </view>
-      <text class="app-title">招聘平台</text>
-      <text class="app-subtitle">发现更好的工作机会</text>
-    </view>
 
-    <view class="login-buttons">
-      <view class="login-btn" bindtap="phoneLogin">
-        <view class="btn-icon">📱</view>
-        <view class="btn-content">
-          <text class="btn-title">手机号登录</text>
-          <text class="btn-desc">快速便捷登录</text>
-        </view>
-        <view class="btn-arrow">›</view>
-      </view>
-
-      <view class="login-btn wechat-btn">
-        <button
-          open-type="getPhoneNumber"
-          bindgetphonenumber="onGetPhoneNumber"
-          class="wechat-hidden-btn"
-        ></button>
-        <view class="btn-icon">💬</view>
-        <view class="btn-content">
-          <text class="btn-title">微信快捷登录</text>
-          <text class="btn-desc">微信授权一键登录</text>
-        </view>
-        <view class="btn-arrow">›</view>
-      </view>
+  <!-- 顶部导航栏 -->
+  <view class="nav">
+    <view class="nav-left" bindtap="goBack">
+      <text class="nav-back">‹</text>
     </view>
-
-    <view class="agreement">
-      <text>登录即表示同意</text>
-      <text class="link">《用户协议》</text>
-      <text>和</text>
-      <text class="link">《隐私政策》</text>
-    </view>
+    <view class="nav-right"></view>
   </view>
+
+  <!-- Hero 区 -->
+  <view class="hero">
+    <view class="badge">招聘平台</view>
+    <view class="title">欢迎回来</view>
+    <view class="subtitle">找到心仪工作 · 发现更多机会</view>
+  </view>
+
+  <!-- 登录卡片 -->
+  <view class="login-card">
+    <view class="action-primary" bindtap="phoneLogin">手机号登录</view>
+    <view class="action-secondary" bindtap="goRegister">创建新账号</view>
+  </view>
+
+  <!-- 用户协议 -->
+  <view class="agreement">
+    登录即表示同意《用户协议》与《隐私政策》
+  </view>
+
 </view>

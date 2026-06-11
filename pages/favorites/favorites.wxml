@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="header">
+    <view class="header-text">我的收藏</view>
+  </view>
+
+  <view class="favorite-list">
+    <view wx:for="{{list}}" wx:key="id" class="favorite-card" bindtap="goDetail" data-id="{{item.jobId || item.id}}">
+      <view wx:if="{{item.tag}}" class="job-tag">{{item.tag}}</view>
+      <view class="job-title">{{item.jobTitle || item.title}}</view>
+      <view class="job-meta">
+        <view class="job-salary">{{item.salary || '薪资面议'}}</view>
+      </view>
+      <view class="welfare-list">
+        <view wx:for="{{item.tags || item.welfare}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
+      </view>
+      <view class="job-footer">
+        <view class="company-info">
+          <view class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
+          <view class="company-detail">
+            <view class="company-contact">{{item.enterpriseName || '企业'}}</view>
+            <view class="company-name">{{item.area || '地区不限'}} · {{item.experience || '经验不限'}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon">💔</view>
+      <view class="empty-text">暂无收藏职位</view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+  </view>
+</view>

@@ -1,65 +1,93 @@
 const { conversations } = require('../../utils/api.js');
+const { checkAuth } = require('../../utils/auth-check.js');
 
 Page({
   data: {
     conversations: [],
-    loading: true
+    loading: true,
+    token: '',
+    showLoginTip: false,
+    showEmptyTip: false
   },
 
-  onLoad: function () {
+  onShow() {
+    // 检测用户身份
+    const authResult = checkAuth(this, { redirectIfEnterprise: true });
+    if (authResult.blocked) return;
+    
+    this.setData({ token: authResult.isLoggedIn ? 'valid' : '' });
     this.loadConversations();
   },
 
-  onShow: function () {
-    this.loadConversations();
+  onPullDownRefresh() {
+    this.loadConversations().finally(() => wx.stopPullDownRefresh());
   },
 
-  loadConversations: async function () {
-    var token = wx.getStorageSync('token');
+  async loadConversations() {
+    const token = wx.getStorageSync('token');
     if (!token) {
-      this.setData({ loading: false });
+      this.setData({ 
+        conversations: [], 
+        loading: false, 
+        token: '',
+        showLoginTip: true,
+        showEmptyTip: false
+      });
       return;
     }
+    this.setData({ loading: true, token, showLoginTip: false });
     try {
-      var data = await conversations.getList();
-      var list = data || [];
-      for (var i = 0; i < list.length; i++) {
-        list[i].timeText = this.formatTime(list[i].last_message_at);
-      }
-      this.setData({ conversations: list, loading: false });
+      const result = await conversations.getList();
+      const list = Array.isArray(result) ? result : (result.data || result.list || []);
+      const processedList = list.map(item => ({
+        ...item,
+        avatarLetter: item.enterpriseName ? item.enterpriseName.substring(0,1) : (item.username ? item.username.substring(0,1) : '聊'),
+        formattedTime: this.formatTime(item.lastMessageAt || item.last_message_at),
+        showBadge: !! (item.unreadCount || item.unread_count),
+        badgeText: (item.unreadCount || item.unread_count) > 99 ? '99+' : (item.unreadCount || item.unread_count)
+      }));
+      this.setData({ 
+        conversations: processedList, 
+        loading: false,
+        showEmptyTip: processedList.length === 0
+      });
     } catch (error) {
-      console.error('加载会话失败:', error);
-      this.setData({ loading: false });
+      this.setData({ loading: false, showEmptyTip: true });
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
     }
   },
 
-  formatTime: function (dateStr) {
-    if (!dateStr) return '';
-    var date = new Date(dateStr);
-    var now = new Date();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var h = hours < 10 ? '0' + hours : '' + hours;
-    var m = minutes < 10 ? '0' + minutes : '' + minutes;
-    var time = h + ':' + m;
-
-    var isToday = date.getFullYear() === now.getFullYear() &&
-                  date.getMonth() === now.getMonth() &&
-                  date.getDate() === now.getDate();
-    if (isToday) return time;
-
-    var yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    var isYesterday = date.getFullYear() === yesterday.getFullYear() &&
-                      date.getMonth() === yesterday.getMonth() &&
-                      date.getDate() === yesterday.getDate();
-    if (isYesterday) return '昨天';
-
-    return (date.getMonth() + 1) + '/' + date.getDate();
+  formatTime(timeStr) {
+    if (!timeStr) return '';
+    const date = new Date(timeStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) {
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      if (hours === 0) {
+        const minutes = Math.floor(diff / (1000 * 60));
+        return minutes <= 0 ? '刚刚' : `${minutes}分钟前`;
+      }
+      return `${hours}小时前`;
+    } else if (days === 1) {
+      return '昨天';
+    } else if (days < 7) {
+      return `${days}天前`;
+    } else {
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
   },
 
-  goChat: function (e) {
-    var id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: '/pages/chat/chat?id=' + id });
+  goLogin() {
+    wx.navigateTo({ url: '/pages/login/login' });
+  },
+
+  goChat(e) {
+    wx.navigateTo({ url: `/pages/chat/chat?id=${e.currentTarget.dataset.id}` });
+  },
+
+  goNotifications() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' });
   }
 });

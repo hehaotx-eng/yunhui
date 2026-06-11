@@ -1,0 +1,7 @@
+var isSelected = function(tags, item) {
+  return tags.indexOf(item) > -1;
+};
+
+module.exports = {
+  isSelected: isSelected
+};

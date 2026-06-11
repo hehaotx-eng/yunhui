@@ -1,2 +1,85 @@
-<!--pages/my/my.wxml-->
-<text>pages/my/my.wxml</text>
+<!-- 用户信息 -->
+
+<view class="user-card">
+
+  <view class="avatar">
+    {{avatarLetter}}
+  </view>
+
+  <view class="user-name">
+    {{userInfo.username || userInfo.phone || '未登录'}}
+  </view>
+
+  <view class="user-role">
+    {{userInfo.userType === 'enterprise' ? '企业用户' : '个人用户'}}
+  </view>
+
+</view>
+
+<!-- 数据统计 -->
+
+<view class="data-card">
+
+  <view class="data-item">
+    <view class="data-num">
+      {{applicationCount || 0}}
+    </view>
+    <view class="data-label">
+      投递
+    </view>
+  </view>
+
+  <view class="data-item">
+    <view class="data-num">
+      {{favoriteCount || 0}}
+    </view>
+    <view class="data-label">
+      收藏
+    </view>
+  </view>
+
+  <view class="data-item">
+    <view class="data-num">
+      {{notificationCount || 0}}
+    </view>
+    <view class="data-label">
+      通知
+    </view>
+  </view>
+
+</view>
+
+<!-- 功能区 -->
+
+<view class="group-title">
+  我的服务
+</view>
+
+<view class="menu-group">
+
+  <view wx:for="{{menus}}" wx:key="title" class="menu-item" bindtap="goPage" data-url="{{item.url}}">
+    <view class="menu-left">
+
+      <view class="menu-title">
+        {{item.title}}
+      </view>
+
+      <view class="menu-desc">
+        {{item.desc}}
+      </view>
+
+    </view>
+
+    <view class="menu-arrow">
+      ›
+    </view>
+
+  </view>
+
+</view>
+
+<!-- 退出 -->
+
+<view wx:if="{{userInfo}}" class="logout-card" bindtap="logout">
+  退出登录
+</view>

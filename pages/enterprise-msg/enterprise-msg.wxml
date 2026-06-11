@@ -1,0 +1,108 @@
+<view class="page">
+
+<!-- 顶部 -->
+<view class="header">
+  <view class="header-title">消息</view>
+</view>
+
+<!-- 内容 -->
+<view class="content">
+
+  <!-- 搜索 + 通知入口 -->
+  <view class="search-bar">
+
+    <view class="search-wrapper">
+      <image class="icon-search" src="/pages/image/sousuo.png" mode="aspectFit" />
+      <input class="search-input" placeholder="搜索会话" />
+    </view>
+
+    <view class="notice-entry" bindtap="goNotifications">
+      <image class="notice-icon" src="/pages/image/notice.png" mode="aspectFit" />
+    </view>
+
+  </view>
+
+  <!-- 会话列表 -->
+  <view class="conversation-list">
+
+    <view
+      wx:for="{{conversations}}"
+      wx:key="id"
+      class="conversation-card"
+      bindtap="goChat"
+      data-id="{{item.id}}"
+    >
+
+      <!-- 头像 -->
+      <view class="avatar">
+        <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
+        <view wx:else class="avatar-placeholder">
+          {{item.avatarLetter || '人'}}
+        </view>
+      </view>
+
+      <!-- 内容 -->
+      <view class="content-inner">
+
+        <view class="top-row">
+          <text class="name">{{item.username || item.name || '会话'}}</text>
+          <text class="time">{{item.formattedTime}}</text>
+        </view>
+
+        <view class="last">
+          {{item.lastMessage || item.last_message || '暂无消息'}}
+        </view>
+
+      </view>
+
+      <!-- 未读角标 -->
+      <view wx:if="{{item.showBadge}}" class="badge">
+        {{item.badgeText}}
+      </view>
+
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <image class="empty-icon" src="/pages/image/empty-message.png" />
+      <view class="empty-text">暂无会话</view>
+    </view>
+
+    <!-- 加载 -->
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  </view>
+
+</view>
+
+<!-- TabBar -->
+<view class="tabbar">
+
+  <view class="tab-item" bindtap="goHome">
+    <image class="tab-icon" src="/pages/image/home.png" mode="aspectFit" />
+    <view class="tab-text">首页</view>
+  </view>
+
+  <view class="tab-item" bindtap="goCandidates">
+    <image class="tab-icon" src="/pages/image/users.png" mode="aspectFit" />
+    <view class="tab-text">人才</view>
+  </view>
+
+  <view class="tab-item" bindtap="goJobs">
+    <image class="tab-icon" src="/pages/image/job.png" mode="aspectFit" />
+    <view class="tab-text">岗位</view>
+  </view>
+
+  <view class="tab-item active">
+    <image class="tab-icon" src="/pages/image/msg.png" mode="aspectFit" />
+    <view class="tab-text">消息</view>
+  </view>
+
+  <view class="tab-item" bindtap="goMy">
+    <image class="tab-icon" src="/pages/image/my.png" mode="aspectFit" />
+    <view class="tab-text">我的</view>
+  </view>
+
+</view>
+
+</view>

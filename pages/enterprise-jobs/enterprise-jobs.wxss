@@ -1,0 +1,300 @@
+/* 页面整体 */
+.page {
+  background-color: #f6f7f9;
+  min-height: 100vh;
+  padding-top: 170rpx; /* 顶部导航栏高度 */
+  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+}
+
+/* 顶部导航栏 */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 170rpx;
+  background-color: #ffffff;
+  display: flex;
+  align-items: flex-end;
+  padding: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.add-btn {
+  font-size: 40rpx;
+  color: #ff5c39;
+  font-weight: bold;
+}
+
+/* 内容区 */
+.content {
+  margin-top: 10rpx;
+  padding: 16rpx;
+}
+
+/* Tabs 横向滚动 */
+.tabs-scroll {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.tab {
+  padding: 12rpx 24rpx;
+  margin-right: 16rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  font-size: 28rpx;
+  color: #4b5563;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.03);
+}
+
+.tab.active {
+  background-color: #ff5c39;
+  color: #ffffff;
+}
+
+/* 职位列表 */
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.job-card {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.job-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-tag {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  color: #ffffff;
+}
+
+.status-tag.active {
+  background-color: #22c55e;
+}
+
+.status-tag.paused {
+  background-color: #9ca3af;
+}
+
+/* 薪资和信息 */
+.job-salary {
+  font-size: 28rpx;
+  color: #ff5c39;
+  margin-bottom: 8rpx;
+}
+
+.job-meta {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-bottom: 16rpx;
+}
+
+/* 底部操作 */
+.job-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats .stat {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.status-btn {
+  background-color: #ff5c39;
+  color: #ffffff;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+/* 空状态 */
+.empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 0;
+  color: #9ca3af;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-btn {
+  font-size: 28rpx;
+  color: #ff5c39;
+}
+
+/* Tabbar */
+.tabbar {
+  height: 88rpx;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -8rpx 24rpx rgba(15,23,42,.03);
+  position: fixed  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.tab-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.tab-item.active .tab-text {
+  color: #ff5c39;
+}
+
+/* 让内容不被 tabbar 遮挡 */
+.page {
+  padding-bottom: 120rpx;
+}
+
+/* 滚动优化 */
+.tabs-scroll {
+  white-space: nowrap;
+  overflow-x: auto;
+  padding-bottom: 8rpx;
+}
+
+.tab {
+  display: inline-block;
+}
+
+/* 按钮点击反馈 */
+.action-btn:active,
+.tab:active,
+.add-btn:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.15s;
+}/* 底部固定导航栏 */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100rpx; /* 可以根据实际设计调整 */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #ffffff;
+  box-shadow: 0 -8rpx 24rpx rgba(15, 23, 42, 0.03); /* 轻阴影 */
+  border-top-left-radius: 16rpx;
+  border-top-right-radius: 16rpx;
+  z-index: 100;
+}
+
+/* 单个 Tab 项 */
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+}
+
+/* Tab 图标 */
+.tab-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 4rpx;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Tab 文本 */
+.tab-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 激活状态 */
+.tab-item.active .tab-text {
+  color: #ff5c39;
+}
+
+/* 点击反馈 */
+.tab-item:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.15s;
+}
+
+/* 页面内容避免被 TabBar 遮挡 */
+.page {
+  padding-bottom: 120rpx; /* TabBar 高度 + 留白 */
+}

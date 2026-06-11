@@ -1,0 +1,161 @@
+<view class="page">
+
+<!-- 顶部 -->
+<view class="header">
+  <view class="header-title">企业中心</view>
+</view>
+
+<!-- 内容区 -->
+<view class="content">
+
+  <!-- 数据统计卡 -->
+  <view class="stats-card">
+
+    <view class="stat-item">
+      <view class="stat-value">{{stats.applicants || 0}}</view>
+      <view class="stat-label">今日投递</view>
+    </view>
+
+    <view class="stat-divider"></view>
+
+    <view class="stat-item">
+      <view class="stat-value">{{stats.interviews || 0}}</view>
+      <view class="stat-label">面试安排</view>
+    </view>
+
+    <view class="stat-divider"></view>
+
+    <view class="stat-item">
+      <view class="stat-value">{{stats.jobs || 0}}</view>
+      <view class="stat-label">发布职位</view>
+    </view>
+
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="quick-actions">
+
+    <view class="action-card" bindtap="goPostJob">
+      <view class="action-icon">
+        <image class="icon-img" src="/pages/image/post.png" />
+      </view>
+      <view class="action-text">发布职位</view>
+    </view>
+
+    <view class="action-card" bindtap="goCandidates">
+      <view class="action-icon">
+        <image class="icon-img" src="/pages/image/user-search.png" />
+      </view>
+      <view class="action-text">人才搜索</view>
+    </view>
+
+  </view>
+
+  <!-- 我的职位 -->
+  <view class="section">
+
+    <view class="section-header">
+      <text class="section-title">我的职位</text>
+      <text class="section-more" bindtap="goJobs">查看全部</text>
+    </view>
+
+    <view class="job-list">
+
+      <view
+        wx:for="{{myJobs}}"
+        wx:key="id"
+        class="job-card"
+        bindtap="goJobDetail"
+        data-id="{{item.id}}"
+      >
+
+        <!-- 状态 -->
+        <view
+          class="job-tag {{item.status === 'paused' || item.status === 'offline' ? 'paused' : ''}}"
+        >
+          {{item.status === 'paused' || item.status === 'offline' ? '已暂停' : '进行中'}}
+        </view>
+
+        <!-- 标题 -->
+        <view class="job-title">{{item.title}}</view>
+
+        <!-- 薪资 + 时间 -->
+        <view class="job-meta">
+
+          <view class="job-salary">
+            {{item.salary}}
+          </view>
+
+          <view class="job-time">
+            {{item.createdAt ? (item.createdAt.length > 10 ? item.createdAt.substring(0,10) : item.createdAt) : '刚刚'}}
+          </view>
+
+        </view>
+
+        <!-- 标签 -->
+        <view class="welfare-list">
+
+          <view class="welfare-tag">{{item.area}}</view>
+          <view class="welfare-tag">{{item.category}}</view>
+
+        </view>
+
+        <!-- 底部信息 -->
+        <view class="job-footer">
+          <view class="job-area">{{item.area}}</view>
+        </view>
+
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:if="{{myJobs.length === 0}}" class="empty-tip">
+        暂无发布职位
+      </view>
+
+    </view>
+
+  </view>
+
+</view>
+
+<!-- 底部 TabBar -->
+<view class="tabbar">
+
+  <view class="tab-item active">
+    <view class="tab-icon">
+      <image class="icon-img" src="/pages/image/home.png" />
+    </view>
+    <view class="tab-text">首页</view>
+  </view>
+
+  <view class="tab-item" bindtap="goCandidates">
+    <view class="tab-icon">
+      <image class="icon-img" src="/pages/image/users.png" />
+    </view>
+    <view class="tab-text">人才</view>
+  </view>
+
+  <view class="tab-item" bindtap="goJobs">
+    <view class="tab-icon">
+      <image class="icon-img" src="/pages/image/job.png" />
+    </view>
+    <view class="tab-text">岗位</view>
+  </view>
+
+  <view class="tab-item" bindtap="goMsg">
+    <view class="tab-icon">
+      <image class="icon-img" src="/pages/image/msg.png" />
+    </view>
+    <view class="tab-text">消息</view>
+  </view>
+
+  <view class="tab-item" bindtap="goMy">
+    <view class="tab-icon">
+      <image class="icon-img" src="/pages/image/my.png" />
+    </view>
+    <view class="tab-text">我的</view>
+  </view>
+
+</view>
+
+</view>

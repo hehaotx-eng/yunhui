@@ -1,92 +1,47 @@
-<!--pages/webs/webs.wxml-->
 <view class="page">
   <view class="header">
-    <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
-    
-    <view class="search-bar">
-      <view class="search-box">
-        <image class="search-icon" src="/pages/image/sousuo.png" mode="aspectFit" />
-        <input 
-          class="search-input" 
-          placeholder="请输入职位或企业名称" 
-          placeholder-class="search-placeholder"
-          value="{{searchKeyword}}"
-          bindinput="onSearchInput"
-          confirm-type="search"
-          bindconfirm="onSearch"
-        />
-      </view>
-      <view class="search-actions">
-        <view class="action-btn">
-          <image class="action-icon" src="/pages/image/qiehuan.png" mode="aspectFit" />
-        </view>
-        <view class="action-btn">
-          <image class="action-icon" src="/pages/image/qiehuan.png" mode="aspectFit" />
-        </view>
-      </view>
+    <view class="header-text">职位机会</view>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-wrapper">
+      <image class="icon-search" src="/pages/image/sousuo.png" />
+      <input class="search-input" placeholder="搜索职位 / 公司 / 技能" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="onSearch" confirm-type="search" />
     </view>
   </view>
 
-  <view class="filter-bar-wrapper">
-    <scroll-view class="filter-bar" scroll-x>
-      <view 
-        wx:for="{{filters}}" 
-        wx:key="id" 
-        class="filter-item {{activeFilter === item.id ? 'active' : ''}}"
-        bindtap="switchFilter"
-        data-id="{{item.id}}"
-      >
-        <text>{{item.name}}</text>
-        <text wx:if="{{item.hasArrow}}" class="filter-arrow">▾</text>
-      </view>
-    </scroll-view>
+  <view class="filter-scroll">
+    <view wx:for="{{filters}}" wx:key="id" class="filter-item {{activeFilter === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchFilter">{{item.name}}</view>
   </view>
 
-  <scroll-view class="job-list" scroll-y bindscrolltolower="onReachBottom">
-    <view 
-      wx:for="{{jobs}}" 
-      wx:key="id" 
-      class="job-card"
-      bindtap="goDetail"
-      data-id="{{item.id}}"
-    >
-      <view wx:if="{{item.tags && item.tags.length > 0}}" class="job-tag hot">急聘</view>
-      
+  <view class="job-list">
+    <view wx:for="{{jobs}}" wx:key="id" class="job-card" data-id="{{item.id}}" bindtap="goDetail">
+      <view wx:if="{{item.tag}}" class="job-tag">{{item.tag}}</view>
       <view class="job-title">{{item.title}}</view>
-      
       <view class="job-meta">
-        <view class="job-salary">{{item.salary}} <text class="salary-unit">元/月</text></view>
-        <view class="job-time">{{formatTime(item.createdAt)}}</view>
+        <view class="job-salary">{{item.salary || '薪资面议'}}</view>
+        <view class="job-time">{{item.time || '近期发布'}}</view>
       </view>
-      
       <view class="welfare-list">
-        <view class="welfare-tag">{{item.area}}</view>
-        <view wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="welfare-tag">{{tag}}</view>
-        <view wx:if="{{item.tags && item.tags.length > 3}}" class="welfare-tag more">...</view>
+        <view wx:for="{{item.tags || item.welfare}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
       </view>
-      
       <view class="job-footer">
         <view class="company-info">
-          <view class="company-logo">
-            <text class="logo-text">{{item.enterpriseName && item.enterpriseName.charAt(0) || '企'}}</text>
-          </view>
+          <view class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
           <view class="company-detail">
-            <view class="company-contact">{{item.contactName}}</view>
-            <view class="company-name">
-              {{item.enterpriseName}}
-              <text class="verify-badge">✓</text>
-            </view>
+            <view class="company-contact">{{item.enterpriseName || '企业信息待完善'}}</view>
+            <view class="company-name">{{item.area || '地区不限'}} · {{item.experience || '经验不限'}} · {{item.education || '学历不限'}}</view>
           </view>
         </view>
-        <view class="btn-call" catchtap="callPhone" data-phone="{{item.contactPhone}}">拨打电话</view>
+        <view class="btn-call" catchtap="callPhone" data-phone="{{item.contactPhone}}">电话</view>
       </view>
     </view>
 
-    <view wx:if="{{loading}}" class="loading-more">
-      <text>加载中...</text>
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon">💼</view>
+      <view class="empty-text">暂无职位</view>
     </view>
-    <view wx:if="{{!hasMore && jobs.length > 0}}" class="no-more">
-      <text>没有更多了</text>
-    </view>
-  </scroll-view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:if="{{showNoMore}}" class="loading">没有更多了</view>
+  </view>
 </view>

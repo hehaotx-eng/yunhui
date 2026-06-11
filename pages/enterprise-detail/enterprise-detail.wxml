@@ -1,0 +1,62 @@
+<view class="page" wx:if="{{enterprise}}">
+  <view class="hero">
+    <image wx:if="{{enterprise.logo}}" class="logo" src="http://127.0.0.1:3000/uploads/{{enterprise.logo}}" mode="aspectFill" />
+<view wx:else class="logo-text">{{enterprise.name ? enterprise.name.substring(0,1) : '企'}}</view>
+    <view class="name">{{enterprise.name}}</view>
+    <view class="meta">{{enterprise.industry || '行业待完善'}} · {{enterprise.scale || '规模待完善'}} · {{enterprise.verified ? '已认证' : '未认证'}}</view>
+    <view wx:if="{{enterprise.verified}}" class="verify-badge">企业已认证</view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">公司介绍</view>
+    </view>
+    <view class="text-content">{{enterprise.description || '暂无企业介绍'}}</view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">基本信息</view>
+    </view>
+    <view class="info-list">
+      <view class="info-item">
+        <text class="info-label">联系人</text>
+        <text class="info-value">{{enterprise.contactName || '待完善'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">联系电话</text>
+        <text class="info-value" bindtap="callPhone">{{enterprise.contactPhone || '待完善'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">公司地址</text>
+        <text class="info-value">{{enterprise.address || '待完善'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">所属行业</text>
+        <text class="info-value">{{enterprise.industry || '待完善'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">公司规模</text>
+        <text class="info-value">{{enterprise.scale || '待完善'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">在招职位</view>
+      <view class="job-count">{{jobs.length}}个职位</view>
+    </view>
+    <view wx:for="{{jobs}}" wx:key="id" class="job-mini" bindtap="goJob" data-id="{{item.id}}">
+      <view class="job-left">
+        <view class="job-title">{{item.title}}</view>
+        <view class="job-meta">{{item.area || '地区不限'}} · {{item.experience || '经验不限'}} · {{item.education || '学历不限'}}</view>
+      </view>
+      <view class="job-right">
+        <view class="salary">{{item.salary || '面议'}}</view>
+        <view class="arrow">›</view>
+      </view>
+    </view>
+    <view wx:if="{{jobs.length === 0}}" class="empty">暂无在招职位</view>
+  </view>
+</view>
