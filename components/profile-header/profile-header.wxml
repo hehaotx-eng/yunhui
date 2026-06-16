@@ -1,0 +1,51 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="profile-header">
+  <!-- 封面 -->
+  <view class="header-cover">
+    <image wx:if="{{info.cover}}" src="{{info.cover}}" mode="aspectFill" class="cover-img" />
+    <view wx:else class="cover-placeholder"></view>
+  </view>
+
+  <!-- 头像 + 信息 -->
+  <view class="header-body">
+    <view class="profile-avatar">
+      <image wx:if="{{info.logo || info.avatar}}" src="{{info.logo || info.avatar}}" mode="aspectFill" />
+      <text wx:else>{{wxs.firstChar(info.name)}}</text>
+    </view>
+
+    <view class="profile-info">
+      <text class="profile-name">{{info.name || '用户'}}</text>
+      <text class="profile-desc line-clamp-2" wx:if="{{info.description || info.industry}}">
+        {{info.description || info.industry || ''}}
+      </text>
+      <view class="profile-stats" wx:if="{{type === 'company'}}">
+        <view class="stat-item">
+          <text class="stat-num">{{info.job_count || 0}}</text>
+          <text class="stat-label">在招</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{info.follower_count || 0}}</text>
+          <text class="stat-label">关注</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标签 -->
+  <view class="profile-tags" wx:if="{{info.tags && info.tags.length > 0}}">
+    <text class="p-tag" wx:for="{{info.tags}}" wx:key="*this" wx:if="{{index < 5}}">{{item}}</text>
+  </view>
+
+  <!-- 操作栏 -->
+  <view class="profile-actions" wx:if="{{!isOwner}}">
+    <view class="action-btn action-follow" bindtap="onFollow">
+      <text>+ 关注</text>
+    </view>
+    <view class="action-btn action-chat" bindtap="onChat">
+      <text>聊天</text>
+    </view>
+    <view class="action-btn action-share" bindtap="onShare">
+      <text>↗</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,26 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="card" bindtap="onTap">
+  <view class="card-header">
+    <view class="card-title">{{job.title}}</view>
+    <view class="card-salary">{{job.salary || '面议'}}</view>
+  </view>
+  <view class="card-meta">
+    <text class="meta-location">{{job.location || '地点不限'}}</text>
+    <text class="meta-dot">·</text>
+    <text class="meta-exp">{{job.experience || '经验不限'}}</text>
+  </view>
+  <view class="card-tags" wx:if="{{job.tags && job.tags.length > 0}}">
+    <text class="tag" wx:for="{{job.tags}}" wx:key="*this" wx:if="{{index < 4}}">{{item}}</text>
+  </view>
+  <view class="card-footer">
+    <view class="company">
+      <view class="company-logo" wx:if="{{job.company_logo || job.logo}}">
+        <image src="{{job.company_logo || job.logo}}" mode="aspectFill" />
+      </view>
+      <view class="company-logo company-logo-placeholder" wx:else>
+        {{wxs.firstChar(job.enterprise_name)}}
+      </view>
+      <text class="company-name">{{job.enterprise_name || ''}}</text>
+    </view>
+  </view>
+</view>

@@ -16,7 +16,8 @@
       <view class="job-title">{{item.jobTitle || '职位名称'}}</view>
       <view class="job-salary">{{item.salary || '薪资面议'}}</view>
       <view class="company-info">
-        <view class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
+        <image wx:if="{{item.company_logo || item.logo}}" class="company-logo" src="{{item.company_logo || item.logo}}" mode="aspectFill" />
+        <view wx:else class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
         <view class="company-detail">
           <view class="company-name">{{item.enterpriseName || '企业'}}</view>
           <view class="company-meta">{{item.area || '地区不限'}}</view>

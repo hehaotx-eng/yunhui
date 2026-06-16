@@ -1,77 +1,91 @@
+const { jobs, applications } = require('../../utils/api.js');
+
 Page({
   data: {
-    keyword: '',
     activeFilter: 'all',
     filters: [
       { id: 'all', name: '全部' },
-      { id: 'online', name: '在线' },
-      { id: 'graduate', name: '应届生' },
-      { id: 'experienced', name: '有经验' }
+      { id: 'pending', name: '待处理' },
+      { id: 'viewed', name: '已查看' },
+      { id: 'accepted', name: '已通过' },
+      { id: 'rejected', name: '已拒绝' }
     ],
-    candidates: [],
+    allApplications: [],
+    applications: [],
     showEmpty: false,
-    loading: false
+    loading: false,
+    statusBarHeight: 0
   },
 
   onLoad() {
-    this.checkUserRole()
-    this.loadCandidates()
+    const sysInfo = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
+    this.checkUserRole();
+    this.loadData();
+  },
+
+  onShow() {
   },
 
   checkUserRole() {
-    const userRole = wx.getStorageSync('userRole')
-    if (!userRole || userRole !== 'enterprise') {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' })
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    if (!userInfo.company_id) {
+      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
     }
   },
 
-  loadCandidates() {
-    this.setData({ loading: true })
-    setTimeout(() => {
-      this.setData({
-        candidates: [
-          { id: 1, username: '张三', education: '本科', experience: '3年经验', city: '北京', skills: ['React', 'Vue', 'Node.js'] },
-          { id: 2, username: '李四', education: '硕士', experience: '5年经验', city: '上海', skills: ['Java', 'Spring', 'MySQL'] },
-          { id: 3, username: '王五', education: '大专', experience: '1年经验', city: '广州', skills: ['Python', 'Django', 'Redis'] }
-        ],
-        loading: false,
-        showEmpty: false
-      })
-    }, 500)
+  async loadData() {
+    this.setData({ loading: true });
+    try {
+      const myJobs = await jobs.getMyList();
+      const jobList = Array.isArray(myJobs) ? myJobs : (myJobs.list || myJobs.rows || []);
+
+      let allApps = [];
+      for (const job of jobList) {
+        try {
+          const result = await applications.getByJob(job.id);
+          const apps = result.list || result.rows || result || [];
+          allApps = allApps.concat(apps.map(a => ({ ...a, job_title: job.title })));
+        } catch {}
+      }
+
+      this.setData({ allApplications: allApps });
+      this.filterApplications();
+    } catch (e) {
+      console.error('加载投递失败:', e);
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
-  onKeywordInput(e) {
-    this.setData({ keyword: e.detail.value })
-  },
-
-  onSearch() {
-    this.loadCandidates()
+  filterApplications() {
+    const { activeFilter, allApplications } = this.data;
+    let filtered = allApplications;
+    if (activeFilter !== 'all') {
+      filtered = allApplications.filter(a => a.status === activeFilter);
+    }
+    this.setData({ applications: filtered, showEmpty: filtered.length === 0 });
   },
 
   switchFilter(e) {
-    const id = e.currentTarget.dataset.id
-    this.setData({ activeFilter: id })
-    this.loadCandidates()
+    const filter = e.currentTarget.dataset.filter;
+    this.setData({ activeFilter: filter });
+    this.filterApplications();
+  },
+
+  async updateStatus(e) {
+    const { id, status } = e.currentTarget.dataset;
+    try {
+      await applications.updateStatus(id, status);
+      wx.showToast({ title: '操作成功', icon: 'success' });
+      this.loadData();
+    } catch (e) {
+      wx.showToast({ title: e.message || '操作失败', icon: 'none' });
+    }
   },
 
   goDetail(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/candidate-detail/candidate-detail?id=${id}` })
-  },
-
-  goHome() {
-    wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })
-  },
-
-  goJobs() {
-    wx.reLaunch({ url: '/pages/enterprise-jobs/enterprise-jobs' })
-  },
-
-  goMsg() {
-    wx.reLaunch({ url: '/pages/enterprise-msg/enterprise-msg' })
-  },
-
-  goMy() {
-    wx.reLaunch({ url: '/pages/enterprise-my/enterprise-my' })
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   }
-})
+});

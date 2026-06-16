@@ -3,30 +3,41 @@
   background-color: #f6f7f9;
   min-height: 100vh;
   font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
 }
 
 /* 顶部 */
 .header {
-  height: 88rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  z-index: 10;
+}
+
+.header-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
-  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+  height: 88rpx;
+  padding: 0 24rpx;
 }
 
 .header-title {
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #111827;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
-/* 内容区 */
+/* 内容�?*/
 .content {
   padding: 16rpx;
+  padding-top: calc(88rpx + env(safe-area-inset-top) + 20rpx);
 }
 
-/* 搜索框 */
+/* 搜索�?*/
 .search-bar {
   margin-bottom: 24rpx;
 }
@@ -57,7 +68,7 @@
   background-color: transparent;
 }
 
-/* 筛选横向滚动 */
+/* 筛选横向滚�?*/
 .filter-scroll {
   display: flex;
   margin-bottom: 24rpx;
@@ -152,7 +163,7 @@
   margin-bottom: 12rpx;
 }
 
-/* 技能标签 */
+/* 技能标�?*/
 .skills {
   display: flex;
   flex-wrap: wrap;
@@ -168,7 +179,7 @@
   margin-bottom: 8rpx;
 }
 
-/* 右箭头 */
+/* 右箭�?*/
 .arrow {
   width: 24rpx;
   height: 24rpx;
@@ -176,7 +187,7 @@
   align-self: center;
 }
 
-/* 空状态 */
+/* 空状�?*/
 .empty-card {
   display: flex;
   flex-direction: column;
@@ -193,7 +204,7 @@
   margin-bottom: 16rpx;
 }
 
-/* 加载中 */
+/* 加载�?*/
 .loading {
   text-align: center;
   font-size: 28rpx;
@@ -203,22 +214,27 @@
 
 /* 底部 TabBar */
 .tabbar {
-  height: 88rpx;
-  background-color: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 -8rpx 24rpx rgba(15,23,42,.03);
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 100rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -2rpx 20rpx rgba(0, 0, 0, 0.06);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .tab-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  height: 100%;
 }
 
 .tab-item.active .tab-text {
@@ -226,12 +242,13 @@
 }
 
 .tab-icon {
-  width: 32rpx;
-  height: 32rpx;
-  margin-bottom: 4rpx;
+  width: 36rpx;
+  height: 36rpx;
 }
 
 .tab-text {
-  font-size: 24rpx;
-  color: #4b5563;
+  font-size: 22rpx;
+  color: #999;
 }
+
+page { padding-bottom: 60px; }

@@ -1,0 +1,11 @@
+<view class="header" style="padding-top: {{statusBarHeight}}px;">
+  <view class="header-content">
+    <view class="header-left" bindtap="handleBack" wx:if="{{showBack}}">
+      <text class="back-icon">‹</text>
+    </view>
+    <view class="header-title">{{title}}</view>
+    <view class="header-right">
+      <slot name="right"></slot>
+    </view>
+  </view>
+</view>

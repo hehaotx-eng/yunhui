@@ -1,0 +1,133 @@
+<view class="dp-page">
+  <!-- 加载态 -->
+  <view wx:if="{{phase === 'loading'}}" class="dp-phase">
+    <view class="dp-loading-spinner"></view>
+    <text class="dp-loading-text">页面加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:elif="{{errorMsg}}" class="dp-error-bar">
+    <text class="dp-error-text">{{errorMsg}}</text>
+  </view>
+
+  <!-- 正常渲染 -->
+  <block wx:elif="{{phase === 'ready'}}">
+    <block wx:for="{{widgets}}" wx:key="index">
+      <!-- 搜索栏 -->
+      <block wx:if="{{item.type === 'search_bar'}}">
+        <view class="dp-search" bindtap="onSearchTap">
+          <image class="dp-search-icon" src="/pages/image/sousuo.png" />
+          <text class="dp-search-text">{{item.props.placeholder || '搜索职位、企业、技能...'}}</text>
+        </view>
+      </block>
+
+      <!-- 轮播图 -->
+      <block wx:elif="{{item.type === 'banner'}}">
+        <view class="dp-banner-wrap">
+          <swiper class="dp-banner-swiper" indicator-dots="{{true}}" indicator-color="rgba(255,255,255,.3)" indicator-active-color="#fff" autoplay circular interval="{{item.props.interval || 4000}}" bindchange="onBannerChange">
+            <swiper-item wx:for="{{banners}}" wx:key="id">
+              <view class="dp-banner-item">
+                <image class="dp-banner-img" src="{{item.image_url}}" mode="aspectFill" />
+              </view>
+            </swiper-item>
+          </swiper>
+        </view>
+      </block>
+
+      <!-- 快捷图标 -->
+      <block wx:elif="{{item.type === 'quick_links'}}">
+        <view class="dp-ql-section" wx:if="{{quickLinks.length > 0}}">
+          <view class="dp-ql-item" wx:for="{{quickLinks}}" wx:key="id" data-link="{{item.link}}" bindtap="onQuickLinkTap">
+            <image class="dp-ql-icon" src="{{item.icon}}" mode="aspectFit" />
+            <text class="dp-ql-label">{{item.title}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 通知公告 -->
+      <block wx:elif="{{item.type === 'notice_bar'}}">
+        <view class="dp-notice-bar" wx:if="{{notices.length > 0}}" bindtap="onNoticeTap">
+          <image class="dp-notice-icon" src="{{item.props.icon || '/pages/image/tongzhi.png'}}" mode="aspectFit" />
+          <swiper class="dp-notice-swiper" vertical autoplay circular interval="3000" display-multiple-items="{{1}}">
+            <swiper-item wx:for="{{notices}}" wx:key="id">
+              <text class="dp-notice-text line-clamp-1">{{item.title}}</text>
+            </swiper-item>
+          </swiper>
+          <text class="dp-notice-more">更多 ›</text>
+        </view>
+      </block>
+
+      <!-- 分类标签 -->
+      <block wx:elif="{{item.type === 'category_tabs'}}">
+        <scroll-view class="dp-cat-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+          <view class="dp-cat-inner">
+            <view wx:for="{{categories}}" wx:key="id" class="dp-cat-item {{activeCategory === item.id ? 'dp-cat-active' : ''}}" data-id="{{item.id}}" bindtap="onCategoryTap">{{item.name}}</view>
+          </view>
+        </scroll-view>
+      </block>
+
+      <!-- AI 推荐横幅 -->
+      <block wx:elif="{{item.type === 'ai_banner'}}">
+        <view class="dp-ai-banner" bindtap="onSearchTap">
+          <view class="dp-ai-banner-bg"></view>
+          <view class="dp-ai-banner-content">
+            <view class="dp-ai-icon-wrap"><text class="dp-ai-icon-text">AI</text></view>
+            <view class="dp-ai-banner-info">
+              <text class="dp-ai-banner-title">{{item.props.title || '发现适合你的机会'}}</text>
+              <text class="dp-ai-banner-desc">{{item.props.desc || '基于你的偏好智能匹配'}}</text>
+            </view>
+            <view class="dp-ai-banner-arrow"><text>→</text></view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 自定义块 -->
+      <block wx:elif="{{item.type === 'custom_block'}}">
+        <view class="dp-custom-block" style="background-color: {{item.props.bgColor || '#f5f5f5'}};" data-link="{{item.props.link}}" bindtap="onCustomBlockTap">
+          <image wx:if="{{item.props.image}}" class="dp-custom-image" src="{{item.props.image}}" mode="aspectFill" />
+          <text class="dp-custom-text">{{item.props.text || ''}}</text>
+        </view>
+      </block>
+
+      <!-- 职位列表 -->
+      <block wx:elif="{{item.type === 'job_list'}}">
+        <view class="dp-section">
+          <view class="dp-section-header">
+            <text class="dp-section-title">{{item.props.title || '最新职位'}}</text>
+          </view>
+          <block wx:if="{{skeleton}}">
+            <view class="dp-skeleton-card" wx:for="{{[1,2]}}" wx:key="*this">
+              <view class="dp-skeleton-line dp-skeleton-line-lg"></view>
+              <view class="dp-skeleton-line dp-skeleton-line-sm"></view>
+            </view>
+          </block>
+          <block wx:elif="{{feedList.length > 0}}">
+            <view class="dp-job-card" wx:for="{{feedList}}" wx:key="id" data-id="{{item.id}}" bindtap="onJobTap">
+              <view class="dp-job-title">{{item.title}}</view>
+              <view class="dp-job-meta">{{item.salary_text || '薪资面议'}} · {{item.company_name || ''}}</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="dp-empty">暂无职位数据</view>
+          </block>
+        </view>
+      </block>
+
+      <!-- 企业动态 -->
+      <block wx:elif="{{item.type === 'company_posts'}}">
+        <view class="dp-section">
+          <view class="dp-section-header">
+            <text class="dp-section-title">{{item.props.title || '企业动态'}}</text>
+          </view>
+          <view class="dp-empty">暂无动态</view>
+        </view>
+      </block>
+    </block>
+  </block>
+
+  <!-- 兜底：没有任何内容 -->
+  <view wx:else class="dp-phase">
+    <text class="dp-empty-icon">📄</text>
+    <text class="dp-loading-text">页面暂无内容</text>
+  </view>
+</view>

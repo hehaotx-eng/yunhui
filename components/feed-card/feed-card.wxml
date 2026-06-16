@@ -1,0 +1,35 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="job-card" bindtap="onCardTap">
+  <!-- Row 1: title + salary -->
+  <view class="card-row-top">
+    <text class="card-title line-clamp-1">{{item.title}}</text>
+    <text class="card-salary">{{item.salary || (item.salary_min && item.salary_max ? (item.salary_min) + '-' + (item.salary_max) + '元' : item.salary_min ? (item.salary_min) + '元起' : '面议')}}</text>
+  </view>
+
+  <!-- Row 2: tags -->
+  <view class="card-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+    <text class="card-tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+  </view>
+  <view class="card-tags" wx:else>
+    <text class="card-tag" wx:if="{{item.job_type}}">{{wxs.jobType(item.job_type)}}</text>
+    <text class="card-tag" wx:if="{{item.experience}}">{{item.experience}}</text>
+    <text class="card-tag" wx:if="{{item.education}}">{{item.education}}</text>
+  </view>
+
+  <!-- Row 3: company + location -->
+  <view class="card-row-bottom" bindtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}" catchtap="onCompanyTap">
+    <view class="company-info-left">
+      <view class="company-logo">
+        <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+        <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
+      </view>
+      <text class="company-name line-clamp-1">{{item.company_name || item.enterprise_name || ''}}</text>
+    </view>
+    <view class="card-info-right">
+      <text class="info-location">{{item.location || ''}}</text>
+      <view class="close-btn" catchtap="onClose">
+        <text>×</text>
+      </view>
+    </view>
+  </view>
+</view>

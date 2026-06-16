@@ -1,0 +1,59 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="feed-card-base card--post" bindtap="onTap">
+  <!-- HEADER -->
+  <view class="feed-header" bindtap="onCompanyTap">
+    <view class="feed-header-avatar">
+      <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+      <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
+    </view>
+    <view class="feed-header-info">
+      <text class="feed-header-name">{{item.company_name || item.enterprise_name || '企业'}}</text>
+      <text class="feed-header-meta">{{item.enterprise_industry || '正在招聘'}}</text>
+    </view>
+    <text class="post-time">{{item.publish_time || '刚刚'}}</text>
+  </view>
+
+  <!-- BODY -->
+  <view class="post-content">
+    <text class="content-text">{{item.content || ''}}</text>
+  </view>
+
+  <!-- IMAGES -->
+  <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
+    <image
+      wx:for="{{item.images}}"
+      wx:key="*this"
+      wx:if="{{index < 3}}"
+      class="post-img"
+      src="{{item}}"
+      mode="aspectFill"
+    />
+  </view>
+
+  <!-- LINKED JOB -->
+  <view class="post-job" wx:if="{{item.job}}">
+    <view class="post-job-tag">招</view>
+    <view class="post-job-info">
+      <text class="post-job-title line-clamp-1">{{item.job.title}}</text>
+      <text class="post-job-salary">{{item.job.salary || '面议'}}</text>
+    </view>
+  </view>
+
+  <!-- FOOTER -->
+  <view class="feed-footer">
+    <view class="feed-action" data-action="like" catchtap="onAction">
+      <view class="feed-action-icon {{item.is_liked ? 'feed-action-icon--active' : ''}}">
+        <text>{{item.is_liked ? '❤️' : '♡'}}</text>
+      </view>
+      <text class="feed-action-count">{{item.like_count || '赞'}}</text>
+    </view>
+    <view class="feed-action" data-action="comment" catchtap="onAction">
+      <view class="feed-action-icon"><text>💬</text></view>
+      <text class="feed-action-count">{{item.comment_count || '评论'}}</text>
+    </view>
+    <view class="feed-action" data-action="share" catchtap="onAction">
+      <view class="feed-action-icon"><text>↗️</text></view>
+      <text class="feed-action-label">分享</text>
+    </view>
+  </view>
+</view>

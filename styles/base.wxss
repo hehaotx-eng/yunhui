@@ -1,0 +1,41 @@
+/* ============================================
+   BASE — 全局 reset + 通用布局
+   ============================================ */
+
+page {
+  background: var(--c-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  color: var(--c-text);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(44px + env(safe-area-inset-bottom));
+}
+
+view, text, image { box-sizing: border-box; }
+
+.line-clamp-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, var(--c-skeleton) 25%, var(--c-skeleton-anim) 50%, var(--c-skeleton) 75%);
+  background-size: 400% 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+  border-radius: var(--sp-8);
+}
+
+@keyframes pulse {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}

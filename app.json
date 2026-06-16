@@ -1,10 +1,15 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/webs/webs",
-    "pages/qiye/qiye",
+    "pages/aiRecommend/aiRecommend",
     "pages/msg/msg",
     "pages/my/my",
+    "pages/webs/webs",
+    "pages/enterprise-home/enterprise-home",
+    "pages/enterprise-jobs/enterprise-jobs",
+    "pages/candidates/candidates",
+    "pages/enterpriseDashboard/enterpriseDashboard",
+    "pages/enterprise-my/enterprise-my",
     "pages/detail/detail",
     "pages/enterprise-detail/enterprise-detail",
     "pages/favorites/favorites",
@@ -14,33 +19,31 @@
     "pages/login-phone/login-phone",
     "pages/register/register",
     "pages/chat/chat",
-    "pages/enterprise-home/enterprise-home",
-    "pages/candidates/candidates",
-    "pages/enterprise-jobs/enterprise-jobs",
     "pages/enterprise-msg/enterprise-msg",
-    "pages/enterprise-my/enterprise-my",
     "pages/search/search",
-    "pages/post-job/post-job"
+    "pages/post-job/post-job",
+    "pages/qiye/qiye"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "在线招聘",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f6f7f9"
   },
   "tabBar": {
-    "color": "#666666",
-    "selectedColor": "#00a2ff",
+    "custom": true,
+    "color": "#9ca3af",
+    "selectedColor": "#1a1a2e",
     "backgroundColor": "#ffffff",
     "list": [
-      { "pagePath": "pages/home/home", "text": "首页" },
+      { "pagePath": "pages/home/home", "text": "发现" },
       { "pagePath": "pages/webs/webs", "text": "职位" },
-      { "pagePath": "pages/qiye/qiye", "text": "企业" },
+      { "pagePath": "pages/aiRecommend/aiRecommend", "text": "推荐" },
       { "pagePath": "pages/msg/msg", "text": "消息" },
       { "pagePath": "pages/my/my", "text": "我的" }
     ]
   },
   "style": "v2",
-  "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
 }

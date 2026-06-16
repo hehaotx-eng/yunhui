@@ -1,6 +1,7 @@
 {
-  "navigationBarTitleText": "职位",
-  "navigationBarBackgroundColor": "#00a2ff",
-  "navigationBarTextStyle": "white",
-  "navigationStyle": "custom"
+  "usingComponents": {
+    "custom-tab-bar": "/custom-tab-bar/custom-tab-bar"
+  },
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 100
 }

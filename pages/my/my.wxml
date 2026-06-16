@@ -1,6 +1,6 @@
 <!-- 用户信息 -->
 
-<view class="user-card">
+<view class="user-card" bindtap="{{userInfo ? '' : 'goLogin'}}">
 
   <view class="avatar">
     {{avatarLetter}}
@@ -11,7 +11,7 @@
   </view>
 
   <view class="user-role">
-    {{userInfo.userType === 'enterprise' ? '企业用户' : '个人用户'}}
+    {{userInfo ? (isEnterprise ? '企业用户' : '个人用户') : '点击登录'}}
   </view>
 
 </view>
@@ -49,7 +49,7 @@
 
 </view>
 
-<!-- 功能区 -->
+<!-- 功能 -->
 
 <view class="group-title">
   我的服务
@@ -71,7 +71,7 @@
     </view>
 
     <view class="menu-arrow">
-      ›
+      >
     </view>
 
   </view>
@@ -80,6 +80,7 @@
 
 <!-- 退出 -->
 
-<view wx:if="{{userInfo}}" class="logout-card" bindtap="logout">
-  退出登录
-</view>
+<view wx:if="{{userInfo}}" class="logout-card" bindtap="handleLogout">
+  退出登录</view>
+
+<custom-tab-bar />

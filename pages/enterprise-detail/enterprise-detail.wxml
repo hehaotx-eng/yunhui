@@ -1,62 +1,82 @@
-<view class="page" wx:if="{{enterprise}}">
-  <view class="hero">
-    <image wx:if="{{enterprise.logo}}" class="logo" src="http://127.0.0.1:3000/uploads/{{enterprise.logo}}" mode="aspectFill" />
-<view wx:else class="logo-text">{{enterprise.name ? enterprise.name.substring(0,1) : '企'}}</view>
-    <view class="name">{{enterprise.name}}</view>
-    <view class="meta">{{enterprise.industry || '行业待完善'}} · {{enterprise.scale || '规模待完善'}} · {{enterprise.verified ? '已认证' : '未认证'}}</view>
-    <view wx:if="{{enterprise.verified}}" class="verify-badge">企业已认证</view>
+<view class="ep-page" wx:if="{{enterprise}}">
+  <!-- 导航 -->
+  <view class="ep-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-back" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="nav-title">{{enterprise.name || '企业详情'}}</text>
+    <view style="width:60rpx;"></view>
   </view>
 
-  <view class="section">
-    <view class="section-header">
-      <view class="section-title">公司介绍</view>
-    </view>
-    <view class="text-content">{{enterprise.description || '暂无企业介绍'}}</view>
-  </view>
+  <scroll-view class="ep-scroll" scroll-y enhanced show-scrollbar="{{false}}">
 
-  <view class="section">
-    <view class="section-header">
-      <view class="section-title">基本信息</view>
-    </view>
-    <view class="info-list">
-      <view class="info-item">
-        <text class="info-label">联系人</text>
-        <text class="info-value">{{enterprise.contactName || '待完善'}}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">联系电话</text>
-        <text class="info-value" bindtap="callPhone">{{enterprise.contactPhone || '待完善'}}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">公司地址</text>
-        <text class="info-value">{{enterprise.address || '待完善'}}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">所属行业</text>
-        <text class="info-value">{{enterprise.industry || '待完善'}}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">公司规模</text>
-        <text class="info-value">{{enterprise.scale || '待完善'}}</text>
+    <!-- 企业头部 -->
+    <view class="ep-header">
+      <image class="ep-logo" src="{{enterprise.logo || enterprise.company_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
+      <view class="ep-name">{{enterprise.name}}</view>
+      <view class="ep-tags">
+        <text class="ep-tag">{{enterprise.industry || '互联网'}}</text>
+        <text class="ep-tag">{{enterprise.scale || '20-99人'}}</text>
       </view>
     </view>
-  </view>
 
-  <view class="section">
-    <view class="section-header">
-      <view class="section-title">在招职位</view>
-      <view class="job-count">{{jobs.length}}个职位</view>
+    <!-- 环境照片 -->
+    <view class="section" wx:if="{{enterprise.company_images && enterprise.company_images.length > 0}}">
+      <text class="section-title">环境照片</text>
+      <scroll-view class="photo-scroll" scroll-x>
+        <image wx:for="{{enterprise.company_images}}" wx:key="*this" class="photo-img" src="{{item}}" mode="aspectFill" />
+      </scroll-view>
     </view>
-    <view wx:for="{{jobs}}" wx:key="id" class="job-mini" bindtap="goJob" data-id="{{item.id}}">
-      <view class="job-left">
-        <view class="job-title">{{item.title}}</view>
-        <view class="job-meta">{{item.area || '地区不限'}} · {{item.experience || '经验不限'}} · {{item.education || '学历不限'}}</view>
-      </view>
-      <view class="job-right">
-        <view class="salary">{{item.salary || '面议'}}</view>
-        <view class="arrow">›</view>
+
+    <!-- 公司介绍 -->
+    <view class="section">
+      <text class="section-title">公司介绍</text>
+      <text class="section-body">{{enterprise.description || '暂无企业介绍'}}</text>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="section">
+      <text class="section-title">基本信息</text>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">联系人</text>
+          <text class="info-value">{{enterprise.contact_name || enterprise.contactName || '待完善'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">联系电话</text>
+          <text class="info-value phone" bindtap="callPhone">{{enterprise.contact_phone || enterprise.contactPhone || '待完善'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">公司地址</text>
+          <text class="info-value">{{enterprise.address || '待完善'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">公司规模</text>
+          <text class="info-value">{{enterprise.scale || '待完善'}}</text>
+        </view>
       </view>
     </view>
-    <view wx:if="{{jobs.length === 0}}" class="empty">暂无在招职位</view>
-  </view>
+
+    <!-- 在招岗位 -->
+    <view class="section">
+      <view class="section-title-row">
+        <text class="section-title">在招岗位</text>
+        <text class="job-count">{{enterprise.jobs ? enterprise.jobs.length : 0}}个</text>
+      </view>
+      <view wx:for="{{enterprise.jobs || jobs}}" wx:key="id" class="job-item" bindtap="goJob" data-id="{{item.id}}">
+        <view class="job-top">
+          <text class="job-title">{{item.title}}</text>
+          <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + 'K' : '面议')}}</text>
+        </view>
+        <view class="job-meta">
+          <text>{{item.location || item.area || '地点不限'}}</text>
+          <text wx:if="{{item.experience}}"> · {{item.experience}}</text>
+          <text wx:if="{{item.education}}"> · {{item.education}}</text>
+        </view>
+      </view>
+      <view wx:if="{{!enterprise.jobs || enterprise.jobs.length === 0}}" class="empty">暂无在招职位</view>
+    </view>
+
+    <view style="height: 60rpx;"></view>
+  </scroll-view>
 </view>

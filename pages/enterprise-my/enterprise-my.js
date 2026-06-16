@@ -1,59 +1,40 @@
+const { auth, jobs, applications } = require('../../utils/api.js');
+
 Page({
   data: {
     userInfo: {},
-    stats: {
-      jobs: 0,
-      resumes: 0,
-      interviews: 0
-    }
+    stats: { jobs: 0, applications: 0 },
+    statusBarHeight: 0
   },
 
   onLoad() {
-    this.checkUserRole()
-    this.loadData()
+    const sysInfo = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
+    this.checkUserRole();
+    this.loadData();
+  },
+
+  onShow() {
   },
 
   checkUserRole() {
-    const userRole = wx.getStorageSync('userRole')
-    if (!userRole || userRole !== 'enterprise') {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' })
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    if (!userInfo.company_id) {
+      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
     }
   },
 
-  loadData() {
-    const userInfo = wx.getStorageSync('userInfo') || {}
-    this.setData({
-      userInfo: userInfo,
-      stats: { jobs: 8, resumes: 45, interviews: 5 }
-    })
-  },
+  async loadData() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    this.setData({ userInfo });
 
-  goJobs() {
-    wx.reLaunch({ url: '/pages/enterprise-jobs/enterprise-jobs' })
-  },
-
-  goResumes() {
-    wx.navigateTo({ url: '/pages/resumes/resumes' })
-  },
-
-  goInterviews() {
-    wx.navigateTo({ url: '/pages/interviews/interviews' })
-  },
-
-  goEnterpriseInfo() {
-    wx.navigateTo({ url: '/pages/enterprise-info/enterprise-info' })
-  },
-
-  goProfile() {
-    wx.navigateTo({ url: '/pages/profile/profile' })
-  },
-
-  goSettings() {
-    wx.navigateTo({ url: '/pages/settings/settings' })
-  },
-
-  goHelp() {
-    wx.navigateTo({ url: '/pages/help/help' })
+    try {
+      const myJobs = await jobs.getMyList();
+      const jobList = Array.isArray(myJobs) ? myJobs : (myJobs.list || myJobs.rows || []);
+      this.setData({ 'stats.jobs': jobList.length });
+    } catch (e) {
+      console.error('加载统计失败:', e);
+    }
   },
 
   handleLogout() {
@@ -62,23 +43,12 @@ Page({
       content: '确定要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
-          const app = getApp()
-          app.clearUserState()
-          wx.reLaunch({ url: '/pages/home/home' })
+          const app = getApp();
+          app.clearUserState();
+          app.updateTabBar('user');
+          wx.reLaunch({ url: '/pages/home/home' });
         }
       }
-    })
-  },
-
-  goHome() {
-    wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })
-  },
-
-  goCandidates() {
-    wx.reLaunch({ url: '/pages/candidates/candidates' })
-  },
-
-  goMsg() {
-    wx.reLaunch({ url: '/pages/enterprise-msg/enterprise-msg' })
+    });
   }
-})
+});

@@ -18,5 +18,18 @@
     "checkInvalidKey": true,
     "ignoreDevUnusedFiles": true
   },
-  "libVersion": "3.16.0"
+  "libVersion": "3.16.0",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/webs/webs",
+          "pathName": "pages/webs/webs",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  }
 }

@@ -1,4 +1,5 @@
 {
-  "navigationBarTitleText": "企业详情",
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
   "enablePullDownRefresh": true
 }

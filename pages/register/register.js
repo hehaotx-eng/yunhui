@@ -17,6 +17,15 @@ Page({
     }
   },
 
+  goBack(e){
+    wx.navigateBack({
+      delta: 0,
+      success: (res) => {},
+      fail: (res) => {},
+      complete: (res) => {},
+    })
+  },
+
   onLoad(options) {
     if (options.role === 'enterprise') this.setData({ role: 'enterprise' });
   },
@@ -60,17 +69,19 @@ Page({
     try {
       const form = this.data.form;
       if (this.data.role === 'user') {
-        await auth.registerUser({
+        await auth.register({
           username: form.username,
           phone: form.phone,
           email: form.email,
-          password: form.password
+          password: form.password,
+          role: 'user'
         });
       } else {
-        await auth.registerEnterprise({
+        await auth.register({
           username: form.username,
           phone: form.phone,
           password: form.password,
+          role: 'enterprise',
           enterpriseName: form.name,
           contactName: form.contactName || null,
           contactPhone: form.contactPhone || null,
@@ -79,7 +90,7 @@ Page({
         });
       }
       wx.showToast({ title: '注册成功', icon: 'success' });
-      setTimeout(() => wx.navigateTo({ url: '/pages/login/login' }), 800);
+      setTimeout(() => wx.navigateTo({ url: '/pages/login-phone/login-phone' }), 800);
     } catch (error) {
       wx.showToast({ title: error.message || '注册失败', icon: 'none' });
     } finally {
@@ -88,6 +99,6 @@ Page({
   },
 
   goLogin() {
-    wx.navigateTo({ url: '/pages/login/login' });
+    wx.navigateTo({ url: '/pages/login-phone/login-phone' });
   }
 });

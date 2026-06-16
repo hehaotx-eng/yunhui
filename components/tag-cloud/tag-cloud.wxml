@@ -1,0 +1,11 @@
+<view class="tag-cloud">
+  <view
+    class="cloud-tag {{selected.indexOf(item) !== -1 ? 'tag-active' : ''}}"
+    wx:for="{{tags}}"
+    wx:key="*this"
+    data-tag="{{item}}"
+    bindtap="onTagTap"
+  >
+    <text>{{item}}</text>
+  </view>
+</view>

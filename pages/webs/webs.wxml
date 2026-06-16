@@ -1,47 +1,220 @@
 <view class="page">
-  <view class="header">
-    <view class="header-text">职位机会</view>
-  </view>
-
-  <view class="search-bar">
-    <view class="search-wrapper">
-      <image class="icon-search" src="/pages/image/sousuo.png" />
-      <input class="search-input" placeholder="搜索职位 / 公司 / 技能" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="onSearch" confirm-type="search" />
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-content">
+      <view class="nav-title">职位</view>
+      <view class="nav-ai-btn" bindtap="toggleAiSearch">
+        <text class="ai-icon-text">AI</text>
+        <text class="ai-btn-text">智能搜索</text>
+      </view>
     </view>
   </view>
 
-  <view class="filter-scroll">
-    <view wx:for="{{filters}}" wx:key="id" class="filter-item {{activeFilter === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchFilter">{{item.name}}</view>
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-bar">
+      <view class="search-wrapper">
+        <image class="icon-search" src="/pages/image/sousuo.png" />
+        <input 
+          class="search-input" 
+          placeholder="搜索职位 / 公司 / 技能" 
+          placeholder-class="search-placeholder"
+          value="{{keyword}}" 
+          bindinput="onKeywordInput" 
+          bindconfirm="onSearch" 
+          confirm-type="search" 
+        />
+        <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword">x</view>
+      </view>
+    </view>
   </view>
 
-  <view class="job-list">
-    <view wx:for="{{jobs}}" wx:key="id" class="job-card" data-id="{{item.id}}" bindtap="goDetail">
-      <view wx:if="{{item.tag}}" class="job-tag">{{item.tag}}</view>
-      <view class="job-title">{{item.title}}</view>
+  <!-- AI智能搜索面板 -->
+  <view wx:if="{{showAiSearch}}" class="ai-search-panel">
+    <view class="ai-panel-header">
+      <view class="ai-panel-title">
+        <text class="ai-icon-text">AI</text>
+        <text>智能职位匹配</text>
+      </view>
+      <view class="ai-panel-close" bindtap="toggleAiSearch">x</view>
+    </view>
+    <view class="ai-input-wrap">
+      <textarea 
+        class="ai-textarea" 
+        placeholder="描述你理想的工作，例如：&#10;• 想找一份前端开发工作&#10;• 月薪1万以上，双休&#10;• 在杭州的互联网公司"
+        placeholder-class="ai-placeholder"
+        value="{{aiQuery}}" 
+        bindinput="onAiInput"
+        auto-height
+        maxlength="200"
+      />
+    </view>
+    <view class="ai-tags">
+      <view class="ai-tag" wx:for="{{aiSuggestions}}" wx:key="*this" bindtap="useAiSuggestion" data-text="{{item}}">
+        {{item}}
+      </view>
+    </view>
+    <view class="ai-submit-btn {{aiQuery ? 'active' : ''}}" bindtap="doAiSearch">
+      <text>AI智能匹配</text>
+    </view>
+  </view>
+
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <!-- 城市筛选 -->
+    <view class="filter-scroll">
+      <view 
+        class="filter-item {{activeCity === '' ? 'active' : ''}}" 
+        bindtap="switchCity" 
+        data-city=""
+      >
+        全国
+      </view>
+      <view 
+        wx:for="{{cities}}" 
+        wx:key="*this" 
+        class="filter-item {{activeCity === item ? 'active' : ''}}" 
+        bindtap="switchCity" 
+        data-city="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+
+    <!-- 分类筛选 -->
+    <view class="filter-scroll">
+      <view 
+        class="filter-item {{activeCategory === '' ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category=""
+      >
+        全部分类
+      </view>
+      <view 
+        wx:for="{{categories}}" 
+        wx:key="id" 
+        class="filter-item {{activeCategory === item.id ? 'active' : ''}}" 
+        bindtap="switchCategory" 
+        data-category="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </view>
+
+    <!-- 薪资筛选 -->
+    <view class="filter-scroll">
+      <view 
+        wx:for="{{salaryRanges}}" 
+        wx:key="id" 
+        class="filter-item {{activeSalary === item.id ? 'active' : ''}}" 
+        bindtap="switchSalary" 
+        data-salary="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 已选筛选标签 -->
+  <view wx:if="{{activeTags.length > 0}}" class="active-tags">
+    <view class="tag-list">
+      <view wx:for="{{activeTags}}" wx:key="type" class="active-tag">
+        <text class="tag-text">{{item.label}}</text>
+        <view class="tag-remove" bindtap="removeTag" data-type="{{item.type}}">x</view>
+      </view>
+      <view class="clear-all-tags" bindtap="clearAllTags">清除全部</view>
+    </view>
+  </view>
+
+  <!-- 骨架屏 -->
+  <view wx:if="{{skeleton}}" class="skeleton-wrap">
+    <view class="skeleton-card skeleton-animate" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+      <view class="skeleton-title"></view>
+      <view class="skeleton-salary"></view>
+      <view class="skeleton-tags">
+        <view class="skeleton-tag"></view>
+        <view class="skeleton-tag"></view>
+        <view class="skeleton-tag"></view>
+      </view>
+      <view class="skeleton-footer">
+        <view class="skeleton-company"></view>
+        <view class="skeleton-btn"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 职位列表 -->
+  <view wx:if="{{!skeleton}}" class="job-list">
+    <!-- 空状态 -->
+    <view wx:if="{{showEmpty}}" class="empty-card">
+      <view class="empty-icon-wrap">
+        <view class="empty-icon">💼</view>
+      </view>
+      <view class="empty-text">暂无符合条件的职位</view>
+      <view class="empty-tip">试试调整筛选条件</view>
+    </view>
+
+    <!-- 职位卡片 -->
+    <view 
+      wx:for="{{jobs}}" 
+      wx:key="id" 
+      class="job-card" 
+      data-id="{{item.id}}" 
+      bindtap="goDetail"
+    >
+      <!-- VIP标签 -->
+      <view wx:if="{{item.premium}}" class="job-vip-tag">VIP</view>
+      
+      <!-- 职位标题 -->
+      <view class="job-title-row">
+        <view class="job-title">{{item.title}}</view>
+      </view>
+      
+      <!-- 薪资区域 -->
       <view class="job-meta">
-        <view class="job-salary">{{item.salary || '薪资面议'}}</view>
-        <view class="job-time">{{item.time || '近期发布'}}</view>
+        <view class="job-salary">
+          <text class="salary-num">{{item.salary || '薪资面议'}}</text>
+        </view>
+        <view class="job-location">{{item.city || item.area || '全国'}}</view>
       </view>
+      
+      <!-- 福利标签 -->
       <view class="welfare-list">
-        <view wx:for="{{item.tags || item.welfare}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
+        <view wx:for="{{item.tags || item.welfare || ''}}" wx:for-item="w" wx:key="*this" class="welfare-tag" wx:if="{{index < 4}}">{{w}}</view>
+        <view wx:if="{{item.experience}}" class="welfare-tag experience">{{item.experience}}</view>
+        <view wx:if="{{item.education}}" class="welfare-tag education">{{item.education}}</view>
       </view>
+      
+      <!-- 企业信息 -->
       <view class="job-footer">
         <view class="company-info">
-          <view class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
+          <view wx:if="{{item.company_logo || item.logo}}" class="company-logo" style="background-image: url({{item.company_logo || item.logo}});"></view>
+          <view wx:else class="company-logo-placeholder">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
           <view class="company-detail">
-            <view class="company-contact">{{item.enterpriseName || '企业信息待完善'}}</view>
-            <view class="company-name">{{item.area || '地区不限'}} · {{item.experience || '经验不限'}} · {{item.education || '学历不限'}}</view>
+            <view class="company-name">{{item.enterpriseName || item.companyName || '企业信息待完善'}}</view>
           </view>
         </view>
-        <view class="btn-call" catchtap="callPhone" data-phone="{{item.contactPhone}}">电话</view>
+        <view class="job-time">{{item.time || item.publishTime || ''}}</view>
       </view>
     </view>
 
-    <view wx:if="{{showEmpty}}" class="empty-card">
-      <view class="empty-icon">💼</view>
-      <view class="empty-text">暂无职位</view>
+    <!-- 加载更多 -->
+    <view wx:if="{{loadingMore}}" class="loading-more">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
     </view>
-    <view wx:if="{{loading}}" class="loading">加载中...</view>
-    <view wx:if="{{showNoMore}}" class="loading">没有更多了</view>
+    <view wx:if="{{!hasMore && jobs.length > 0}}" class="no-more">
+      <view class="no-more-line"></view>
+      <text class="no-more-text">已经到底了</text>
+      <view class="no-more-line"></view>
+    </view>
+  </view>
+
+  <!-- 全局加载 -->
+  <view wx:if="{{loading && !skeleton && !loadingMore}}" class="global-loading">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
   </view>
 </view>
+
+<custom-tab-bar />

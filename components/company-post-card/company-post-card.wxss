@@ -1,0 +1,60 @@
+/* Post card — inherits .feed-card-base + .card--post from styles/card.wxss */
+.post-time {
+  font-size: var(--fs-micro, 20rpx);
+  color: var(--c-text-3, #9ca3af);
+  flex-shrink: 0;
+}
+.post-content { padding: 0 var(--sp-24, 24rpx) var(--sp-16, 16rpx); }
+.content-text {
+  font-size: var(--fs-md, 28rpx);
+  color: var(--c-text, #1a1a2e);
+  line-height: 1.8;
+}
+.post-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4, 4rpx);
+  padding: 0 var(--sp-24, 24rpx) var(--sp-16, 16rpx);
+}
+.post-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--sp-8, 8rpx);
+  background: var(--c-skeleton, #f0f0f0);
+}
+.post-job {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12, 12rpx);
+  margin: 0 var(--sp-24, 24rpx) var(--sp-16, 16rpx);
+  padding: var(--sp-16, 16rpx);
+  background: #f8f9fb;
+  border-radius: var(--sp-14, 14rpx);
+}
+.post-job-tag {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: var(--sp-8, 8rpx);
+  background: var(--c-accent, #ff5c39);
+  color: #fff;
+  font-size: var(--fs-xxs, 22rpx);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.post-job-info { flex: 1; min-width: 0; }
+.post-job-title {
+  font-size: var(--fs-sm, 26rpx);
+  font-weight: 600;
+  color: var(--c-text, #1a1a2e);
+  display: block;
+}
+.post-job-salary {
+  font-size: var(--fs-xs, 24rpx);
+  font-weight: 700;
+  color: var(--c-accent, #ff5c39);
+  display: block;
+  margin-top: 4rpx;
+}

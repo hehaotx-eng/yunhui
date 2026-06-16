@@ -1,3 +1,6 @@
 {
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "feed-card": "/components/feed-card/feed-card"
+  }
 }

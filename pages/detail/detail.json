@@ -1,3 +1,9 @@
 {
-  "navigationStyle": "custom"
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "tag-cloud": "/components/tag-cloud/tag-cloud",
+    "feed-card": "/components/feed-card/feed-card"
+  }
 }

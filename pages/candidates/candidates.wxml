@@ -1,14 +1,16 @@
 <view class="page">
 
 <!-- 顶部 -->
-<view class="header">
-  <view class="header-title">人才搜索</view>
+<view class="header" style="padding-top: {{statusBarHeight}}px;">
+  <view class="header-content">
+    <view class="header-title">人才搜索</view>
+  </view>
 </view>
 
 <!-- 内容 -->
 <view class="content">
 
-  <!-- 搜索框 -->
+  <!-- 搜索栏 -->
   <view class="search-bar">
     <view class="search-wrapper">
       <image class="icon-search" src="/pages/image/sousuo.png" mode="aspectFit" />
@@ -50,7 +52,7 @@
       <!-- 头像 -->
       <view class="avatar">
         <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
-        <view wx:else class="avatar-placeholder">{{item.username ? item.username.substring(0,1) : '人'}}</view>
+        <view wx:else class="avatar-placeholder">{{item.username ? item.username.substring(0,1) : '用'}}</view>
       </view>
 
       <!-- 内容 -->
@@ -67,7 +69,7 @@
 
         <!-- 技能标签 -->
         <view class="skills">
-          <view wx:for="{{item.skills || []}}" wx:for-item="skill" wx:key="*this" class="skill-tag">{{skill}}</view>
+          <view wx:for="{{item.skills || ''}}" wx:for-item="skill" wx:key="*this" class="skill-tag">{{skill}}</view>
         </view>
 
       </view>
@@ -85,41 +87,13 @@
       <view class="empty-text">暂无匹配的候选人</view>
     </view>
 
-    <!-- 加载中 -->
+    <!-- 加载 -->
     <view wx:if="{{loading}}" class="loading">加载中...</view>
 
   </view>
 
 </view>
 
-<!-- 底部 TabBar -->
-<view class="tabbar">
-
-  <view class="tab-item" bindtap="goHome">
-    <image class="tab-icon" src="/pages/image/home.png" mode="aspectFit" />
-    <view class="tab-text">首页</view>
-  </view>
-
-  <view class="tab-item active">
-    <image class="tab-icon" src="/pages/image/users.png" mode="aspectFit" />
-    <view class="tab-text">人才</view>
-  </view>
-
-  <view class="tab-item" bindtap="goJobs">
-    <image class="tab-icon" src="/pages/image/job.png" mode="aspectFit" />
-    <view class="tab-text">岗位</view>
-  </view>
-
-  <view class="tab-item" bindtap="goMsg">
-    <image class="tab-icon" src="/pages/image/msg.png" mode="aspectFit" />
-    <view class="tab-text">消息</view>
-  </view>
-
-  <view class="tab-item" bindtap="goMy">
-    <image class="tab-icon" src="/pages/image/my.png" mode="aspectFit" />
-    <view class="tab-text">我的</view>
-  </view>
-
 </view>
 
-</view>
+<enterprise-tabbar current="candidates" />

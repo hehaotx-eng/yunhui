@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:3000';
+const BASE_URL = 'http://localhost:3000';
 
 function getToken() {
   return wx.getStorageSync('token') || '';
@@ -10,23 +10,11 @@ function setToken(token) {
 
 function setUserInfo(user) {
   wx.setStorageSync('userInfo', user);
-  wx.setStorageSync('user', user);
 }
 
 function clearAuth() {
   wx.removeStorageSync('token');
   wx.removeStorageSync('userInfo');
-  wx.removeStorageSync('userRole');
-  wx.removeStorageSync('user');
-}
-
-function normalizeResponse(res) {
-  const body = res.data || {};
-  if (body.success !== undefined) {
-    if (body.success) return body.data;
-    throw new Error(body.message || '请求失败');
-  }
-  return body;
 }
 
 function request(options) {
@@ -45,376 +33,294 @@ function request(options) {
       data,
       header: finalHeader,
       success: (res) => {
-        try {
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(normalizeResponse(res));
-            return;
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          const body = res.data || {};
+          if (body.code === 0 || body.code === 200) {
+            resolve(body.data);
+          } else {
+            reject(new Error(body.message || '请求失败'));
           }
-          if (res.statusCode === 401) {
+          return;
+        }
+        if (res.statusCode === 401) {
+          if (needAuth) {
             clearAuth();
             reject(new Error('登录已失效，请重新登录'));
-            return;
+          } else {
+            reject(new Error('需要登录'));
           }
-          reject(new Error((res.data && res.data.message) || `服务异常 ${res.statusCode}`));
-        } catch (error) {
-          reject(error);
+          return;
         }
+        if (res.statusCode === 403) {
+          reject(new Error('权限不足'));
+          return;
+        }
+        reject(new Error((res.data && res.data.message) || `服务异常 ${res.statusCode}`));
       },
       fail: () => reject(new Error('网络请求失败'))
     });
   });
 }
 
+function uploadFile(filePath, type, extra = {}) {
+  return new Promise((resolve, reject) => {
+    const token = getToken();
+    const formData = { type };
+    Object.assign(formData, extra);
+
+    wx.uploadFile({
+      url: `${BASE_URL}/api/v1/upload/image`,
+      filePath,
+      name: 'file',
+      formData,
+      header: token ? { Authorization: `Bearer ${token}` } : {},
+      success: (res) => {
+        try {
+          const data = JSON.parse(res.data);
+          if (data.code === 0 || data.code === 200) {
+            resolve(data.data);
+          } else {
+            reject(new Error(data.message || '上传失败'));
+          }
+        } catch {
+          reject(new Error('解析响应失败'));
+        }
+      },
+      fail: () => reject(new Error('上传失败'))
+    });
+  });
+}
+
 function toQuery(params = {}) {
   const query = Object.keys(params)
-    .filter((key) => params[key] !== undefined && params[key] !== null && params[key] !== '')
-    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .filter(key => params[key] !== undefined && params[key] !== null && params[key] !== '')
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
     .join('&');
   return query ? `?${query}` : '';
 }
 
 function saveLogin(data) {
   if (data && data.token) setToken(data.token);
-  if (data && data.user) {
-    setUserInfo(data.user);
-    if (data.user.userType) wx.setStorageSync('userRole', data.user.userType);
-  }
   return data;
 }
 
+// ========== 用户 ==========
 const auth = {
   login(phone, password) {
-    return request({
-      url: '/api/auth/login',
-      method: 'POST',
-      data: { phone, password },
-      needAuth: false
-    }).then(saveLogin);
+    return request({ url: '/api/v1/users/login', method: 'POST', data: { phone, password }, needAuth: false }).then(saveLogin);
   },
-  registerUser(data) {
-    return request({ url: '/api/auth/register/user', method: 'POST', data, needAuth: false });
+  register(data) {
+    return request({ url: '/api/v1/users/register', method: 'POST', data, needAuth: false });
   },
-  registerEnterprise(data) {
-    return request({ url: '/api/auth/register/enterprise', method: 'POST', data, needAuth: false });
-  },
-  getProfile() {
-    return request({ url: '/api/auth/profile' });
-  },
-  refreshToken() {
-    return request({ url: '/api/auth/refresh-token', method: 'POST' }).then(saveLogin);
-  },
-  logout() {
-    return request({ url: '/api/auth/logout', method: 'POST' }).finally(clearAuth);
-  },
-  switchRole() {
-    return request({ url: '/api/auth/switch-role', method: 'POST' }).then(saveLogin);
+  getMe() {
+    return request({ url: '/api/v1/users/me' });
   }
 };
 
-const users = {
+// ========== 职位 ==========
+const jobs = {
   getAll(params = {}) {
-    return request({ url: `/api/users${toQuery(params)}` });
+    return request({ url: `/api/v1/jobs${toQuery(params)}`, needAuth: false });
   },
   getById(id) {
-    return request({ url: `/api/users/${id}` });
+    return request({ url: `/api/v1/jobs/${id}`, needAuth: false });
+  },
+  getMyList() {
+    return request({ url: '/api/v1/jobs/my/list' });
   },
   create(data) {
-    return request({ url: '/api/users', method: 'POST', data });
+    return request({ url: '/api/v1/jobs', method: 'POST', data });
   },
-  update(id, data) {
-    return request({ url: `/api/users/${id}`, method: 'PUT', data });
-  },
-  delete(id) {
-    return request({ url: `/api/users/${id}`, method: 'DELETE' });
+  aiSearch(params) {
+    return request({ url: '/api/v1/jobs/ai-search', method: 'POST', data: params });
   }
 };
 
-const search = {
-  getHot() {
-    return request({ url: '/api/search/hot', needAuth: false });
+// ========== 投递 ==========
+const applications = {
+  apply(data) {
+    return request({ url: '/api/v1/applications', method: 'POST', data });
   },
-  getHistory() {
-    return request({ url: '/api/search/history' });
+  getMy() {
+    return request({ url: '/api/v1/applications/my' });
   },
-  clearHistory() {
-    return request({ url: '/api/search/history', method: 'DELETE' });
+  getByJob(jobId, params = {}) {
+    return request({ url: `/api/v1/applications/job/${jobId}${toQuery(params)}` });
+  },
+  updateStatus(id, status, remark) {
+    return request({ url: `/api/v1/applications/${id}/status`, method: 'PUT', data: { status, remark } });
+  },
+  setFavorite(id) {
+    return request({ url: `/api/v1/applications/${id}/favorite`, method: 'POST' });
+  },
+  getLogs(id) {
+    return request({ url: `/api/v1/applications/${id}/logs` });
   }
 };
 
-const enterprises = {
-  getAll(params = {}) {
-    return request({ url: `/api/enterprises${toQuery(params)}`, needAuth: false });
+// ========== 聊天 ==========
+const chat = {
+  createConversation(targetUserId) {
+    return request({ url: '/api/v1/chat/conversations', method: 'POST', data: { target_user_id: targetUserId } });
   },
-  getPending() {
-    return request({ url: '/api/enterprises/pending' });
+  getConversations() {
+    return request({ url: '/api/v1/chat/conversations' });
   },
-  getById(id) {
-    return request({ url: `/api/enterprises/${id}`, needAuth: false });
+  sendMessage(conversationId, content) {
+    return request({ url: '/api/v1/chat/messages', method: 'POST', data: { conversation_id: conversationId, content } });
   },
-  getUsers(id) {
-    return request({ url: `/api/enterprises/${id}/users` });
+  getMessages(conversationId, params = {}) {
+    return request({ url: `/api/v1/chat/messages/${conversationId}${toQuery(params)}` });
+  }
+};
+
+// ========== AI 推荐 ==========
+const ai = {
+  getUserRecommendations() {
+    return request({ url: '/api/v1/ai/recommendations/user' });
   },
-  verify(id, data = {}) {
-    return request({ url: `/api/enterprises/${id}/verify`, method: 'PUT', data });
+  getJobCandidates(jobId) {
+    return request({ url: `/api/v1/ai/recommendations/job/${jobId}` });
   },
-  create(data) {
-    return request({ url: '/api/enterprises', method: 'POST', data });
+  rebuild() {
+    return request({ url: '/api/v1/ai/recommendations/rebuild', method: 'POST' });
   },
-  update(id, data) {
-    return request({ url: `/api/enterprises/${id}`, method: 'PUT', data });
+  getReason(jobId) {
+    return request({ url: `/api/v1/ai/recommendations/reason/${jobId}` });
+  }
+};
+
+// ========== 上传 ==========
+const upload = {
+  image(filePath, type, extra) {
+    return uploadFile(filePath, type, extra);
   },
-  delete(id) {
-    return request({ url: `/api/enterprises/${id}`, method: 'DELETE' });
-  },
-  getHot() {
-    return request({ url: '/api/enterprises/hot', needAuth: false });
-  },
-  getNew() {
-    return request({ url: '/api/enterprises/new', needAuth: false });
-  },
-  uploadLogo(id, filePath) {
+  jobImage(filePath, jobId) {
     return new Promise((resolve, reject) => {
       const token = getToken();
-      const header = token ? { Authorization: `Bearer ${token}` } : {};
-      
       wx.uploadFile({
-        url: `${BASE_URL}/api/enterprises/${id}/logo`,
-        filePath: filePath,
-        name: 'logo',
-        header: header,
+        url: `${BASE_URL}/api/v1/upload/job-image`,
+        filePath,
+        name: 'file',
+        formData: { job_id: String(jobId) },
+        header: token ? { Authorization: `Bearer ${token}` } : {},
         success: (res) => {
           try {
             const data = JSON.parse(res.data);
-            if (res.statusCode >= 200 && res.statusCode < 300) {
-              if (data.success !== undefined) {
-                if (data.success) {
-                  resolve(data.data);
-                } else {
-                  reject(new Error(data.message || '上传失败'));
-                }
-              } else {
-                resolve(data);
-              }
-            } else {
-              reject(new Error((data && data.message) || `上传失败 ${res.statusCode}`));
-            }
-          } catch (error) {
-            reject(new Error('解析响应失败'));
-          }
+            if (data.code === 0 || data.code === 200) resolve(data.data);
+            else reject(new Error(data.message || '上传失败'));
+          } catch { reject(new Error('解析响应失败')); }
         },
-        fail: () => reject(new Error('网络请求失败'))
+        fail: () => reject(new Error('上传失败'))
       });
     });
+  },
+  getJobImages(jobId) {
+    return request({ url: `/api/v1/upload/job-images/${jobId}` });
+  },
+  deleteJobImage(id) {
+    return request({ url: `/api/v1/upload/job-image/${id}`, method: 'DELETE' });
   }
 };
 
-const jobs = {
-  getAll(params = {}) {
-    return request({ url: `/api/jobs${toQuery(params)}`, needAuth: false });
+// ========== 管理后台 ==========
+const admin = {
+  users: {
+    list(params = {}) { return request({ url: `/api/v1/admin/users${toQuery(params)}` }); },
+    detail(id) { return request({ url: `/api/v1/admin/users/${id}` }); },
+    freeze(id) { return request({ url: `/api/v1/admin/users/${id}/freeze`, method: 'PUT' }); },
+    unfreeze(id) { return request({ url: `/api/v1/admin/users/${id}/unfreeze`, method: 'PUT' }); },
+    assignRole(userId, roleId) { return request({ url: `/api/v1/admin/users/${userId}/roles`, method: 'POST', data: { role_id: roleId } }); }
   },
-  getById(id) {
-    return request({ url: `/api/jobs/${id}`, needAuth: false });
+  companies: {
+    list(params = {}) { return request({ url: `/api/v1/admin/companies${toQuery(params)}` }); },
+    detail(id) { return request({ url: `/api/v1/admin/companies/${id}` }); },
+    create(data) { return request({ url: '/api/v1/admin/companies', method: 'POST', data }); },
+    update(id, data) { return request({ url: `/api/v1/admin/companies/${id}`, method: 'PUT', data }); },
+    approve(id) { return request({ url: `/api/v1/admin/companies/${id}/approve`, method: 'PUT' }); },
+    reject(id, reason) { return request({ url: `/api/v1/admin/companies/${id}/reject`, method: 'PUT', data: { reason } }); }
   },
-  getNearby(params = {}) {
-    return request({ url: `/api/jobs/nearby${toQuery(params)}`, needAuth: false });
+  jobs: {
+    list(params = {}) { return request({ url: `/api/v1/admin/jobs${toQuery(params)}` }); },
+    detail(id) { return request({ url: `/api/v1/admin/jobs/${id}` }); },
+    audit(id, audit_status) { return request({ url: `/api/v1/admin/jobs/${id}/audit`, method: 'PUT', data: { audit_status } }); },
+    online(id) { return request({ url: `/api/v1/admin/jobs/${id}/online`, method: 'PUT' }); },
+    offline(id) { return request({ url: `/api/v1/admin/jobs/${id}/offline`, method: 'PUT' }); },
+    update(id, data) { return request({ url: `/api/v1/admin/jobs/${id}`, method: 'PUT', data }); }
   },
-  getEnterpriseJobs(enterpriseId) {
-    return request({ url: `/api/jobs/enterprise/${enterpriseId}`, needAuth: true });
+  applications: {
+    list(params = {}) { return request({ url: `/api/v1/admin/applications${toQuery(params)}` }); },
+    detail(id) { return request({ url: `/api/v1/admin/applications/${id}` }); },
+    updateStatus(id, status) { return request({ url: `/api/v1/admin/applications/${id}/status`, method: 'PUT', data: { status } }); },
+    setFavorite(id, is_favorite) { return request({ url: `/api/v1/admin/applications/${id}/favorite`, method: 'PUT', data: { is_favorite } }); },
+    getLogs(id) { return request({ url: `/api/v1/admin/applications/${id}/logs` }); }
   },
-  create(data) {
-    return request({ url: '/api/jobs/enterprise/create', method: 'POST', data, needAuth: true });
+  tags: {
+    list(params = {}) { return request({ url: `/api/v1/admin/tags${toQuery(params)}` }); },
+    listAll() { return request({ url: '/api/v1/admin/tags/all' }); },
+    create(data) { return request({ url: '/api/v1/admin/tags', method: 'POST', data }); },
+    update(id, data) { return request({ url: `/api/v1/admin/tags/${id}`, method: 'PUT', data }); },
+    remove(id) { return request({ url: `/api/v1/admin/tags/${id}`, method: 'DELETE' }); }
   },
-  update(id, data) {
-    return request({ url: `/api/jobs/enterprise/${id}`, method: 'PUT', data, needAuth: true });
+  dashboard: {
+    overview() { return request({ url: '/api/v1/admin/dashboard/overview' }); },
+    trend(days) { return request({ url: `/api/v1/admin/dashboard/trend${toQuery({ days })}` }); }
   },
-  delete(id) {
-    return request({ url: `/api/jobs/enterprise/${id}`, method: 'DELETE', needAuth: true });
+  logs: {
+    list(params = {}) { return request({ url: `/api/v1/admin/logs${toQuery(params)}` }); }
   },
-  publish(id) {
-    return request({ url: `/api/jobs/${id}/publish`, method: 'POST', needAuth: true });
-  },
-  offline(id) {
-    return request({ url: `/api/jobs/${id}/offline`, method: 'POST', needAuth: true });
-  },
-  refresh(id) {
-    return request({ url: `/api/jobs/${id}/refresh`, method: 'POST', needAuth: true });
-  },
-  copy(id) {
-    return request({ url: `/api/jobs/${id}/copy`, method: 'POST', needAuth: true });
+  roles: {
+    list() { return request({ url: '/api/v1/admin/roles' }); },
+    create(data) { return request({ url: '/api/v1/admin/roles', method: 'POST', data }); },
+    update(id, data) { return request({ url: `/api/v1/admin/roles/${id}`, method: 'PUT', data }); },
+    remove(id) { return request({ url: `/api/v1/admin/roles/${id}`, method: 'DELETE' }); },
+    setPermissions(id, permission_ids) { return request({ url: `/api/v1/admin/roles/${id}/permissions`, method: 'PUT', data: { permission_ids } }); },
+    listPermissions() { return request({ url: '/api/v1/admin/roles/permissions/all' }); }
   }
 };
 
 const banners = {
-  getAll() {
-    return request({ url: '/api/banners', needAuth: false });
+  getActive() {
+    return request({ url: '/api/v1/banners', needAuth: false });
+  }
+};
+
+const enterprises = {
+  getById(id) {
+    return request({ url: `/api/v1/enterprises/${id}`, needAuth: false });
+  },
+  getList() {
+    return request({ url: '/api/v1/enterprises', needAuth: false });
+  },
+  create(data) {
+    return request({ url: '/api/v1/enterprises', method: 'POST', data });
+  },
+  join(id) {
+    return request({ url: `/api/v1/enterprises/${id}/join`, method: 'POST' });
   }
 };
 
 const categories = {
-  getAll() {
-    return request({ url: '/api/categories', needAuth: false });
-  }
-};
-
-const resumes = {
-  submit(jobId, resumeData = {}) {
-    return request({ url: '/api/resumes/submit', method: 'POST', data: { jobId, resumeData } });
-  },
-  getMyResumes(params = {}) {
-    return request({ url: `/api/resumes/my${toQuery(params)}` });
-  },
-  getByJob(jobId, params = {}) {
-    return request({ url: `/api/resumes/job/${jobId}${toQuery(params)}` });
-  },
-  getById(id) {
-    return request({ url: `/api/resumes/${id}` });
-  },
-  update(id, data) {
-    return request({ url: `/api/resumes/${id}`, method: 'PUT', data });
-  },
-  updateStatus(id, status) {
-    return request({ url: `/api/resumes/${id}/status`, method: 'PUT', data: { status } });
-  },
-  updatePrivacy(id, privacy) {
-    return request({ url: `/api/resumes/${id}/privacy`, method: 'PUT', data: { privacy } });
-  },
-  delete(id) {
-    return request({ url: `/api/resumes/${id}`, method: 'DELETE' });
-  }
-};
-
-const history = {
-  getJobs(params = {}) {
-    return request({ url: `/api/history/jobs${toQuery(params)}` });
-  },
-  addJob(jobId) {
-    return request({ url: '/api/history/jobs', method: 'POST', data: { jobId } });
-  },
-  clearJobs() {
-    return request({ url: '/api/history/jobs', method: 'DELETE' });
-  },
-  getResumes(params = {}) {
-    return request({ url: `/api/history/resumes${toQuery(params)}` });
-  }
-};
-
-const favorites = {
-  toggle(jobId) {
-    return request({ url: '/api/favorites/toggle', method: 'POST', data: { jobId } });
-  },
-  getList(params = {}) {
-    return request({ url: `/api/favorites/my${toQuery(params)}` });
-  },
-  check(jobId) {
-    return request({ url: `/api/favorites/check${toQuery({ jobId })}` });
-  },
-  create(data) {
-    return request({ url: '/api/favorites', method: 'POST', data });
-  },
-  getById(id) {
-    return request({ url: `/api/favorites/${id}` });
-  },
-  delete(id) {
-    return request({ url: `/api/favorites/${id}`, method: 'DELETE' });
-  }
-};
-
-const messages = {
-  send(data) {
-    return request({ url: '/api/messages/send', method: 'POST', data });
-  },
-  getList(params = {}) {
-    return request({ url: `/api/messages/list${toQuery(params)}` });
-  },
-  getConversation(params = {}) {
-    return request({ url: `/api/messages/conversation${toQuery(params)}` });
-  },
-  getConversations(params = {}) {
-    return request({ url: `/api/messages/conversations${toQuery(params)}` });
-  },
-  getById(id) {
-    return request({ url: `/api/messages/${id}` });
-  },
-  update(id, data) {
-    return request({ url: `/api/messages/${id}`, method: 'PUT', data });
-  },
-  delete(id) {
-    return request({ url: `/api/messages/${id}`, method: 'DELETE' });
-  },
-  markAsRead(data) {
-    return request({ url: '/api/messages/markasread', method: 'POST', data });
-  }
-};
-
-const conversations = {
-  getList(params = {}) {
-    return request({ url: `/api/conversations${toQuery(params)}` });
-  },
-  create(data) {
-    return request({ url: '/api/conversations', method: 'POST', data });
-  },
-  getById(id) {
-    return request({ url: `/api/conversations/${id}` });
-  },
-  getUnreadCount() {
-    return request({ url: '/api/conversations/unread-count' });
-  },
-  markRead(id) {
-    return request({ url: `/api/conversations/${id}/read`, method: 'PUT' });
+  getList() {
+    return request({ url: '/api/v1/categories', needAuth: false });
   }
 };
 
 const notifications = {
-  getMine(params = {}) {
-    return request({ url: `/api/notifications${toQuery(params)}` });
+  getActive() {
+    return request({ url: '/api/v1/notifications', needAuth: false });
+  },
+  getMine() {
+    return request({ url: '/api/v1/notifications' });
   },
   markRead(id) {
-    return request({ url: `/api/notifications/${id}/read`, method: 'PUT' });
+    return request({ url: `/api/v1/notifications/${id}/read`, method: 'PUT' });
   }
 };
 
-const reports = {
-  create(jobId, reason) {
-    return request({ url: '/api/reports', method: 'POST', data: { jobId, reason } });
-  }
-};
-
-const candidates = {
-  getAll(params = {}) {
-    return request({ url: `/api/candidates${toQuery(params)}` });
-  },
-  getById(id) {
-    return request({ url: `/api/candidates/${id}` });
-  },
-  getMyProfile() {
-    return request({ url: '/api/candidates/me/profile' });
-  },
-  update(data) {
-    return request({ url: '/api/candidates/me', method: 'PUT', data });
-  }
-};
-
-const interviews = {
-  create(data) {
-    return request({ url: '/api/interviews', method: 'POST', data });
-  },
-  getEnterprise(params = {}) {
-    return request({ url: `/api/interviews/enterprise${toQuery(params)}` });
-  },
-  getMy(params = {}) {
-    return request({ url: `/api/interviews/me${toQuery(params)}` });
-  },
-  update(id, data) {
-    return request({ url: `/api/interviews/${id}`, method: 'PUT', data });
-  },
-  delete(id) {
-    return request({ url: `/api/interviews/${id}`, method: 'DELETE' });
-  }
-};
-
-const auditLogs = {
-  getAll(params = {}) {
-    return request({ url: `/api/audit-logs${toQuery(params)}` });
+const quickLinks = {
+  getActive() {
+    return request({ url: '/api/v1/quick-links', needAuth: false });
   }
 };
 
@@ -425,21 +331,19 @@ module.exports = {
   setUserInfo,
   clearAuth,
   request,
+  uploadFile,
+  toQuery,
+  saveLogin,
   auth,
-  users,
-  search,
-  enterprises,
-  banners,
-  categories,
   jobs,
-  resumes,
-  history,
-  favorites,
-  messages,
-  conversations,
+  applications,
+  chat,
+  ai,
+  upload,
+  admin,
+  banners,
+  enterprises,
+  categories,
   notifications,
-  reports,
-  candidates,
-  interviews,
-  auditLogs
+  quickLinks
 };

@@ -1,0 +1,68 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="feed-card-base card--ai" bindtap="onTap">
+  <!-- HEADER -->
+  <view class="feed-header">
+    <view class="feed-header-avatar">
+      <text>AI</text>
+    </view>
+    <view class="feed-header-info">
+      <text class="feed-header-name">智能推荐</text>
+      <text class="feed-header-meta">匹配度 {{item.match_score || 95}}%</text>
+    </view>
+  </view>
+
+  <!-- BODY -->
+  <view class="feed-body">
+    <view class="feed-title line-clamp-1">{{item.title || '职位'}}</view>
+    <view class="salary">{{item.salary || '面议'}}</view>
+
+    <!-- AI 推荐理由 -->
+    <view class="ai-reason" wx:if="{{item.reason}}">
+      <view class="reason-badge">
+        <text>AI</text>
+      </view>
+      <text class="reason-text line-clamp-2">{{item.reason}}</text>
+    </view>
+
+    <!-- 匹配标签 -->
+    <view class="feed-tags" wx:if="{{item.match_tags && item.match_tags.length > 0}}">
+      <text class="feed-tag" wx:for="{{item.match_tags}}" wx:key="*this" wx:if="{{index < 4}}">{{item}}</text>
+    </view>
+
+    <!-- 匹配维度条 -->
+    <view class="match-dims" wx:if="{{item.match_dimensions}}">
+      <view class="dim-row" wx:for="{{item.match_dimensions}}" wx:key="label">
+        <text class="dim-label">{{item.label}}</text>
+        <view class="dim-bar">
+          <view class="dim-fill dim-fill--{{item.level}}" style="width: {{item.value}}%;"></view>
+        </view>
+        <text class="dim-value">{{item.value}}%</text>
+      </view>
+    </view>
+
+    <!-- 企业行 -->
+    <view class="feed-header" style="padding: 18rpx 0 0; border-top: 1rpx solid var(--c-border, #f0f0f0);">
+      <view class="feed-header-avatar" catchtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}">
+        <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+        <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
+      </view>
+      <view class="feed-header-info">
+        <text class="feed-header-name">{{item.company_name || item.enterprise_name || '企业'}}</text>
+        <text class="feed-header-meta">{{item.location || '地点不限'}} · {{item.experience || '经验不限'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ACTIONS -->
+  <view class="card-actions">
+    <view class="card-btn card-btn--primary" data-action="apply" catchtap="onAction">
+      <text>感兴趣</text>
+    </view>
+    <view class="card-btn card-btn--dark" data-action="chat" catchtap="onAction">
+      <text>聊聊</text>
+    </view>
+    <view class="card-btn card-btn--ghost" data-action="skip" catchtap="onAction">
+      <text>不感兴趣</text>
+    </view>
+  </view>
+</view>

@@ -1,171 +1,114 @@
-<view class="page" wx:if="{{job}}">
+<view class="detail-page">
+  <!-- 导航栏 -->
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-back" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="nav-title">{{detail.title || ''}}</text>
+    <view style="width:72rpx;"></view>
+  </view>
 
-  <!-- 自定义导航栏 -->
-  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
-    <view class="navbar-content">
+  <scroll-view class="detail-scroll" scroll-y wx:if="{{!skeleton && detail}}" bindscroll="onPageScroll">
 
-      <view class="nav-back" bindtap="goBack">
-        ‹
-        </view>
-
-          <view class="nav-title">
-            {{job.title || '职位详情'}}
-          </view>
-
-          <view class="nav-placeholder"></view>
-
+    <!-- 职位头部 -->
+    <view class="job-header">
+      <view class="job-title-row">
+        <text class="job-title">{{detail.title}}</text>
+        <text class="job-salary">{{detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + 'K' : '面议')}}</text>
+      </view>
+      <view class="job-tags">
+        <text class="tag">{{detail.location || '地点不限'}}</text>
+        <text class="tag">{{detail.experience || '经验不限'}}</text>
+        <text class="tag">{{detail.education || '学历不限'}}</text>
       </view>
     </view>
 
-    <!-- 职位信息 -->
-    <view class="hero">
-
-      <view class="title">
-        {{job.title}}
+    <!-- 企业卡片（点击进企业详情） -->
+    <view class="company-card" bindtap="goCompany" data-id="{{detail.company_id}}">
+      <image class="company-logo" src="{{detail.company_logo || detail.enterprise_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
+      <view class="company-info">
+        <text class="company-name">{{detail.enterprise_name || '企业名称'}}</text>
+        <text class="company-meta">{{detail.industry || '互联网'}} · {{detail.scale || '20-99人'}}</text>
       </view>
-
-      <view class="salary">
-        {{job.salary || '面议'}}
-      </view>
-
-      <view class="meta">
-        {{job.area || '地区不限'}} ·
-        {{job.experience || '经验不限'}} ·
-        {{job.education || '学历不限'}}
-      </view>
-      <view class="tag-row">
-
-        <view wx:if="{{job.workType}}" class="tag-primary">
-          {{job.workType}}
-        </view>
-
-        <view wx:for="{{job.tags || job.welfare}}" wx:key="*this" class="tag">
-          {{item}}
-        </view>
-
-      </view>
-
+      <text class="company-arrow">›</text>
     </view>
 
     <!-- 职位描述 -->
     <view class="section">
-
-      <view class="section-title">
-        职位描述
-      </view>
-
-      <view class="body-text">
-        {{job.description || '暂无职位描述'}}
-      </view>
-
+      <text class="section-title">职位描述</text>
+      <text class="section-body">{{detail.description || '暂无详细描述'}}</text>
     </view>
 
     <!-- 任职要求 -->
+    <view class="section" wx:if="{{detail.requirements}}">
+      <text class="section-title">任职要求</text>
+      <text class="section-body">{{detail.requirements}}</text>
+    </view>
+
+    <!-- 企业环境照片 -->
+    <view class="section" wx:if="{{detail.job_images && detail.job_images.length > 0}}">
+      <text class="section-title">工作环境</text>
+      <scroll-view class="env-scroll" scroll-x>
+        <image wx:for="{{detail.job_images}}" wx:key="*this" class="env-img" src="{{item}}" mode="aspectFill" />
+      </scroll-view>
+    </view>
+
+    <!-- 关于企业 -->
     <view class="section">
-
-      <view class="section-title">
-        任职要求
+      <text class="section-title">关于企业</text>
+      <view class="about-company" bindtap="goCompany" data-id="{{detail.company_id}}">
+        <image class="about-logo" src="{{detail.company_logo || detail.enterprise_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
+        <view class="about-info">
+          <text class="about-name">{{detail.enterprise_name || '企业名称'}}</text>
+          <text class="about-desc">{{detail.industry || '互联网'}} · {{detail.scale || '20-99人'}} · {{detail.location || '北京'}}</text>
+        </view>
+        <text class="about-arrow">查看主页 ›</text>
       </view>
-
-      <view class="body-text">
-        {{job.requirements || '暂无任职要求'}}
-      </view>
-
     </view>
 
-    <!-- 企业信息综合卡 -->
-    <view class="section">
-
-      <view class="company-card" bindtap="goCompany">
-
-        <view class="logo">
-          {{job.enterpriseName ? job.enterpriseName.substring(0,1) : '企'}}
+    <!-- 在招岗位 -->
+    <view class="section" wx:if="{{companyJobs && companyJobs.length > 0}}">
+      <text class="section-title">在招岗位</text>
+      <view wx:for="{{companyJobs}}" wx:key="id" class="related-job" bindtap="goRelated" data-id="{{item.id}}">
+        <view class="rj-top">
+          <text class="rj-title">{{item.title}}</text>
+          <text class="rj-salary">{{item.salary || (item.salary_min + '-' + item.salary_max + 'K')}}</text>
         </view>
-
-        <view class="company-content">
-
-          <view class="company-name">
-            {{job.enterpriseName || '企业信息待完善'}}
-          </view>
-
-          <view class="company-meta">
-            {{job.industry || job.category || '招聘企业'}}
-            ·
-            {{job.scale || '规模待完善'}}
-          </view>
-
-        </view>
-
-        <view class="arrow">
-          ›
-        </view>
-
+        <text class="rj-meta">{{item.location || '地点不限'}} · {{item.experience || '经验不限'}}</text>
       </view>
-
-      <view class="info-item">
-        <view class="info-label">
-          工作地点
-        </view>
-
-        <view class="info-value">
-          {{job.address || job.area || '地址待完善'}}
-        </view>
-      </view>
-
-      <view class="info-item">
-        <view class="info-label">
-          联系人
-        </view>
-
-        <view class="info-value">
-          {{job.contactName || '待完善'}}
-        </view>
-      </view>
-
-      <view class="info-item">
-        <view class="info-label">
-          联系电话
-        </view>
-
-        <view class="info-value phone" bindtap="callPhone">
-          {{job.contactPhone || '待完善'}}
-        </view>
-      </view>
-
-      <view class="report" bindtap="goReport">
-        举报该职位
-      </view>
-
     </view>
 
-    <!-- 企业端 -->
-    <view class="bottom-bar" wx:if="{{isEnterprise}}">
+    <view style="height: 140rpx;"></view>
+  </scroll-view>
 
-      <view class="edit-btn" bindtap="goEdit">
-        修改职位
-      </view>
-
-      <view class="delete-btn" bindtap="handleDelete">
-        删除职位
-      </view>
-
-    </view>
-
-    <!-- 求职者端 -->
-    <view class="bottom-bar" wx:else>
-
-      <view class="mini-btn" bindtap="toggleCollect">
-        {{isCollected ? '已收藏' : '收藏'}}
-      </view>
-
-      <view class="chat-btn" bindtap="goChat">
-        立即沟通
-      </view>
-
-      <view class="apply-btn" bindtap="handleApply">
-        投递简历
-      </view>
-
-    </view>
-
+  <!-- 骨架屏 -->
+  <view wx:if="{{skeleton}}" class="skeleton-wrap">
+    <view class="skeleton-line skeleton-line-lg skeleton-pulse" style="margin: 24rpx;"></view>
+    <view class="skeleton-line skeleton-line-md skeleton-pulse" style="margin: 24rpx; width: 60%;"></view>
+    <view class="skeleton-card skeleton-pulse" style="height: 120rpx; margin: 24rpx;"></view>
+    <view class="skeleton-line skeleton-line-lg skeleton-pulse" style="margin: 24rpx;"></view>
+    <view class="skeleton-line skeleton-line-lg skeleton-pulse" style="margin: 24rpx;"></view>
   </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{!skeleton && detail}}">
+    <view class="bar-left">
+      <view class="bar-action" bindtap="onFavorite">
+        <text class="bar-icon">{{isFavorite ? '❤' : '♡'}}</text>
+        <text class="bar-label">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="bar-action" bindtap="onShare">
+        <text class="bar-icon">↗</text>
+        <text class="bar-label">分享</text>
+      </view>
+    </view>
+    <view class="bar-right">
+      <view class="bar-chat" bindtap="onChat">
+        <text>立即沟通</text>
+      </view>
+      <view class="bar-apply" bindtap="onApply">
+        <text>投递简历</text>
+      </view>
+    </view>
+  </view>
+</view>

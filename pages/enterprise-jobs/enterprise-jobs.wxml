@@ -1,14 +1,14 @@
 <view class="page">
 
-<!-- 顶部导航栏 -->
-<view class="header">
+<!-- 顶部导航 -->
+<view class="header" style="padding-top: {{statusBarHeight}}px;">
   <view class="header-content">
     <view class="header-title">岗位管理</view>
     <view class="add-btn" bindtap="goAdd">+</view>
   </view>
 </view>
 
-<!-- 内容区 -->
+<!-- 内容 -->
 <view class="content">
 
   <!-- Tabs 横向滚动 -->
@@ -59,35 +59,13 @@
       <view class="empty-btn" bindtap="goAdd">发布职位</view>
     </view>
 
-    <!-- 加载中 -->
+    <!-- 加载 -->
     <view wx:if="{{loading}}" class="loading">加载中...</view>
 
   </view>
 
 </view>
 
-<!-- 底部 TabBar -->
-<view class="tabbar">
-  <view class="tab-item" bindtap="goHome">
-    <image class="tab-icon" src="/images/tab-home.png"/>
-    <view class="tab-text">首页</view>
-  </view>
-  <view class="tab-item" bindtap="goCandidates">
-    <image class="tab-icon" src="/images/tab-candidates.png"/>
-    <view class="tab-text">人才</view>
-  </view>
-  <view class="tab-item active">
-    <image class="tab-icon" src="/images/tab-jobs.png"/>
-    <view class="tab-text">岗位</view>
-  </view>
-  <view class="tab-item" bindtap="goMsg">
-    <image class="tab-icon" src="/images/tab-msg.png"/>
-    <view class="tab-text">消息</view>
-  </view>
-  <view class="tab-item" bindtap="goMy">
-    <image class="tab-icon" src="/images/tab-my.png"/>
-    <view class="tab-text">我的</view>
-  </view>
 </view>
 
-</view>
+<enterprise-tabbar current="jobs" />

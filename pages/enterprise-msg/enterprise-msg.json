@@ -1,3 +1,6 @@
 {
+  "usingComponents": {
+    "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
+  },
   "navigationStyle": "custom"
 }

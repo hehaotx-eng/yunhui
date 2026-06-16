@@ -1,14 +1,16 @@
 <view class="page">
 
-<!-- 顶部 -->
-<view class="header">
-  <view class="header-title">企业中心</view>
+<!-- 顶部导航 -->
+<view class="header" style="padding-top: {{statusBarHeight}}px;">
+  <view class="header-content">
+    <view class="header-title">企业中心</view>
+  </view>
 </view>
 
-<!-- 内容区 -->
+<!-- 内容 -->
 <view class="content">
 
-  <!-- 数据统计卡 -->
+  <!-- 数据统计 -->
   <view class="stats-card">
 
     <view class="stat-item">
@@ -118,44 +120,6 @@
 
 </view>
 
-<!-- 底部 TabBar -->
-<view class="tabbar">
-
-  <view class="tab-item active">
-    <view class="tab-icon">
-      <image class="icon-img" src="/pages/image/home.png" />
-    </view>
-    <view class="tab-text">首页</view>
-  </view>
-
-  <view class="tab-item" bindtap="goCandidates">
-    <view class="tab-icon">
-      <image class="icon-img" src="/pages/image/users.png" />
-    </view>
-    <view class="tab-text">人才</view>
-  </view>
-
-  <view class="tab-item" bindtap="goJobs">
-    <view class="tab-icon">
-      <image class="icon-img" src="/pages/image/job.png" />
-    </view>
-    <view class="tab-text">岗位</view>
-  </view>
-
-  <view class="tab-item" bindtap="goMsg">
-    <view class="tab-icon">
-      <image class="icon-img" src="/pages/image/msg.png" />
-    </view>
-    <view class="tab-text">消息</view>
-  </view>
-
-  <view class="tab-item" bindtap="goMy">
-    <view class="tab-icon">
-      <image class="icon-img" src="/pages/image/my.png" />
-    </view>
-    <view class="tab-text">我的</view>
-  </view>
-
 </view>
 
-</view>
+<enterprise-tabbar current="home" />

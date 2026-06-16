@@ -1,98 +1,82 @@
 <view class="page">
 
-<!-- 自定义导航栏 -->
-
 <view class="navbar">
-
   <view class="navbar-content">
-
-    <view
-      class="nav-back"
-      bindtap="goBack"
-    >
-      ←
-    </view>
-
-    <view class="nav-title">
-      登录
-    </view>
-
+    <view class="nav-back" bindtap="goBack">←</view>
+    <view class="nav-title">{{role === 'enterprise' ? '企业登录' : '用户登录'}}</view>
     <view class="nav-placeholder"></view>
-
   </view>
-
 </view>
-
-<!-- Hero -->
 
 <view class="hero">
-
-  <view class="hero-title">
-    欢迎回来
-  </view>
-
-  <view class="hero-desc">
-    登录后查看职位、投递简历与在线沟通
-  </view>
-
+  <view class="hero-title">欢迎回来</view>
+  <view class="hero-desc">{{role === 'enterprise' ? '登录后管理职位、招募人才' : '登录后查看职位、投递简历'}}</view>
 </view>
-
-<!-- 登录卡片 -->
 
 <view class="form-card">
-
   <view class="form-item">
-
-    <view class="label">
-      手机号
-    </view>
-
-    <input
-      class="input-field"
-      placeholder="请输入手机号"
-      value="{{phone}}"
-      bindinput="onPhoneInput"
-      type="number"
-      maxlength="11"
-    />
-
+    <view class="label">手机号</view>
+    <input class="input-field" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" type="number" maxlength="11" />
   </view>
-
   <view class="form-item">
-
-    <view class="label">
-      登录密码
-    </view>
-
-    <input
-      class="input-field"
-      password
-      placeholder="请输入密码"
-      value="{{password}}"
-      bindinput="onPasswordInput"
-    />
-
+    <view class="label">登录密码</view>
+    <input class="input-field" password placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
   </view>
-
 </view>
 
-<!-- 提示 -->
-
-<view class="tips">
-  新用户首次登录将自动创建账号
-</view>
-
-<!-- 悬浮按钮 -->
+<view class="tips">新用户首次登录将自动创建账号</view>
 
 <view class="floating-bar">
+  <view class="submit-btn" bindtap="handleLogin">{{role === 'enterprise' ? '企业登录' : '登录'}}</view>
+</view>
 
-  <view
-    class="submit-btn"
-    bindtap="handleLogin"
-  >
-    登录
+<!-- 企业选择/创建弹窗 -->
+<view wx:if="{{showCompanyDialog}}" class="dialog-mask" catchtap="closeDialog">
+  <view class="dialog" catchtap="">
+
+    <view wx:if="{{!createMode}}" class="dialog-body">
+      <view class="dialog-title">选择企业</view>
+      <scroll-view class="company-list" scroll-y>
+        <view wx:for="{{enterprises}}" wx:key="id" class="company-item" data-id="{{item.id}}" bindtap="handleJoin">
+          <view class="ci-left">
+            <view class="ci-logo">{{item.name ? item.name.substring(0,1) : '企'}}</view>
+            <view class="ci-info">
+              <text class="ci-name">{{item.name}}</text>
+              <text class="ci-meta">{{item.industry || ''}} {{item.scale || ''}}</text>
+            </view>
+          </view>
+          <text class="ci-arrow">加入</text>
+        </view>
+        <view wx:if="{{enterprises.length === 0}}" class="empty-tip">暂无可加入的企业</view>
+      </scroll-view>
+      <view class="dialog-footer">
+        <view class="df-btn primary" bindtap="switchCreateMode">创建新企业</view>
+      </view>
+    </view>
+
+    <view wx:else class="dialog-body">
+      <view class="dialog-title">创建新企业</view>
+      <view class="create-form">
+        <view class="cf-item">
+          <input placeholder="企业名称" value="{{createForm.name}}" data-field="name" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="所属行业（如：互联网）" value="{{createForm.industry}}" data-field="industry" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="公司规模（如：20-99人）" value="{{createForm.scale}}" data-field="scale" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="企业简介（选填）" value="{{createForm.description}}" data-field="description" bindinput="onCreateInput" />
+        </view>
+      </view>
+      <view class="dialog-footer">
+        <view class="df-btn" bindtap="switchCreateMode">返回列表</view>
+        <view class="df-btn primary" bindtap="handleCreate">创建并加入</view>
+      </view>
+    </view>
+
   </view>
-
 </view>
 
 </view>

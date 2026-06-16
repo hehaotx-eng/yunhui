@@ -1,0 +1,81 @@
+/* ============================================
+   DESIGN TOKENS — 唯一颜色/字体/间距来源
+   所有组件必须引用此文件变量，禁止自行定义
+   ============================================ */
+
+page {
+  /* ── 颜色 ── */
+  --c-bg:           #f6f7f9;
+  --c-card:         #ffffff;
+  --c-accent:       #ff5c39;
+  --c-accent-light: rgba(255,92,57,.08);
+  --c-ai:           #6d5efc;
+  --c-ai-light:     rgba(109,94,252,.06);
+  --c-ai-border:    rgba(109,94,252,.12);
+  --c-ai-bg:        linear-gradient(135deg, rgba(109,94,252,.05), rgba(109,94,252,.02));
+  --c-text:         #1a1a2e;
+  --c-text-2:       #6b7280;
+  --c-text-3:       #9ca3af;
+  --c-border:       #f0f0f0;
+  --c-success:      #22c55e;
+  --c-success-light:rgba(34,197,94,.06);
+  --c-success-border:rgba(34,197,94,.15);
+  --c-warn:         #f59e0b;
+  --c-warn-light:   rgba(245,158,11,.08);
+  --c-danger:       #ef4444;
+  --c-skeleton:     #f0f0f0;
+  --c-skeleton-anim:#e8e8e8;
+
+  /* ── 卡片 ── */
+  --card-radius:    24rpx;
+  --card-shadow:    0 2rpx 12rpx rgba(15,23,42,.04);
+  --card-padding:   24rpx;
+  --card-gap:       20rpx;
+
+  /* ── 字体 ── */
+  --fs-xl:          38rpx;
+  --fs-lg:          32rpx;
+  --fs-md:          28rpx;
+  --fs-sm:          26rpx;
+  --fs-xs:          24rpx;
+  --fs-xxs:         22rpx;
+  --fs-micro:       20rpx;
+
+  /* ── 字重 ── */
+  --fw-bold:        700;
+  --fw-semibold:    600;
+  --fw-medium:      500;
+
+  /* ── 间距 ── */
+  --sp-4:           4rpx;
+  --sp-6:           6rpx;
+  --sp-8:           8rpx;
+  --sp-10:          10rpx;
+  --sp-12:          12rpx;
+  --sp-14:          14rpx;
+  --sp-16:          16rpx;
+  --sp-18:          18rpx;
+  --sp-20:          20rpx;
+  --sp-24:          24rpx;
+  --sp-28:          28rpx;
+  --sp-32:          32rpx;
+
+  /* ── 头像 ── */
+  --avatar-sm:      48rpx;
+  --avatar-md:      56rpx;
+  --avatar-lg:      68rpx;
+  --avatar-radius:  14rpx;
+
+  /* ── 标签 ── */
+  --tag-radius:     12rpx;
+  --tag-padding:    4rpx 14rpx;
+
+  /* ── 按钮 ── */
+  --btn-radius:     14rpx;
+  --btn-height:     68rpx;
+
+  /* ── 过渡 ── */
+  --ease-default:   ease;
+  --duration-fast:  .2s;
+  --duration-normal:.3s;
+}

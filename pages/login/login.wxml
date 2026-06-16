@@ -1,7 +1,5 @@
-
 <view class="page">
 
-  <!-- 顶部导航栏 -->
   <view class="nav">
     <view class="nav-left" bindtap="goBack">
       <text class="nav-back">‹</text>
@@ -9,20 +7,35 @@
     <view class="nav-right"></view>
   </view>
 
-  <!-- Hero 区 -->
   <view class="hero">
-    <view class="badge">招聘平台</view>
-    <view class="title">欢迎回来</view>
-    <view class="subtitle">找到心仪工作 · 发现更多机会</view>
+    <view class="title">选择身份</view>
+    <view class="subtitle">请选择你的使用身份</view>
   </view>
 
-  <!-- 登录卡片 -->
+  <view class="role-section">
+    <view class="role-card {{role === 'user' ? 'active' : ''}}" data-role="user" bindtap="selectRole">
+      <view class="role-icon">👤</view>
+      <view class="role-info">
+        <view class="role-name">求职者</view>
+        <view class="role-desc">浏览职位、投递简历、在线沟通</view>
+      </view>
+      <view class="role-check {{role === 'user' ? 'checked' : ''}}">{{role === 'user' ? '✓' : ''}}</view>
+    </view>
+    <view class="role-card {{role === 'enterprise' ? 'active' : ''}}" data-role="enterprise" bindtap="selectRole">
+      <view class="role-icon">🏢</view>
+      <view class="role-info">
+        <view class="role-name">企业用户</view>
+        <view class="role-desc">发布职位、管理人才、在线招聘</view>
+      </view>
+      <view class="role-check {{role === 'enterprise' ? 'checked' : ''}}">{{role === 'enterprise' ? '✓' : ''}}</view>
+    </view>
+  </view>
+
   <view class="login-card">
-    <view class="action-primary" bindtap="phoneLogin">手机号登录</view>
+    <view class="action-primary" bindtap="phoneLogin">手机号{{role === 'enterprise' ? '（企业）' : ''}}登录</view>
     <view class="action-secondary" bindtap="goRegister">创建新账号</view>
   </view>
 
-  <!-- 用户协议 -->
   <view class="agreement">
     登录即表示同意《用户协议》与《隐私政策》
   </view>

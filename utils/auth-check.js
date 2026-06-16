@@ -18,15 +18,12 @@ function checkAuth(page, options = {}) {
   
   const token = app.globalData.token || wx.getStorageSync('token')
   const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
-  const userRole = app.globalData.userRole || wx.getStorageSync('userRole')
   
   const result = {
     isLoggedIn: !!token,
     userInfo: userInfo,
-    userRole: userRole,
-    isAdmin: userRole === 'admin',
-    isEnterprise: userRole === 'enterprise' || userRole === 'admin',
-    isUser: userRole === 'user'
+    isEnterprise: !!(userInfo && userInfo.company_id),
+    isUser: !(userInfo && userInfo.company_id)
   }
   
   // 如果需要登录但未登录，跳转到登录页
@@ -76,8 +73,8 @@ function checkAuth(page, options = {}) {
  * @returns {boolean}
  */
 function isEnterprise() {
-  const userRole = app.globalData.userRole || wx.getStorageSync('userRole')
-  return userRole === 'enterprise' || userRole === 'admin'
+  const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
+  return !!(userInfo && userInfo.company_id)
 }
 
 /**
@@ -85,8 +82,8 @@ function isEnterprise() {
  * @returns {boolean}
  */
 function isAdmin() {
-  const userRole = app.globalData.userRole || wx.getStorageSync('userRole')
-  return userRole === 'admin'
+  const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
+  return !!(userInfo && userInfo.is_admin)
 }
 
 /**
@@ -106,19 +103,10 @@ function getUserInfo() {
   return app.globalData.userInfo || wx.getStorageSync('userInfo')
 }
 
-/**
- * 获取用户角色
- * @returns {string|null}
- */
-function getUserRole() {
-  return app.globalData.userRole || wx.getStorageSync('userRole')
-}
-
 module.exports = {
   checkAuth,
   isEnterprise,
   isAdmin,
   isLoggedIn,
-  getUserInfo,
-  getUserRole
+  getUserInfo
 }

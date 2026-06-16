@@ -1,85 +1,71 @@
-<view class="page">
-  <view class="header">
-    <view class="back-btn" bindtap="goBack">‹</view>
-    <view class="search-wrapper">
-      <image class="icon-search" src="/pages/image/sousuo.png" />
-      <input 
-        class="search-input" 
-        placeholder="搜索职位/企业" 
-        value="{{keyword}}"
-        bindinput="onInput"
-        bindconfirm="onConfirm"
-        focus
-      />
+<view class="search-page">
+  <!-- 导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">‹</view>
+      <view class="search-input-wrap">
+        <image class="search-icon" src="/pages/image/sousuo.png" />
+        <input
+          class="search-input"
+          placeholder="输入职位关键词搜索"
+          value="{{keyword}}"
+          bindinput="onInput"
+          bindconfirm="onConfirm"
+          focus
+        />
+      </view>
     </view>
-    <view class="cancel-btn" bindtap="goBack">取消</view>
   </view>
 
-  <view wx:if="{{!showResults}}" class="search-content">
-    <view wx:if="{{hotKeywords.length > 0}}" class="section">
+  <!-- 搜索建议 -->
+  <view class="suggest-wrap" wx:if="{{!showResults}}" style="margin-top: {{statusBarHeight + 56}}px;">
+    <view class="section" wx:if="{{hotKeywords.length > 0}}">
       <view class="section-header">
         <text class="section-title">热门搜索</text>
       </view>
-      <view class="keyword-list">
-        <view 
-          wx:for="{{hotKeywords}}" 
-          wx:key="*this" 
-          class="keyword-item"
-          bindtap="selectKeyword"
-          data-keyword="{{item}}"
-        >
-          {{item}}
-        </view>
+      <view class="tag-list">
+        <view class="suggest-tag" wx:for="{{hotKeywords}}" wx:key="*this" bindtap="selectKeyword" data-keyword="{{item}}">{{item}}</view>
       </view>
     </view>
 
-    <view wx:if="{{historyKeywords.length > 0}}" class="section">
+    <view class="section" wx:if="{{historyKeywords.length > 0}}">
       <view class="section-header">
         <text class="section-title">搜索历史</text>
-        <text class="section-action" bindtap="clearHistory">清除</text>
+        <text class="section-clear" bindtap="clearHistory">清除</text>
       </view>
-      <view class="keyword-list">
-        <view 
-          wx:for="{{historyKeywords}}" 
-          wx:key="*this" 
-          class="keyword-item"
-          bindtap="selectKeyword"
-          data-keyword="{{item}}"
-        >
-          {{item}}
-        </view>
+      <view class="tag-list">
+        <view class="suggest-tag" wx:for="{{historyKeywords}}" wx:key="*this" bindtap="selectKeyword" data-keyword="{{item}}">{{item}}</view>
       </view>
     </view>
   </view>
 
-  <view wx:if="{{showResults}}" class="results-content">
-    <view wx:if="{{loading}}" class="loading">搜索中...</view>
-    
-    <view wx:if="{{!loading && searchResults.length > 0}}" class="job-list">
-      <view 
-        wx:for="{{searchResults}}" 
-        wx:key="id" 
-        class="job-card"
-        bindtap="goDetail"
-        data-id="{{item.id}}"
-      >
-        <view class="job-title">{{item.title}}</view>
-        <view class="job-salary">{{item.salary}}{{item.salary && !item.salary.includes('元') ? '元/月' : ''}}</view>
-        <view class="job-meta">{{item.area}} · {{item.experience}} · {{item.education}}</view>
-        <view class="welfare-list">
-          <view wx:for="{{item.tags || item.welfare || []}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
-        </view>
-        <view class="company-info">
-          <view class="company-logo-placeholder">{{item.enterpriseName ? item.enterpriseName.substring(0, 1) : '企'}}</view>
-          <view class="company-name">{{item.enterpriseName}}</view>
-        </view>
+  <!-- 搜索结果 -->
+  <view class="results-wrap" wx:if="{{showResults}}" style="margin-top: {{statusBarHeight + 56}}px;">
+    <view wx:if="{{loading}}" class="loading-text">搜索中...</view>
+
+    <!-- 精确匹配 -->
+    <view wx:if="{{exactResults.length > 0}}" class="result-section">
+      <view class="result-label">
+        <view class="label-dot label-dot--exact"></view>
+        <text class="label-text">精确匹配</text>
+        <text class="label-count">{{exactResults.length}}个结果</text>
       </view>
+      <feed-card wx:for="{{exactResults}}" wx:key="job_id" item="{{item}}" bind:tap="goDetail" />
     </view>
 
-    <view wx:if="{{!loading && searchResults.length === 0}}" class="empty-card">
-      <view class="empty-icon">🔍</view>
-      <view class="empty-text">未找到相关职位</view>
-      <view class="empty-tip">换个关键词试试吧</view>
+    <!-- 推荐职位 -->
+    <view wx:if="{{recommendResults.length > 0}}" class="result-section">
+      <view class="result-label">
+        <view class="label-dot label-dot--recommend"></view>
+        <text class="label-text">相关推荐</text>
+      </view>
+      <feed-card wx:for="{{recommendResults}}" wx:key="job_id" item="{{item}}" bind:tap="goDetail" />
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && exactResults.length === 0 && recommendResults.length === 0}}" class="empty-state">
+      <text class="empty-title">未找到相关职位</text>
+      <text class="empty-sub">换个关键词试试</text>
     </view>
   </view>
 </view>

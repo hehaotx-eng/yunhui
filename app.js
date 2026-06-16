@@ -1,96 +1,89 @@
-// app.js
 App({
   onLaunch() {
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
-    // 初始化全局用户状态
     this.initUserState()
-
-    wx.login({
-      success: res => {
-      }
-    })
   },
-  
+
   onShow() {
     this.checkUserRole()
   },
-  
-  // 初始化用户状态
+
   initUserState() {
     const token = wx.getStorageSync('token')
     const userInfo = wx.getStorageSync('userInfo')
-    const userRole = wx.getStorageSync('userRole')
-    
+
     this.globalData = {
       ...this.globalData,
       token: token || null,
       userInfo: userInfo || null,
-      userRole: userRole || null,
-      isAdmin: userInfo && userInfo.userType === 'admin',
-      isEnterprise: userInfo && userInfo.userType === 'enterprise',
-      isUser: userInfo && userInfo.userType === 'user'
+      isEnterprise: !!(userInfo && userInfo.company_id),
+      isUser: !(userInfo && userInfo.company_id)
     }
   },
-  
-  // 更新用户状态（登录后调用）
+
   updateUserState(userInfo, token) {
-    const userRole = userInfo && userInfo.userType
-    
+    const isEnterprise = !!(userInfo && userInfo.company_id)
+
     this.globalData = {
       ...this.globalData,
       token: token,
       userInfo: userInfo,
-      userRole: userRole,
-      isAdmin: userRole === 'admin',
-      isEnterprise: userRole === 'enterprise',
-      isUser: userRole === 'user'
+      isEnterprise: isEnterprise,
+      isUser: !isEnterprise
     }
-    
+
     wx.setStorageSync('token', token)
     wx.setStorageSync('userInfo', userInfo)
-    wx.setStorageSync('userRole', userRole)
+
+    this.updateTabBar(isEnterprise ? 'enterprise' : 'user')
   },
-  
-  // 清除用户状态（退出登录时调用）
+
   clearUserState() {
     this.globalData = {
       ...this.globalData,
       token: null,
       userInfo: null,
-      userRole: null,
-      isAdmin: false,
       isEnterprise: false,
-      isUser: false
+      isUser: true
     }
-    
+
     wx.removeStorageSync('token')
     wx.removeStorageSync('userInfo')
-    wx.removeStorageSync('userRole')
   },
-  
-  // 检查用户角色并跳转
+
+  updateTabBar(role) {
+    const pages = getCurrentPages()
+    if (pages.length > 0) {
+      const page = pages[pages.length - 1]
+      if (page.getTabBar) {
+        const tabBar = page.getTabBar()
+        if (tabBar && tabBar.setRole) {
+          tabBar.setRole(role)
+        }
+      }
+    }
+  },
+
   checkUserRole() {
     const token = this.globalData.token || wx.getStorageSync('token')
-    const userRole = this.globalData.userRole || wx.getStorageSync('userRole')
-    
-    if (token && userRole) {
+    const userInfo = this.globalData.userInfo || wx.getStorageSync('userInfo')
+
+    if (token && userInfo) {
+      const isEnterprise = !!userInfo.company_id
+      this.updateTabBar(isEnterprise ? 'enterprise' : 'user')
+
       const pages = getCurrentPages()
       if (pages.length > 0) {
         const currentPage = pages[pages.length - 1]
         const currentRoute = currentPage.route
-        
-        if (userRole === 'enterprise' || userRole === 'admin') {
+
+        if (isEnterprise) {
           const enterprisePages = [
             'pages/enterprise-home/enterprise-home',
-            'pages/candidates/candidates', 
             'pages/enterprise-jobs/enterprise-jobs',
-            'pages/enterprise-msg/enterprise-msg',
+            'pages/candidates/candidates',
+            'pages/enterpriseDashboard/enterpriseDashboard',
             'pages/enterprise-my/enterprise-my'
           ]
-          
           if (!enterprisePages.includes(currentRoute)) {
             wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })
           }
@@ -98,30 +91,20 @@ App({
       }
     }
   },
-  
-  // 检查是否登录
+
   isLoggedIn() {
     return !!(this.globalData.token || wx.getStorageSync('token'))
   },
-  
-  // 检查是否是企业用户
+
   isEnterprise() {
-    const userRole = this.globalData.userRole || wx.getStorageSync('userRole')
-    return userRole === 'enterprise' || userRole === 'admin'
+    const userInfo = this.globalData.userInfo || wx.getStorageSync('userInfo')
+    return !!(userInfo && userInfo.company_id)
   },
-  
-  // 检查是否是管理员
-  isAdmin() {
-    const userRole = this.globalData.userRole || wx.getStorageSync('userRole')
-    return userRole === 'admin'
-  },
-  
+
   globalData: {
     token: null,
     userInfo: null,
-    userRole: null,
-    isAdmin: false,
     isEnterprise: false,
-    isUser: false
+    isUser: true
   }
 })

@@ -1,0 +1,140 @@
+/* ============================================
+   COMPONENTS — 通用组件样式
+   统一规范，禁止组件内重复定义
+   ============================================ */
+
+/* ── 加载更多 ── */
+.load-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--sp-32) 0;
+}
+
+.load-more--loading {
+  gap: var(--sp-12);
+}
+
+.load-more--done {
+  gap: var(--sp-16);
+  padding: var(--sp-32) var(--sp-40);
+}
+
+.load-spinner {
+  width: var(--sp-32);
+  height: var(--sp-32);
+  border: 3rpx solid var(--c-skeleton);
+  border-top-color: var(--c-ai);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.load-text {
+  font-size: var(--fs-xs);
+  color: var(--c-text-3);
+}
+
+.load-line {
+  flex: 1;
+  height: 2rpx;
+  background: var(--c-skeleton);
+}
+
+/* ── 空状态 ── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx var(--sp-40);
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: var(--c-skeleton);
+  margin-bottom: var(--sp-24);
+}
+
+.empty-title {
+  font-size: var(--fs-md);
+  color: var(--c-text-3);
+  margin-bottom: var(--sp-8);
+}
+
+.empty-sub {
+  font-size: var(--fs-xs);
+  color: var(--c-text-3);
+}
+
+/* ── 标签云 ── */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-12);
+}
+
+.cloud-tag {
+  padding: var(--sp-10) var(--sp-24);
+  background: var(--c-skeleton);
+  border-radius: 32rpx;
+  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  transition: all var(--duration-fast) var(--ease-default);
+}
+
+.cloud-tag--active {
+  background: var(--c-ai-light);
+  color: var(--c-ai);
+  border: 1rpx solid var(--c-ai-border);
+}
+
+/* ── 骨架屏 ── */
+.skeleton-card {
+  background: var(--c-card);
+  border-radius: var(--card-radius);
+  padding: var(--sp-24);
+  margin: 0 var(--sp-24) var(--card-gap);
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-14);
+  margin-bottom: var(--sp-16);
+}
+
+.skeleton-avatar {
+  width: var(--avatar-md);
+  height: var(--avatar-md);
+  border-radius: var(--avatar-radius);
+  flex-shrink: 0;
+}
+
+.skeleton-lines { flex: 1; }
+
+.skeleton-line {
+  height: var(--sp-20);
+  margin-bottom: var(--sp-8);
+  border-radius: var(--sp-6);
+}
+
+.skeleton-line--lg { width: 70%; }
+.skeleton-line--md { width: 50%; }
+.skeleton-line--sm { width: 35%; }
+
+.skeleton-img {
+  width: 100%;
+  height: 300rpx;
+  border-radius: var(--sp-16);
+  margin-bottom: var(--sp-16);
+}
+
+.skeleton-text {
+  width: 80%;
+  height: var(--sp-20);
+  border-radius: var(--sp-6);
+}

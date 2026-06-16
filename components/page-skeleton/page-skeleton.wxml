@@ -1,0 +1,11 @@
+<view class="skeleton" wx:if="{{loading}}">
+  <view class="skeleton-card" wx:for="{{rowsArr}}" wx:key="*this">
+    <view class="skeleton-avatar skeleton-animate"></view>
+    <view class="skeleton-lines">
+      <view class="skeleton-line skeleton-line-lg skeleton-animate"></view>
+      <view class="skeleton-line skeleton-line-md skeleton-animate"></view>
+      <view class="skeleton-line skeleton-line-sm skeleton-animate"></view>
+    </view>
+  </view>
+</view>
+<slot wx:else></slot>

@@ -1,0 +1,79 @@
+<view class="ai-page">
+  <!-- 顶部 -->
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-ai-badge">
+        <text class="badge-text">AI</text>
+      </view>
+      <text class="nav-title">为你推荐</text>
+    </view>
+  </view>
+
+  <!-- AI 状态头 -->
+  <view class="ai-header" style="margin-top: {{statusBarHeight + 88}}px;">
+    <view class="header-card">
+      <view class="header-glow"></view>
+      <view class="header-content">
+        <view class="header-left">
+          <text class="header-title">智能匹配中</text>
+          <text class="header-desc">已分析 {{totalCount}} 个机会，找到 {{matchCount}} 个高匹配</text>
+        </view>
+        <view class="header-action" bindtap="onRefresh">
+          <text class="refresh-text">刷新</text>
+        </view>
+      </view>
+
+      <!-- 筛选标签 -->
+      <view class="filter-tags">
+        <view
+          class="filter-tag {{activeFilter === item.key ? 'filter-active' : ''}}"
+          wx:for="{{filters}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="onFilterTap"
+        >
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统一推荐列表 -->
+  <view class="recommend-list" wx:if="{{!skeleton}}">
+    <block wx:for="{{list}}" wx:key="id">
+      <ai-recommend-card
+        item="{{item.payload}}"
+        bind:tap="goDetail"
+        bind:company="goCompany"
+        bind:action="onCardAction"
+      />
+    </block>
+
+    <empty-state
+      wx:if="{{list.length === 0 && !loading}}"
+      title="暂无推荐"
+      subtitle="完善简历获得更精准的推荐"
+    />
+
+    <load-more loading="{{loadingMore}}" hasMore="{{has_more}}" />
+  </view>
+
+  <!-- 骨架屏 -->
+  <view wx:if="{{skeleton}}" class="skeleton-wrap">
+    <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="skeleton-row">
+        <view class="skeleton-circle skeleton-pulse"></view>
+        <view class="skeleton-col">
+          <view class="skeleton-line skeleton-line-lg skeleton-pulse"></view>
+          <view class="skeleton-line skeleton-line-sm skeleton-pulse"></view>
+        </view>
+      </view>
+      <view class="skeleton-block skeleton-pulse"></view>
+      <view class="skeleton-tags">
+        <view class="skeleton-tag skeleton-pulse" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<custom-tab-bar />

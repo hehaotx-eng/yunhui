@@ -1,111 +1,144 @@
-const { jobs } = require('../../utils/api.js');
-const { checkAuth } = require('../../utils/auth-check.js');
+const { jobs, ai } = require('../../utils/api.js');
 
 Page({
   data: {
     keyword: '',
-    activeFilter: 'latest',
-    filters: [
-      { id: 'latest', name: '最新发布' },
-      { id: 'salary', name: '薪资最高' },
-      { id: 'nearby', name: '距离最近' },
-      { id: 'fulltime', name: '全职' }
+    aiQuery: '',
+    showAiSearch: false,
+    aiSuggestions: [
+      '前端开发 15000以上',
+      '产品经理 双休',
+      '设计师 远程办公',
+      'Java工程师 3年以上经验'
     ],
+    activeCity: '',
+    cities: ['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '武汉', '西安', '苏州'],
     jobs: [],
     page: 1,
     pageSize: 10,
     loading: false,
+    loadingMore: false,
     hasMore: true,
     showEmpty: false,
-    showNoMore: false
+    skeleton: true,
+    isAiSearch: false
   },
 
   onLoad() {
-    // 检测用户身份
-    const authResult = checkAuth(this, { redirectIfEnterprise: true });
-    if (authResult.blocked) return;
-    
-    this.loadJobs(true);
+    this.initJobs();
   },
 
   onShow() {
-    // 检测用户身份
-    const authResult = checkAuth(this, { redirectIfEnterprise: true });
-    if (authResult.blocked) return;
+    const app = getApp();
+    const tabBar = this.getTabBar();
+    if (tabBar) {
+      tabBar.setRole(app.globalData.isEnterprise ? 'enterprise' : 'user');
+      tabBar.setSelected(1);
+    }
   },
 
   onPullDownRefresh() {
-    this.loadJobs(true).finally(() => wx.stopPullDownRefresh());
+    this.initJobs().finally(() => wx.stopPullDownRefresh());
   },
 
   onReachBottom() {
-    this.loadJobs();
+    if (!this.data.loadingMore && this.data.hasMore) {
+      this.loadMoreJobs();
+    }
+  },
+
+  async initJobs() {
+    this.setData({ skeleton: true, loading: true, page: 1, hasMore: true, showEmpty: false, jobs: [] });
+    try {
+      await this.fetchJobs(1, true);
+    } catch (e) {
+      console.error('初始化职位失败:', e);
+    } finally {
+      this.setData({ skeleton: false, loading: false });
+    }
+  },
+
+  async loadMoreJobs() {
+    if (this.data.loadingMore || !this.data.hasMore) return;
+    this.setData({ loadingMore: true });
+    try {
+      await this.fetchJobs(this.data.page + 1, false);
+    } catch (e) {
+      console.error('加载更多失败:', e);
+    } finally {
+      this.setData({ loadingMore: false });
+    }
+  },
+
+  async fetchJobs(page, reset) {
+    const params = { page, limit: this.data.pageSize };
+
+    try {
+      let result;
+      if (this.data.isAiSearch && this.data.aiQuery) {
+        result = await jobs.aiSearch({ query: this.data.aiQuery, page, limit: this.data.pageSize });
+      } else {
+        result = await jobs.getAll(params);
+      }
+
+      const list = result.list || result.rows || result || [];
+      const newJobs = reset ? list : [...this.data.jobs, ...list];
+
+      this.setData({
+        jobs: newJobs,
+        page,
+        hasMore: list.length >= this.data.pageSize,
+        showEmpty: newJobs.length === 0
+      });
+    } catch (error) {
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+    }
   },
 
   onKeywordInput(e) {
     this.setData({ keyword: e.detail.value });
   },
 
+  clearKeyword() {
+    this.setData({ keyword: '' });
+    this.initJobs();
+  },
+
   onSearch() {
-    this.loadJobs(true);
+    this.setData({ isAiSearch: false });
+    this.initJobs();
   },
 
-  switchFilter(e) {
-    this.setData({ activeFilter: e.currentTarget.dataset.id });
-    this.loadJobs(true);
+  toggleAiSearch() {
+    this.setData({ showAiSearch: !this.data.showAiSearch });
   },
 
-  async loadJobs(reset = false) {
-    if (this.data.loading) return;
-    if (!reset && !this.data.hasMore) return;
+  onAiInput(e) {
+    this.setData({ aiQuery: e.detail.value });
+  },
 
-    const page = reset ? 1 : this.data.page;
-    this.setData({ loading: true });
+  useAiSuggestion(e) {
+    const text = e.currentTarget.dataset.text;
+    this.setData({ aiQuery: text });
+  },
 
-    try {
-      const params = {
-        page,
-        pageSize: this.data.pageSize,
-        keyword: this.data.keyword
-      };
-      if (this.data.activeFilter === 'salary') {
-        params.sort = 'salary';
-      } else if (this.data.activeFilter === 'nearby') {
-        params.sort = 'distance';
-        params.nearby = 1;
-      } else if (this.data.activeFilter === 'fulltime') {
-        params.workType = '全职';
-      } else {
-        params.sort = 'latest';
-      }
-      const result = await jobs.getAll(params);
-      const list = Array.isArray(result) ? result : (result.data || result.list || []);
-      const newJobs = reset ? list : this.data.jobs.concat(list);
-      this.setData({
-        jobs: newJobs,
-        page: page + 1,
-        hasMore: list.length >= this.data.pageSize,
-        loading: false,
-        showEmpty: !this.data.loading && newJobs.length === 0,
-        showNoMore: !list.length && newJobs.length > 0
-      });
-    } catch (error) {
-      this.setData({ loading: false });
-      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+  doAiSearch() {
+    if (!this.data.aiQuery) {
+      wx.showToast({ title: '请输入搜索内容', icon: 'none' });
+      return;
     }
+    this.setData({ isAiSearch: true, showAiSearch: false });
+    this.initJobs();
+  },
+
+  switchCity(e) {
+    const city = e.currentTarget.dataset.city;
+    this.setData({ activeCity: city === this.data.activeCity ? '' : city });
+    this.initJobs();
   },
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
-    const job = this.data.jobs.find(item => item.id == id);
-    if (job) {
-      wx.setStorageSync('currentJob', job);
-    }
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
-  },
-
-  callPhone(e) {
-    const phone = e.currentTarget.dataset.phone;
-    if (phone) wx.makePhoneCall({ phoneNumber: phone });
   }
 });

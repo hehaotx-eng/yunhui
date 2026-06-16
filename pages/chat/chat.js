@@ -1,34 +1,38 @@
-const { messages } = require('../../utils/api.js');
+const { chat } = require('../../utils/api.js');
 
 Page({
   data: {
-    id: '',
+    conversationId: '',
     messages: [],
     inputValue: '',
     myUserId: ''
   },
 
   onLoad(options) {
-    this.setData({ id: options.id });
+    this.setData({ conversationId: options.conversationId || options.id || '' });
     const userInfo = wx.getStorageSync('userInfo');
-    this.setData({ myUserId: userInfo?.id || '' });
+    this.setData({ myUserId: userInfo ? String(userInfo.id) : '' });
     this.loadMessages();
   },
 
   async loadMessages() {
-    if (!this.data.id) return;
+    if (!this.data.conversationId) return;
     try {
-      const result = await messages.getConversation({ conversationId: this.data.id });
-      const list = Array.isArray(result) ? result : (result.data || result.list || result.messages || []);
+      const result = await chat.getMessages(this.data.conversationId);
+      const list = Array.isArray(result) ? result : (result.list || result || []);
       this.setData({ messages: list });
-      setTimeout(() => {
-        const query = wx.createSelectorQuery();
-        query.select('#bottom').boundingClientRect();
-        query.exec(() => {});
-      }, 100);
+      this.scrollToBottom();
     } catch (error) {
       console.error('加载消息失败:', error);
     }
+  },
+
+  scrollToBottom() {
+    setTimeout(() => {
+      const query = wx.createSelectorQuery();
+      query.select('#bottom').boundingClientRect();
+      query.exec(() => {});
+    }, 100);
   },
 
   onInput(e) {
@@ -38,11 +42,9 @@ Page({
   async sendMessage() {
     const content = this.data.inputValue.trim();
     if (!content) return;
+
     try {
-      await messages.send({
-        conversationId: this.data.id,
-        content
-      });
+      await chat.sendMessage(this.data.conversationId, content);
       this.setData({ inputValue: '' });
       this.loadMessages();
     } catch (error) {
@@ -50,8 +52,7 @@ Page({
     }
   },
 
-  getAvatarLetter(item) {
-    const name = item.enterpriseName || item.username || item.name || '聊';
-    return name.substring(0, 1);
+  isMyMessage(item) {
+    return String(item.sender_id) === this.data.myUserId;
   }
 });

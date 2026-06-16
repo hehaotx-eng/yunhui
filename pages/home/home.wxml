@@ -1,116 +1,105 @@
-<view class="page">
-
-  <!-- 顶部 -->
-  <view class="header">
-    <view class="header-text">在线招聘</view>
-  </view>
-
-  <!-- 搜索栏 -->
-  <view class="search-bar">
-    <view class="search-wrapper" bindtap="goSearch">
-      <image class="icon-search" src="/pages/image/sousuo.png" />
-      <text class="search-placeholder">搜索职位/企业</text>
-    </view>
-    <view class="search-extra" bindtap="goEnterpriseSwitch">
-      <image class="icon-switch" src="/pages/image/qiehuan.png" mode="aspectFit" />
-      <view class="switch-text">招人才</view>
-    </view>
-  </view>
-
-  <!-- Banner -->
-  <view class="banner">
-    <swiper indicator-dots="true" indicator-color="rgba(0,0,0,0.2)" indicator-active-color="#111827" circular autoplay interval="4000">
-      <swiper-item wx:for="{{banners}}" wx:key="id">
-        <image src="{{item.image || '/pages/image/default-banner.png'}}" mode="aspectFill" />
-      </swiper-item>
-    </swiper>
-  </view>
-
-  <!-- 快捷入口 -->
-  <view class="quick-nav">
-    <view class="quick-nav-item" bindtap="goAllJobs">
-      <view class="nav-icon"></view>
-      <view class="nav-text">全部职位</view>
-    </view>
-    <view class="quick-nav-item" bindtap="goResumeLibrary">
-      <view class="nav-icon"></view>
-      <view class="nav-text">简历库</view>
-    </view>
-    <view class="quick-nav-item" bindtap="goRetail">
-      <view class="nav-icon"></view>
-      <view class="nav-text">商超零售</view>
-    </view>
-    <view class="quick-nav-item" bindtap="goFactory">
-      <view class="nav-icon"></view>
-      <view class="nav-text">普工技工</view>
-    </view>
-    <view class="quick-nav-item" bindtap="goContact">
-      <view class="nav-icon"></view>
-      <view class="nav-text">联系客服</view>
-    </view>
-  </view>
-
-  <!-- 通知 -->
-  <view class="notice-bar" bindtap="goNotice" >
-    <view class="notice-icon"></view>
-    <swiper wx:if="{{notices.length > 0}}" class="notice-swiper" vertical autoplay interval="3000" duration="500" circular>
-      <swiper-item wx:for="{{notices}}" wx:key="id" >
-        <view class="notice-text">{{item.title || item.content}}</view>
-      </swiper-item>
-    </swiper>
-    <view wx:else class="notice-empty">暂无通知</view>
-    <view class="notice-more">更多</view>
-  </view>
-
-  <!-- 分类横向滚动 -->
-  <scroll-view class="category-scroll" scroll-x>
-    <view wx:for="{{categories}}" wx:key="id" class="category-item {{activeId === item.id ? 'active' : ''}}" bindtap="switchCategory" data-id="{{item.id}}">
-      <text>{{item.name}}</text>
-    </view>
-  </scroll-view>
-
-  <!-- 职位列表 -->
-  <view class="job-list">
-    <view wx:if="{{loading}}" class="loading">加载中...</view>
-
-    <view wx:for="{{jobs}}" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{item.id}}">
-      <view wx:if="{{item.tag}}" class="job-tag">{{item.tag}}</view>
-
-      <view class="job-title">{{item.title}}</view>
-
-      <view class="job-meta">
-        <view class="job-salary">
-          <text class="salary-num">{{item.salary}}</text>
-          <text class="salary-unit">{{item.salary && item.salary.includes('元') ? '' : '元/月'}}</text>
+<view class="feed-page">
+  <dynamic-page wx:if="{{useDynamicPage}}" pagePath="home" />
+  <block wx:else>
+    <!-- 顶部导航 -->
+    <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+      <view class="nav-content">
+        <text class="nav-logo">发现</text>
+        <view class="nav-search" bindtap="goSearch">
+          <image class="search-icon" src="/pages/image/sousuo.png" />
+          <text class="search-text">搜索职位、企业、技能...</text>
         </view>
-        <view class="job-time">{{item.time || item.createdAt ? (item.createdAt.length > 10 ? item.createdAt.substring(0, 10) : item.createdAt) : '刚刚'}}</view>
       </view>
+    </view>
 
-      <view class="welfare-list">
-        <view wx:for="{{item.tags || item.welfare || []}}" wx:for-item="w" wx:key="*this" class="welfare-tag">{{w}}</view>
-      </view>
-
-      <view class="job-footer">
-        <view class="company-info">
-          <view wx:if="{{item.logo}}" class="company-logo" style="background-image: url({{item.logo}});"></view>
-          <view wx:else class="company-logo-placeholder">{{item.enterpriseName ? item.enterpriseName.substring(0, 1) : ''}}</view>
-          <view class="company-detail">
-            <view class="company-contact">{{item.contactName || item.contact}}</view>
-            <view class="company-name">
-              {{item.enterpriseName || item.companyName}}
-              <image wx:if="{{item.verified}}" class="verify-icon" src="/images/verify.png" mode="aspectFit" />
+    <!-- 轮播图 -->
+    <view class="banner-wrap" style="margin-top: {{statusBarHeight + 44}}px;">
+      <swiper class="banner-swiper" indicator-dots="{{true}}" indicator-color="rgba(255,255,255,.3)" indicator-active-color="#fff" autoplay circular interval="4000" bindchange="onBannerChange">
+        <swiper-item wx:for="{{banners}}" wx:key="id">
+          <view class="banner-item" bindtap="goSearch">
+            <image wx:if="{{item.image_url}}" class="banner-img" src="{{item.image_url}}" mode="aspectFill" />
+            <view wx:else class="banner-bg banner-bg-{{index}}"></view>
+            <view class="banner-content">
+              <text class="banner-title">{{item.title}}</text>
+              <text class="banner-subtitle">{{item.subtitle}}</text>
             </view>
           </view>
+        </swiper-item>
+      </swiper>
+      <!-- 快捷图标导航 -->
+      <view class="quick-links" wx:if="{{quickLinks.length > 0}}">
+        <view class="ql-item" wx:for="{{quickLinks}}" wx:key="id" data-link="{{item.link}}" bindtap="onQuickLinkTap">
+          <image class="ql-icon" src="{{item.icon}}" mode="aspectFit" />
+          <text class="ql-label">{{item.title}}</text>
         </view>
-        <view class="btn-call" catchtap="callPhone" data-phone="{{item.phone || item.contactPhone}}">拨打电话</view>
       </view>
     </view>
 
-    <view wx:if="{{!loading && jobs.length === 0}}" class="empty-card">
-      <view class="empty-icon"></view>
-      <view class="empty-text">暂无职位</view>
+    <!-- 通知公告 -->
+    <view class="notice-bar" wx:if="{{notices && notices.length > 0}}" bindtap="goNotifications">
+      <image class="notice-icon" src="/pages/image/tongzhi.png" mode="aspectFit" />
+      <swiper class="notice-swiper" vertical autoplay circular interval="3000" display-multiple-items="{{1}}">
+        <swiper-item wx:for="{{notices}}" wx:key="id">
+          <text class="notice-text line-clamp-1">{{item.title}}</text>
+        </swiper-item>
+      </swiper>
+      <text class="notice-more">更多 ›</text>
     </view>
 
-  </view>
+    <!-- 分类标签 -->
+    <scroll-view class="cat-scroll {{catSticky ? 'cat-sticky' : ''}}" style="{{stickyStyle}}" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="cat-inner">
+        <view wx:for="{{categories}}" wx:key="id" class="cat-item {{activeCategory === item.id ? 'cat-active' : ''}}" data-id="{{item.id}}" bindtap="onCategoryTap">{{item.name}}</view>
+      </view>
+    </scroll-view>
+    <view wx:if="{{catSticky}}" style="height: 88rpx;"></view>
 
+    <view class="container">
+      <view class="block" style="background-image: url('https://picsum.photos/id/104/800/200');">
+        <text class="block-text">发布岗位</text>
+      </view>
+      <view class="block" style="background-image: url('https://picsum.photos/id/96/800/200');">
+        <text class="block-text">创建简历</text>
+      </view>
+    </view>
+
+    <!-- 信息流 -->
+    <view class="feed-list" wx:if="{{!skeleton}}">
+      <view class="ai-banner" wx:if="{{!activeCategory && aiCount > 0}}" bindtap="goAiRecommend">
+        <view class="ai-banner-bg"></view>
+        <view class="ai-banner-content">
+          <view class="ai-icon-wrap"><text class="ai-icon-text">AI</text></view>
+          <view class="ai-banner-info">
+            <text class="ai-banner-title">发现 {{aiCount}} 个适合你的机会</text>
+            <text class="ai-banner-desc">基于你的偏好智能匹配</text>
+          </view>
+          <view class="ai-banner-arrow"><text>→</text></view>
+        </view>
+      </view>
+      <block wx:for="{{feedList}}" wx:key="id">
+        <feed-card wx:if="{{item.type === 'job'}}" item="{{item.payload}}" type="job" bind:tap="goDetail" bind:company="goCompany" bind:action="onFeedAction" />
+        <ai-recommend-card wx:if="{{item.type === 'ai_recommend'}}" item="{{item.payload}}" bind:tap="goDetail" bind:company="goCompany" bind:action="onAiAction" />
+        <company-post-card wx:if="{{item.type === 'company_post'}}" item="{{item.payload}}" bind:tap="goDetail" bind:company="goCompany" bind:action="onPostAction" />
+      </block>
+      <empty-state wx:if="{{feedList.length === 0 && !loading}}" title="还没有内容" subtitle="关注企业获取最新动态" />
+      <load-more loading="{{loadingMore}}" hasMore="{{hasMore}}" />
+    </view>
+
+    <!-- 骨架屏 -->
+    <view wx:if="{{skeleton}}" class="skeleton-wrap">
+      <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-header">
+          <view class="skeleton-avatar skeleton-pulse"></view>
+          <view class="skeleton-lines">
+            <view class="skeleton-line skeleton-line--lg skeleton-pulse"></view>
+            <view class="skeleton-line skeleton-line--sm skeleton-pulse"></view>
+          </view>
+        </view>
+        <view class="skeleton-img skeleton-pulse"></view>
+        <view class="skeleton-text skeleton-pulse"></view>
+      </view>
+    </view>
+  </block>
 </view>
+
+<custom-tab-bar />

@@ -20,7 +20,6 @@ Component({
     switchTab(e) {
       const id = e.currentTarget.dataset.id;
       if (id === this.properties.current) return;
-      
       const tab = this.data.tabs.find(t => t.id === id);
       if (tab) {
         wx.reLaunch({ url: tab.url });

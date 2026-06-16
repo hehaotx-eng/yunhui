@@ -1,0 +1,11 @@
+<view class="load-more">
+  <view wx:if="{{loading}}" class="loading">
+    <view class="spinner"></view>
+    <text class="text">加载中...</text>
+  </view>
+  <view wx:elif="{{!hasMore}}" class="finished">
+    <view class="line"></view>
+    <text class="text">{{finishedText}}</text>
+    <view class="line"></view>
+  </view>
+</view>

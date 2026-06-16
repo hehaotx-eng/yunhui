@@ -1,6 +1,6 @@
 <view class="page">
-  <!-- 顶部信息区 -->
-  <view class="header">
+  <!-- 顶部信息 -->
+  <view class="header" style="padding-top: {{statusBarHeight}}px;">
     <view class="header-content">
       <image class="avatar" src="{{userInfo.avatar || '/images/avatar-placeholder.png'}}" />
       <view class="user-info">
@@ -64,27 +64,6 @@
     </view>
   </view>
 
-  <!-- Tabbar -->
-  <view class="tabbar">
-    <view class="tab-item" bindtap="goHome">
-      <image class="tab-icon" src="/images/tab-home.png"/>
-      <view class="tab-text">首页</view>
-    </view>
-    <view class="tab-item" bindtap="goCandidates">
-      <image class="tab-icon" src="/images/tab-candidates.png"/>
-      <view class="tab-text">人才</view>
-    </view>
-    <view class="tab-item" bindtap="goJobs">
-      <image class="tab-icon" src="/images/tab-jobs.png"/>
-      <view class="tab-text">岗位</view>
-    </view>
-    <view class="tab-item" bindtap="goMsg">
-      <image class="tab-icon" src="/images/tab-msg.png"/>
-      <view class="tab-text">消息</view>
-    </view>
-    <view class="tab-item active">
-      <image class="tab-icon" src="/images/tab-my.png"/>
-      <view class="tab-text">我的</view>
-    </view>
   </view>
-</view>
+
+<enterprise-tabbar current="my" />

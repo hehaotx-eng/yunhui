@@ -1,0 +1,20 @@
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.cloud-tag {
+  padding: 10rpx 24rpx;
+  background: #f5f5f5;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  color: var(--c-text-2, #6b7280);
+  transition: all .2s;
+}
+
+.tag-active {
+  background: var(--c-ai-light, rgba(109,94,252,.08));
+  color: var(--c-ai, #6d5efc);
+  border: 1rpx solid var(--c-ai-border, rgba(109,94,252,.2));
+}

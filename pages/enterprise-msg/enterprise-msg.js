@@ -2,17 +2,22 @@ Page({
   data: {
     conversations: [],
     showEmpty: false,
-    loading: false
+    loading: false,
+    statusBarHeight: 0
   },
 
   onLoad() {
+    const sysInfo = wx.getSystemInfoSync()
+    this.setData({
+      statusBarHeight: sysInfo.statusBarHeight || 20
+    })
     this.checkUserRole()
     this.loadConversations()
   },
 
   checkUserRole() {
-    const userRole = wx.getStorageSync('userRole')
-    if (!userRole || userRole !== 'enterprise') {
+    const userInfo = wx.getStorageSync('userInfo') || {}
+    if (!userInfo.company_id) {
       wx.reLaunch({ url: '/pages/login-phone/login-phone' })
     }
   },
@@ -41,19 +46,4 @@ Page({
     wx.navigateTo({ url: '/pages/notifications/notifications' })
   },
 
-  goHome() {
-    wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })
-  },
-
-  goCandidates() {
-    wx.reLaunch({ url: '/pages/candidates/candidates' })
-  },
-
-  goJobs() {
-    wx.reLaunch({ url: '/pages/enterprise-jobs/enterprise-jobs' })
-  },
-
-  goMy() {
-    wx.reLaunch({ url: '/pages/enterprise-my/enterprise-my' })
-  }
 })

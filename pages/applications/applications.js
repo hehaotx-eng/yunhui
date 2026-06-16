@@ -1,15 +1,16 @@
-const { resumes } = require('../../utils/api.js');
+const { applications } = require('../../utils/api.js');
 
 Page({
   data: {
     active: '',
     tabs: [
       { id: '', name: '全部' },
-      { id: 'pending', name: '待查看' },
+      { id: 'pending', name: '待处理' },
       { id: 'viewed', name: '已查看' },
-      { id: 'interview', name: '面试' },
-      { id: 'rejected', name: '不合适' }
+      { id: 'accepted', name: '已通过' },
+      { id: 'rejected', name: '已拒绝' }
     ],
+    allList: [],
     list: [],
     loading: true,
     showEmpty: false
@@ -25,44 +26,44 @@ Page({
 
   switchTab(e) {
     this.setData({ active: e.currentTarget.dataset.id });
-    this.loadList();
+    this.filterList();
   },
 
   async loadList() {
     this.setData({ loading: true });
     try {
-      const result = await resumes.getMyResumes({ status: this.data.active });
-      const list = Array.isArray(result) ? result : (result.data || result.list || []);
-      this.setData({ list, loading: false, showEmpty: list.length === 0 });
+      const result = await applications.getMy();
+      const list = Array.isArray(result) ? result : (result.list || result || []);
+      this.setData({ allList: list });
+      this.filterList();
     } catch (error) {
-      this.setData({ loading: false });
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+    } finally {
+      this.setData({ loading: false });
     }
+  },
+
+  filterList() {
+    const { active, allList } = this.data;
+    let filtered = allList;
+    if (active) {
+      filtered = allList.filter(a => a.status === active);
+    }
+    this.setData({ list: filtered, showEmpty: filtered.length === 0 });
   },
 
   getStatusText(status) {
     const map = {
-      pending: '待查看',
+      pending: '待处理',
       viewed: '已查看',
-      interview: '面试中',
-      rejected: '不合适',
-      hired: '已录用'
+      accepted: '已通过',
+      rejected: '已拒绝'
     };
-    return map[status] || status || '未知';
-  },
-
-  getStatusClass(status) {
-    return status || 'pending';
-  },
-
-  formatTime(timeStr) {
-    if (!timeStr) return '';
-    const date = new Date(timeStr);
-    return `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+    return map[status] || status;
   },
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
-    if (id) wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   }
 });

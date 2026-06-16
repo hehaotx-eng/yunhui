@@ -284,3 +284,5 @@ page {
 
   color: #9ca3af;
 }
+
+page { padding-bottom: 60px; }

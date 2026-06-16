@@ -1,0 +1,25 @@
+<view class="scroll-tabs">
+  <scroll-view
+    class="tab-scroll"
+    scroll-x
+    enhanced
+    show-scrollbar="{{false}}"
+  >
+    <view class="tab-list">
+      <view
+        class="tab-item {{activeKey === item.key ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onItemTap"
+      >
+        <text class="tab-text">{{item.label}}</text>
+      </view>
+    </view>
+
+    <view
+      class="tab-indicator {{animating ? 'animate' : ''}}"
+      style="left: {{indicatorX}}px; width: {{indicatorWidth}}px;"
+    ></view>
+  </scroll-view>
+</view>

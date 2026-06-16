@@ -1,0 +1,230 @@
+/* ============================================
+   CARD — 卡片变体（AI / Job / Post）
+   继承 .feed-card-base，只定义差异化样式
+   ============================================ */
+
+/* ── AI 推荐卡片 ── */
+.card--ai {
+  border: 1rpx solid var(--c-ai-border);
+}
+
+.card--ai .feed-header-avatar {
+  background: linear-gradient(135deg, var(--c-ai), #8b7cf8);
+}
+
+.card--ai .feed-header-avatar text {
+  color: #fff;
+  font-size: var(--fs-xxs);
+  letter-spacing: 1rpx;
+}
+
+.card--ai .ai-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-12);
+  background: var(--c-ai-bg);
+  border: 1rpx solid var(--c-ai-border);
+  border-radius: var(--sp-16);
+  padding: var(--sp-18);
+  margin-bottom: var(--sp-18);
+}
+
+.card--ai .reason-badge {
+  width: 40rpx;
+  height: 40rpx;
+  background: linear-gradient(135deg, var(--c-ai), #8b7cf8);
+  border-radius: var(--sp-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card--ai .reason-badge text {
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1rpx;
+}
+
+.card--ai .reason-text {
+  flex: 1;
+  font-size: var(--fs-xs);
+  color: #5b4fc7;
+  line-height: 1.7;
+}
+
+.card--ai .match-dims {
+  margin-bottom: var(--sp-18);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+.card--ai .dim-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+.card--ai .dim-label {
+  width: 120rpx;
+  font-size: var(--fs-xxs);
+  color: var(--c-text-2);
+  flex-shrink: 0;
+}
+
+.card--ai .dim-bar {
+  flex: 1;
+  height: 10rpx;
+  background: var(--c-skeleton);
+  border-radius: 5rpx;
+  overflow: hidden;
+}
+
+.card--ai .dim-fill {
+  height: 100%;
+  border-radius: 5rpx;
+  transition: width .6s var(--ease-default);
+}
+
+.card--ai .dim-fill--high   { background: linear-gradient(90deg, var(--c-success), #4ade80); }
+.card--ai .dim-fill--medium { background: linear-gradient(90deg, var(--c-warn), #fbbf24); }
+.card--ai .dim-fill--low    { background: linear-gradient(90deg, var(--c-text-3), var(--c-skeleton-anim)); }
+
+.card--ai .dim-value {
+  width: 72rpx;
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  color: var(--c-text);
+  text-align: right;
+}
+
+/* ── 职位卡片 ── */
+.card--job .salary {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--c-accent);
+  letter-spacing: -1rpx;
+  margin-bottom: var(--sp-12);
+}
+
+.card--job .salary--empty {
+  color: var(--c-text-3);
+  font-weight: var(--fw-semibold);
+}
+
+.card--job .meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+  margin-bottom: var(--sp-12);
+}
+
+.card--job .meta-item {
+  font-size: var(--fs-xxs);
+  color: var(--c-text-2);
+  background: #f5f5f5;
+  padding: var(--sp-4) var(--sp-12);
+  border-radius: var(--sp-6);
+}
+
+/* ── 企业动态卡片 ── */
+.card--post .post-content {
+  padding: 0 var(--sp-24) var(--sp-16);
+}
+
+.card--post .content-text {
+  font-size: var(--fs-md);
+  color: var(--c-text);
+  line-height: 1.8;
+}
+
+.card--post .post-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+  padding: 0 var(--sp-24) var(--sp-16);
+}
+
+.card--post .post-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--sp-8);
+  background: var(--c-skeleton);
+}
+
+.card--post .post-job {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  margin: 0 var(--sp-24) var(--sp-16);
+  padding: var(--sp-16);
+  background: #f8f9fb;
+  border-radius: var(--sp-14);
+}
+
+.card--post .post-job-tag {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: var(--sp-8);
+  background: var(--c-accent);
+  color: #fff;
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card--post .post-job-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--c-text);
+  display: block;
+}
+
+.card--post .post-job-salary {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--c-accent);
+  display: block;
+  margin-top: 4rpx;
+}
+
+/* ── 操作按钮组 ── */
+.card-actions {
+  display: flex;
+  gap: var(--sp-12);
+  padding: var(--sp-16) var(--sp-24) var(--sp-24);
+}
+
+.card-btn {
+  height: var(--btn-height);
+  border-radius: var(--btn-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.card-btn--primary {
+  flex: 1.2;
+  background: linear-gradient(135deg, var(--c-accent), #ff7a5c);
+  color: #fff;
+  box-shadow: 0 6rpx 20rpx rgba(255,92,57,.2);
+}
+
+.card-btn--dark {
+  flex: 1;
+  background: var(--c-text);
+  color: #fff;
+}
+
+.card-btn--ghost {
+  flex: 0.8;
+  background: var(--c-skeleton);
+  color: var(--c-text-2);
+}
