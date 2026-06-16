@@ -12,6 +12,50 @@ var tools = {
       premium: '高端'
     };
     return map[type] || type || '';
+  },
+  getStatusText: function(status) {
+    var map = {
+      pending: '待处理',
+      viewed: '已查看',
+      accepted: '已通过',
+      rejected: '已拒绝'
+    };
+    return map[status] || status || '';
+  },
+  getFlow: function(status) {
+    var flows = {
+      pending: [
+        { label: '投递成功', done: true, active: false, result: '' },
+        { label: '等待查看', done: false, active: true, result: '', hint: '企业尚未查看你的简历' },
+        { label: '反馈结果', done: false, active: false, result: '', hint: '等待企业反馈' }
+      ],
+      viewed: [
+        { label: '投递成功', done: true, active: false, result: '' },
+        { label: '已被查看', done: true, active: false, result: '' },
+        { label: '反馈结果', done: false, active: true, result: '', hint: '等待企业反馈中' }
+      ],
+      accepted: [
+        { label: '投递成功', done: true, active: false, result: '' },
+        { label: '已被查看', done: true, active: false, result: '' },
+        { label: '已通过', done: true, active: true, result: 'pass' }
+      ],
+      rejected: [
+        { label: '投递成功', done: true, active: false, result: '' },
+        { label: '已被查看', done: true, active: false, result: '' },
+        { label: '未通过', done: true, active: true, result: 'fail' }
+      ]
+    };
+    return flows[status] || flows.pending;
+  },
+  formatTime: function(t) {
+    if (!t) return '';
+    var d = getDate(t);
+    var Y = d.getFullYear();
+    var M = d.getMonth() + 1;
+    var D = d.getDate();
+    if (M < 10) M = '0' + M;
+    if (D < 10) D = '0' + D;
+    return Y + '-' + M + '-' + D;
   }
 };
 

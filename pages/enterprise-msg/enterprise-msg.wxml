@@ -1,82 +1,34 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-
-<!-- 顶部 -->
-<view class="header" style="padding-top: {{statusBarHeight}}px;">
-  <view class="header-content">
-    <view class="header-title">消息</view>
-  </view>
-</view>
-
-<!-- 内容 -->
-<view class="content">
-
-  <!-- 搜索 + 通知入口 -->
-  <view class="search-bar">
-
-    <view class="search-wrapper">
-      <image class="icon-search" src="/pages/image/sousuo.png" mode="aspectFit" />
-      <input class="search-input" placeholder="搜索会话" />
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <text class="nav-logo">消息</text>
     </view>
-
-    <view class="notice-entry" bindtap="goNotifications">
-      <image class="notice-icon" src="/pages/image/notice.png" mode="aspectFit" />
-    </view>
-
   </view>
 
-  <!-- 会话列表 -->
-  <view class="conversation-list">
-
-    <view
-      wx:for="{{conversations}}"
-      wx:key="id"
-      class="conversation-card"
-      bindtap="goChat"
-      data-id="{{item.id}}"
-    >
-
-      <!-- 头像 -->
-      <view class="avatar">
-        <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
-        <view wx:else class="avatar-placeholder">
-          {{item.avatarLetter || '人'}}
-        </view>
-      </view>
-
-      <!-- 内容 -->
-      <view class="content-inner">
-
-        <view class="top-row">
-          <text class="name">{{item.username || item.name || '会话'}}</text>
-          <text class="time">{{item.formattedTime}}</text>
-        </view>
-
-        <view class="last">
-          {{item.lastMessage || item.last_message || '暂无消息'}}
-        </view>
-
-      </view>
-
-      <!-- 未读角标 -->
-      <view wx:if="{{item.showBadge}}" class="badge">
-        {{item.badgeText}}
-      </view>
-
-    </view>
-
-    <!-- 空状态 -->
-    <view wx:if="{{showEmpty}}" class="empty-card">
-      <image class="empty-icon" src="/pages/image/empty-message.png" />
-      <view class="empty-text">暂无会话</view>
-    </view>
-
-    <!-- 加载 -->
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
     <view wx:if="{{loading}}" class="loading">加载中...</view>
 
+    <view wx:elif="{{showEmpty}}" class="empty">
+      <text class="empty-icon">💬</text>
+      <text class="empty-text">暂无消息</text>
+    </view>
+
+    <view wx:else class="list">
+      <view wx:for="{{conversations}}" wx:key="id" class="card" bindtap="goChat" data-id="{{item.id}}">
+        <view class="card-left">
+          <view class="avatar">{{wxs.firstChar(item.other_name)}}</view>
+        </view>
+        <view class="card-body">
+          <view class="card-top">
+            <text class="card-name">{{item.other_name || '对方'}}</text>
+            <text class="card-time">{{wxs.formatTime(item.last_message_at)}}</text>
+          </view>
+          <text class="card-preview">{{item.last_message || '暂无消息'}}</text>
+        </view>
+      </view>
+    </view>
   </view>
-
-</view>
-
 </view>
 
 <enterprise-tabbar current="msg" />

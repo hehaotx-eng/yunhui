@@ -1,0 +1,51 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="page">
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <text class="nav-back-icon">‹</text>
+      </view>
+      <text class="nav-title">投递管理</text>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+    <scroll-view class="tabs" scroll-x enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{filters}}" wx:key="id" class="tab {{activeFilter === item.id ? 'active' : ''}}" bindtap="switchFilter" data-filter="{{item.id}}">{{item.name}}</view>
+    </scroll-view>
+
+    <view class="list">
+      <view wx:for="{{list}}" wx:key="id" class="card">
+        <view class="card-top">
+          <view class="app-info">
+            <view class="app-avatar">{{wxs.firstChar(item.user_name)}}</view>
+            <view class="app-detail">
+              <text class="app-name">{{item.user_name || '候选人'}}</text>
+              <text class="app-job">{{item.job_title || ''}}</text>
+            </view>
+          </view>
+          <text class="app-time">{{wxs.formatTime(item.created_at)}}</text>
+        </view>
+        <view class="card-actions">
+          <view class="action-left">
+            <text class="action-btn resume-btn" bindtap="viewResume" data-resumeid="{{item.resume_id}}">📄 简历</text>
+            <text class="status-tag status-{{item.status}}">{{item.status === 'pending' ? '待处理' : item.status === 'viewed' ? '已查看' : item.status === 'accepted' ? '已通过' : item.status === 'rejected' ? '已拒绝' : item.status}}</text>
+          </view>
+          <view class="action-btns">
+            <text wx:if="{{item.status !== 'viewed'}}" class="action-btn" bindtap="onChangeStatus" data-id="{{item.id}}" data-status="{{item.status}}">已查看</text>
+            <text wx:if="{{item.status !== 'accepted' && item.status !== 'rejected'}}" class="action-btn pass" bindtap="onChangeStatus" data-id="{{item.id}}" data-status="{{item.status}}">通过</text>
+            <text wx:if="{{item.status !== 'rejected' && item.status !== 'accepted'}}" class="action-btn fail" bindtap="onChangeStatus" data-id="{{item.id}}" data-status="{{item.status}}">拒绝</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{showEmpty}}" class="empty">
+        <view class="empty-icon">📋</view>
+        <text class="empty-text">暂无投递记录</text>
+      </view>
+      <view wx:if="{{loading}}" class="loading">加载中...</view>
+    </view>
+  </view>
+
+</view>

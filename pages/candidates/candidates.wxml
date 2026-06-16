@@ -1,99 +1,41 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-
-<!-- 顶部 -->
-<view class="header" style="padding-top: {{statusBarHeight}}px;">
-  <view class="header-content">
-    <view class="header-title">人才搜索</view>
-  </view>
-</view>
-
-<!-- 内容 -->
-<view class="content">
-
-  <!-- 搜索栏 -->
-  <view class="search-bar">
-    <view class="search-wrapper">
-      <image class="icon-search" src="/pages/image/sousuo.png" mode="aspectFit" />
-      <input
-        class="search-input"
-        placeholder="搜索候选人姓名/技能"
-        value="{{keyword}}"
-        bindinput="onKeywordInput"
-        bindconfirm="onSearch"
-        confirm-type="search"
-      />
-    </view>
-  </view>
-
-  <!-- 筛选横向滚动 -->
-  <scroll-view class="filter-scroll" scroll-x>
-    <view
-      wx:for="{{filters}}"
-      wx:key="id"
-      class="filter-item {{activeFilter === item.id ? 'active' : ''}}"
-      data-id="{{item.id}}"
-      bindtap="switchFilter"
-    >
-      {{item.name}}
-    </view>
-  </scroll-view>
-
-  <!-- 候选人列表 -->
-  <view class="candidate-list">
-
-    <view
-      wx:for="{{candidates}}"
-      wx:key="id"
-      class="candidate-card"
-      bindtap="goDetail"
-      data-id="{{item.id}}"
-    >
-
-      <!-- 头像 -->
-      <view class="avatar">
-        <image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
-        <view wx:else class="avatar-placeholder">{{item.username ? item.username.substring(0,1) : '用'}}</view>
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <text class="nav-logo">人才搜索</text>
+      <view class="nav-search">
+        <input class="search-input" placeholder="搜索姓名 / 技能 / 职位" placeholder-class="search-placeholder" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="onSearch" confirm-type="search" />
       </view>
+    </view>
+  </view>
 
-      <!-- 内容 -->
-      <view class="content-inner">
-
-        <!-- 名称 + 学历 -->
-        <view class="name-row">
-          <text class="name">{{item.username || '候选人'}}</text>
-          <text wx:if="{{item.education}}" class="education">{{item.education}}</text>
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+    <view class="list">
+      <view wx:for="{{list}}" wx:key="user_id" class="card" bindtap="viewResume" data-resumeid="{{item.resume_id}}">
+        <view class="card-top">
+          <view class="avatar">{{wxs.firstChar(item.nickname)}}</view>
+          <view class="info">
+            <text class="name">{{item.nickname || '候选人'}}</text>
+            <text class="title">{{item.expectedJob || item.title || '求职中'}}</text>
+          </view>
         </view>
-
-        <!-- 经验 + 城市 -->
-        <view class="meta">{{item.experience || '经验不限'}} · {{item.city || '地区不限'}}</view>
-
-        <!-- 技能标签 -->
-        <view class="skills">
-          <view wx:for="{{item.skills || ''}}" wx:for-item="skill" wx:key="*this" class="skill-tag">{{skill}}</view>
+        <view class="card-tags" wx:if="{{item.skills && item.skills.length > 0}}">
+          <text class="tag" wx:for="{{item.skills}}" wx:key="*this">{{item}}</text>
         </view>
-
+        <view class="card-meta">
+          <text wx:if="{{item.school}}" class="meta-item">{{item.school}}</text>
+          <text wx:if="{{item.education}}" class="meta-item">{{item.education}}</text>
+          <text wx:if="{{item.location}}" class="meta-item">{{item.location}}</text>
+        </view>
       </view>
 
-      <!-- 右箭头 -->
-      <view class="arrow">
-        <image src="/pages/image/arrow-right.png" mode="aspectFit" />
+      <view wx:if="{{showEmpty}}" class="empty">
+        <view class="empty-icon">🔍</view>
+        <text class="empty-text">暂无匹配的候选人</text>
       </view>
-
+      <view wx:if="{{loading}}" class="loading">加载中...</view>
     </view>
-
-    <!-- 空状态 -->
-    <view wx:if="{{showEmpty}}" class="empty-card">
-      <image class="empty-icon" src="/pages/image/empty-candidates.png" />
-      <view class="empty-text">暂无匹配的候选人</view>
-    </view>
-
-    <!-- 加载 -->
-    <view wx:if="{{loading}}" class="loading">加载中...</view>
-
   </view>
-
-</view>
-
 </view>
 
 <enterprise-tabbar current="candidates" />

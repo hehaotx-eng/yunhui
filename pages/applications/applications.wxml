@@ -1,34 +1,138 @@
+<!-- pages/delivery/delivery.wxml -->
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+
 <view class="page">
-  <view class="header">
-    <view class="header-text">投递管理</view>
-  </view>
-
+  <!-- Tab切换（增加角标） -->
   <view class="tabs-scroll">
-    <view wx:for="{{tabs}}" wx:key="id" class="tab {{active === item.id ? 'active' : ''}}" bindtap="switchTab" data-id="{{item.id}}">{{item.name}}</view>
+    <view 
+      wx:for="{{tabs}}" 
+      wx:key="id" 
+      class="tab {{active === item.id ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-id="{{item.id}}"
+    >
+      {{item.name}}
+      <view wx:if="{{item.count > 0}}" class="tab-badge">{{item.count}}</view>
+    </view>
   </view>
 
-  <view class="application-list">
-    <view wx:for="{{list}}" wx:key="id" class="application-card" bindtap="goDetail" data-id="{{item.jobId}}">
+  <!-- 列表 -->
+  <view class="list">
+    <view 
+      wx:for="{{list}}" 
+      wx:key="id" 
+      class="card" 
+      bindtap="goDetail" 
+      data-id="{{item.job_id}}"
+    >
+      <!-- ===== 卡片头部：职位+企业+全局状态 ===== -->
       <view class="card-header">
-        <view class="status-tag {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</view>
-        <view class="time">{{formatTime(item.createdAt)}}</view>
+        <view class="header-left">
+          <view class="company-logo">
+            <image wx:if="{{item.company_logo || item.logo}}" src="{{item.company_logo || item.logo}}" mode="aspectFill" />
+            <text wx:else>{{wxs.firstChar(item.enterpriseName)}}</text>
+          </view>
+          <view class="job-info">
+            <text class="job-title">{{item.title || '职位名称'}}</text>
+            <text class="company-name">{{item.enterpriseName || '企业'}}</text>
+          </view>
+        </view>
+        <view class="header-right">
+          <!-- 全局状态徽章（醒目） -->
+          <view class="status-badge {{item.status}}">
+            {{wxs.getStatusText(item.status)}}
+          </view>
+        </view>
       </view>
-      <view class="job-title">{{item.jobTitle || '职位名称'}}</view>
-      <view class="job-salary">{{item.salary || '薪资面议'}}</view>
-      <view class="company-info">
-        <image wx:if="{{item.company_logo || item.logo}}" class="company-logo" src="{{item.company_logo || item.logo}}" mode="aspectFill" />
-        <view wx:else class="company-logo">{{item.enterpriseName ? item.enterpriseName.substring(0,1) : '企'}}</view>
-        <view class="company-detail">
-          <view class="company-name">{{item.enterpriseName || '企业'}}</view>
-          <view class="company-meta">{{item.area || '地区不限'}}</view>
+
+      <!-- ===== 纵向时间轴（核心改进） ===== -->
+      <view class="timeline">
+        <view 
+          wx:for="{{wxs.getFlow(item.status)}}" 
+          wx:for-item="step"
+          wx:for-index="idx"
+          wx:key="index"
+          class="timeline-item"
+        >
+          <!-- 左侧：节点 + 连接线 -->
+          <view class="timeline-left">
+            <view class="node-wrapper">
+              <view class="node 
+                {{step.active ? 'node-active' : ''}} 
+                {{step.result === 'pass' ? 'node-pass' : ''}} 
+                {{step.result === 'fail' ? 'node-fail' : ''}}
+                {{step.done && !step.active && !step.result ? 'node-done' : ''}}
+              ">
+                <text wx:if="{{step.result === 'pass'}}">✓</text>
+                <text wx:elif="{{step.result === 'fail'}}">✕</text>
+                <text wx:elif="{{step.active}}">●</text>
+                <text wx:else>○</text>
+              </view>
+              <!-- 进行中脉动动画 -->
+              <view wx:if="{{step.active && !step.result}}" class="node-pulse"></view>
+            </view>
+            <!-- 连接线（仅前两项之间有） -->
+            <view wx:if="{{idx < 2}}" class="connector {{step.done || step.result === 'pass' ? 'connector-done' : ''}}"></view>
+          </view>
+
+          <!-- 右侧：标题 + 状态标签 + 提示文字 -->
+          <view class="timeline-right">
+            <view class="timeline-header">
+              <text class="timeline-title 
+                {{step.active ? 'title-active' : ''}} 
+                {{step.result === 'pass' ? 'title-pass' : ''}} 
+                {{step.result === 'fail' ? 'title-fail' : ''}}
+              ">
+                {{step.label}}
+              </text>
+              <!-- 微型状态标签 -->
+              <text class="mini-tag 
+                {{step.active ? 'tag-doing' : ''}} 
+                {{step.result === 'pass' ? 'tag-pass' : ''}} 
+                {{step.result === 'fail' ? 'tag-fail' : ''}}
+                {{step.done && !step.active && !step.result ? 'tag-done' : ''}}
+              ">
+                <text wx:if="{{step.active && !step.result}}">进行中</text>
+                <text wx:elif="{{step.result === 'pass'}}">通过</text>
+                <text wx:elif="{{step.result === 'fail'}}">未通过</text>
+                <text wx:elif="{{step.done && !step.active}}">已完成</text>
+                <text wx:else>待处理</text>
+              </text>
+            </view>
+            <!-- 提示文字（关键信息） -->
+            <text class="timeline-hint">
+              <text wx:if="{{step.active && !step.result}}">{{step.hint || '处理中...'}}</text>
+              <text wx:elif="{{step.result === 'pass'}}">🎉 恭喜通过，等待下一步</text>
+              <text wx:elif="{{step.result === 'fail'}}">💪 别灰心，继续加油</text>
+              <text wx:elif="{{step.done && !step.active}}">已完成此阶段</text>
+              <text wx:else>{{step.hint || '等待开始'}}</text>
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <!-- ===== 底部：投递时间 + 薪资地点 ===== -->
+      <view class="card-footer">
+        <text class="footer-time">📅 {{wxs.formatTime(item.created_at)}}</text>
+        <view class="footer-right">
+          <text class="footer-location">{{item.area || ''}}</text>
+          <text class="footer-salary">{{item.salary_min && item.salary_max ? (item.salary_min) + '-' + (item.salary_max) + '元' : item.salary_min ? (item.salary_min) + '元起' : '薪资面议'}}</text>
         </view>
       </view>
     </view>
 
+    <!-- 空状态 -->
     <view wx:if="{{showEmpty}}" class="empty-card">
       <view class="empty-icon">📭</view>
-      <view class="empty-text">暂无投递记录</view>
+      <view class="empty-title">暂无投递记录</view>
+      <view class="empty-desc">快去浏览心仪的职位吧</view>
+      <view class="empty-btn" bindtap="goBrowse">去浏览职位</view>
     </view>
-    <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-wrap">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
   </view>
 </view>

@@ -12,6 +12,7 @@
 
     <!-- 企业头部 -->
     <view class="ep-header">
+      <image class="ep-header-bg" src="{{enterprise.logo || enterprise.company_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
       <image class="ep-logo" src="{{enterprise.logo || enterprise.company_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
       <view class="ep-name">{{enterprise.name}}</view>
       <view class="ep-tags">
@@ -63,7 +64,7 @@
         <text class="section-title">在招岗位</text>
         <text class="job-count">{{enterprise.jobs ? enterprise.jobs.length : 0}}个</text>
       </view>
-      <view wx:for="{{enterprise.jobs || jobs}}" wx:key="id" class="job-item" bindtap="goJob" data-id="{{item.id}}">
+      <view wx:for="{{enterprise.jobs || jobs}}" wx:key="id" class="job-item job-animate" style="animation-delay: {{index * 0.08}}s" bindtap="goJob" data-id="{{item.id}}">
         <view class="job-top">
           <text class="job-title">{{item.title}}</text>
           <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + 'K' : '面议')}}</text>

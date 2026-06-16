@@ -21,15 +21,16 @@
 .dp-banner-img { width: 100%; height: 100%; }
 
 /* Quick Links */
-.dp-quick-links { display: flex; justify-content: center; align-items: flex-start; padding: 20rpx 0 10rpx; gap: 24rpx; }
-.dp-ql-item { display: flex; flex-direction: column; align-items: center; gap: 10rpx; }
+.dp-ql-section { display: flex; justify-content: center; align-items: flex-start; padding: 20rpx 0 10rpx; gap: 24rpx; }
+.dp-ql-item { display: flex; flex-direction: column; align-items: center; gap: 10rpx; flex: 1; }
 .dp-ql-icon { width: 56rpx; height: 56rpx; }
 .dp-ql-label { font-size: 24rpx; color: #333; }
 
 /* Notice Bar */
 .dp-notice-bar { display: flex; align-items: center; background: #fff8f0; padding: 14rpx 24rpx; }
-.dp-notice-icon { width: 32rpx; height: 32rpx; margin-right: 12rpx; flex-shrink: 0; }
+.dp-notice-icon { width: 32rpx; height: 32rpx; margin-right: 12rpx; flex-shrink: 0; display: block; }
 .dp-notice-swiper { flex: 1; height: 32rpx; }
+.dp-notice-swiper swiper-item { display: flex; align-items: center; }
 .dp-notice-text { font-size: 24rpx; color: #b8860b; line-height: 32rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dp-notice-more { font-size: 22rpx; color: #b8860b; margin-left: 12rpx; flex-shrink: 0; }
 
@@ -56,14 +57,28 @@
 .dp-custom-text { font-size: 28rpx; color: #333; }
 
 /* Job List Section */
-.dp-section { margin: 0 24rpx 20rpx; background: #fff; border-radius: 20rpx; padding: 24rpx; }
+.dp-section { margin: 0 24rpx 20rpx; background: #fff; border-radius: 24rpx; padding: 24rpx; box-shadow: 0 4rpx 16rpx rgba(15,23,42,.04); }
 .dp-section-header { margin-bottom: 16rpx; }
 .dp-section-title { font-size: 30rpx; font-weight: 700; color: #1a1a2e; }
-.dp-job-card { padding: 16rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.dp-job-card { padding: 24rpx 0; border-bottom: 1rpx solid #f0f0f0; }
 .dp-job-card:last-child { border-bottom: none; }
-.dp-job-title { font-size: 28rpx; font-weight: 600; color: #1a1a2e; }
-.dp-job-meta { font-size: 24rpx; color: #999; margin-top: 8rpx; }
+.dp-job-title { font-size: 32rpx; font-weight: 700; color: #111827; line-height: 1.4; margin-bottom: 10rpx; }
+.dp-job-meta { display: flex; justify-content: space-between; align-items: center; font-size: 24rpx; margin-bottom: 10rpx; }
+.dp-salary { font-size: 34rpx; font-weight: 700; color: #ff5c39; }
+.dp-company { color: #666; }
+.dp-job-extra { display: flex; gap: 12rpx; margin-bottom: 10rpx; }
+.dp-tag { font-size: 22rpx; color: #999; background: #f5f5f5; padding: 4rpx 14rpx; border-radius: 6rpx; }
+.dp-job-tags { display: flex; flex-wrap: wrap; gap: 8rpx; }
+.dp-welfare { font-size: 22rpx; color: #3b82f6; background: #eff6ff; padding: 4rpx 14rpx; border-radius: 6rpx; }
 .dp-empty { text-align: center; color: #999; padding: 40rpx 0; font-size: 26rpx; }
+
+/* Company Posts */
+.dp-post-card { display: flex; align-items: center; gap: 16rpx; padding: 16rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.dp-post-card:last-child { border-bottom: none; }
+.dp-post-avatar { width: 48rpx; height: 48rpx; border-radius: 12rpx; background: linear-gradient(135deg,#6d5efc,#8b7cf8); display: flex; align-items: center; justify-content: center; font-size: 24rpx; font-weight: 700; color: #fff; flex-shrink: 0; }
+.dp-post-info { flex: 1; }
+.dp-post-title { font-size: 26rpx; font-weight: 600; color: #1a1a2e; }
+.dp-post-meta { font-size: 22rpx; color: #999; margin-top: 4rpx; }
 
 /* Skeleton */
 .dp-skeleton-card { padding: 16rpx 0; }

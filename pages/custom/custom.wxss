@@ -1,0 +1,9 @@
+.custom-page { min-height: 100vh; background: #f6f7f9; }
+.custom-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #fff; border-bottom: 1rpx solid #f0f0f0; }
+.nav-inner { height: 44px; display: flex; align-items: center; padding: 0 16rpx; }
+.nav-back { display: flex; align-items: center; gap: 4rpx; padding: 0 12rpx; height: 100%; }
+.nav-back-arrow { font-size: 40rpx; color: #333; font-weight: 300; line-height: 1; }
+.nav-back-text { font-size: 28rpx; color: #333; }
+.nav-title { flex: 1; text-align: center; font-size: 32rpx; font-weight: 600; color: #1a1a2e; }
+.nav-placeholder { width: 100rpx; }
+.custom-body { min-height: 100vh; }

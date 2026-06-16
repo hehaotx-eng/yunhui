@@ -1,147 +1,129 @@
 <view class="page">
 
-  <!-- 顶部导航 -->
   <view class="header" style="padding-top: {{statusBarHeight}}px;">
-    <view class="header-content">
-      <view class="header-title">企业工作台</view>
+    <view class="header-inner">
+      <text class="header-title">招聘仪表盘</text>
+      <text class="header-date">{{currentDate}}</text>
     </view>
   </view>
 
-    <!-- 内容 -->
   <view class="content">
 
-    <!-- 骨架屏 -->
     <block wx:if="{{loading}}">
-
-      <!-- 数据概览骨架 -->
-      <view class="section">
-        <view class="section-title-skeleton skeleton"></view>
-        <view class="stats-grid">
-          <view class="stat-card-skeleton" wx:for="{{5}}" wx:key="index">
-            <view class="skeleton-value skeleton"></view>
-            <view class="skeleton-label skeleton"></view>
+      <view class="skeleton-wrap">
+        <view class="skeleton-grid">
+          <view class="skeleton-metric" wx:for="{{4}}" wx:key="index">
+            <view class="sk-line sk-w-30"></view>
+            <view class="sk-line sk-w-50"></view>
+            <view class="sk-line sk-w-20"></view>
+          </view>
+        </view>
+        <view class="sk-block"></view>
+        <view class="sk-block sk-h-60"></view>
+        <view class="sk-list">
+          <view class="sk-row" wx:for="{{5}}" wx:key="index">
+            <view class="sk-line sk-w-70"></view>
+            <view class="sk-line sk-w-30"></view>
           </view>
         </view>
       </view>
-
-      <!-- AI推荐骨架 -->
-      <view class="section">
-        <view class="section-title-skeleton skeleton"></view>
-        <view class="ai-card-skeleton" wx:for="{{3}}" wx:key="index">
-          <view class="skeleton-avatar skeleton"></view>
-          <view class="skeleton-info">
-            <view class="skeleton-name skeleton"></view>
-            <view class="skeleton-desc skeleton"></view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 快捷入口骨架 -->
-      <view class="section">
-        <view class="section-title-skeleton skeleton"></view>
-        <view class="quick-grid">
-          <view class="quick-card-skeleton" wx:for="{{4}}" wx:key="index">
-            <view class="skeleton-icon skeleton"></view>
-            <view class="skeleton-text skeleton"></view>
-          </view>
-        </view>
-      </view>
-
     </block>
 
-    <!-- 实际内容 -->
     <block wx:else>
 
-      <!-- 今日数据概览 -->
+      <!-- ============ 第一屏：核心指标 ============ -->
       <view class="section">
-        <view class="section-header">
-          <text class="section-title">今日数据概览</text>
+        <view class="section-head">
+          <text class="section-title">核心指标</text>
+          <view class="section-tag">今日</view>
         </view>
-
-        <view class="stats-grid">
-          <view class="stat-card" bindtap="goJobs">
-            <view class="stat-value">{{stats.total || 0}}</view>
-            <view class="stat-label">职位总数</view>
-          </view>
-
-          <view class="stat-card" bindtap="goJobs">
-            <view class="stat-value">{{stats.online || 0}}</view>
-            <view class="stat-label">在线职位</view>
-          </view>
-
-          <view class="stat-card" bindtap="goApplications">
-            <view class="stat-value">{{applicationStats.total || 0}}</view>
-            <view class="stat-label">投递总数</view>
-          </view>
-
-          <view class="stat-card highlight" bindtap="goApplications">
-            <view class="stat-value">{{applicationStats.pendingReview || 0}}</view>
-            <view class="stat-label">待查看投递</view>
-          </view>
-
-          <view class="stat-card highlight" bindtap="goCandidates">
-            <view class="stat-value">{{candidates || 0}}</view>
-            <view class="stat-label">候选人</view>
+        <view class="metric-grid">
+          <view class="metric-card" wx:for="{{metricList}}" wx:key="key" hover-class="metric-hover">
+            <view class="metric-value">{{item.value}}<text class="metric-unit" wx:if="{{item.unit}}">{{item.unit}}</text></view>
+            <view class="metric-label">{{item.label}}</view>
+            <view class="metric-change {{item.trend > 0 ? 'up' : 'down'}}">
+              <text wx:if="{{item.trend > 0}}">↑</text>
+              <text wx:else>↓</text>
+              {{item.trend}}%
+            </view>
           </view>
         </view>
       </view>
 
+      <!-- ============ 第二屏：投递趋势 ============ -->
+      <view class="section">
+        <view class="section-head">
+          <text class="section-title">投递趋势</text>
+          <view class="section-tag">近7日</view>
+        </view>
+        <view class="card chart-card">
+          <canvas type="2d" id="trendChart" class="chart-canvas"></canvas>
+        </view>
+      </view>
+
+      <!-- ============ 第三屏：招聘漏斗 ============ -->
+      <view class="section">
+        <view class="section-head">
+          <text class="section-title">招聘漏斗</text>
+          <view class="section-tag">近30日</view>
+        </view>
+        <view class="card funnel-card">
+          <view class="funnel-step" wx:for="{{funnel}}" wx:key="stage" hover-class="funnel-hover">
+            <view class="funnel-labels">
+              <text class="funnel-stage">{{item.stage}}</text>
+              <text class="funnel-count">{{item.count}}</text>
+            </view>
+            <view class="funnel-bar-bg">
+              <view class="funnel-bar" style="width: {{item.percentage}}%; background-color: {{item.barColor}};"></view>
+            </view>
+            <text class="funnel-rate">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- ============ 第四屏：业务列表 ============ -->
       <!-- 最近投递 -->
       <view class="section">
-        <view class="section-header">
+        <view class="section-head">
           <text class="section-title">最近投递</text>
-          <text class="section-more" bindtap="goApplications">查看全部</text>
+          <text class="section-more" hover-class="more-hover">查看全部 →</text>
         </view>
-
-        <block wx:if="{{recentApplications.length > 0}}">
-          <view class="app-card" wx:for="{{recentApplications}}" wx:key="id" bindtap="goApplicationDetail" data-id="{{item.id}}">
-            <view class="app-info">
-              <view class="app-name">{{item.user_name || '求职者'}}</view>
-              <view class="app-job">{{item.job_title}}</view>
+        <view class="card list-card">
+          <view class="list-row" wx:for="{{recentApplications}}" wx:key="id" hover-class="row-hover">
+            <view class="row-left">
+              <view class="row-avatar">{{item.name[0]}}</view>
+              <view class="row-info">
+                <view class="row-top">
+                  <text class="row-name">{{item.name}}</text>
+                  <view class="status-tag {{item.statusClass}}">{{item.statusText}}</view>
+                </view>
+                <view class="row-meta">{{item.job}} · {{item.company}}</view>
+              </view>
             </view>
-            <view class="app-status {{item.status}}">{{item.status === 'pending' ? '待查看' : item.status === 'viewed' ? '已查看' : item.status === 'accepted' ? '已通过' : '已拒绝'}}</view>
+            <text class="row-time">{{item.time}}</text>
           </view>
-        </block>
-
-        <view class="empty-card" wx:else>
-          <view class="empty-text">暂无投递记录</view>
-          <view class="empty-sub">发布职位后，求职者即可投递简历</view>
         </view>
       </view>
 
-      <!-- 快捷入口 -->
+      <!-- 最新发布岗位 -->
       <view class="section">
-        <view class="section-header">
-          <text class="section-title">快捷入口</text>
+        <view class="section-head">
+          <text class="section-title">最新发布岗位</text>
+          <text class="section-more" hover-class="more-hover">查看全部 →</text>
         </view>
-
-        <view class="quick-grid">
-          <view class="quick-card" bindtap="goPostJob">
-            <view class="quick-icon post">
-              <text class="icon-text">+</text>
+        <view class="card list-card">
+          <view class="list-row" wx:for="{{recentJobs}}" wx:key="id" hover-class="row-hover">
+            <view class="row-left">
+              <view class="row-icon">职</view>
+              <view class="row-info">
+                <view class="row-top">
+                  <text class="row-name">{{item.title}}</text>
+                  <view class="status-tag {{item.statusClass}}">{{item.statusText}}</view>
+                </view>
+                <view class="row-meta">{{item.company}} · {{item.salary}}</view>
+              </view>
             </view>
-            <view class="quick-text">发布职位</view>
-          </view>
-
-          <view class="quick-card" bindtap="goJobs">
-            <view class="quick-icon manage">
-              <text class="icon-text">管</text>
-            </view>
-            <view class="quick-text">管理职位</view>
-          </view>
-
-          <view class="quick-card" bindtap="goApplications">
-            <view class="quick-icon apply">
-              <text class="icon-text">递</text>
-            </view>
-            <view class="quick-text">查看投递</view>
-          </view>
-
-          <view class="quick-card" bindtap="goCandidates">
-            <view class="quick-icon talent">
-              <text class="icon-text">才</text>
-            </view>
-            <view class="quick-text">人才库</view>
+            <text class="row-time">{{item.time}}</text>
           </view>
         </view>
       </view>
@@ -150,6 +132,4 @@
 
   </view>
 
-  </view>
-
-<enterprise-tabbar current="home" />
+</view>

@@ -1,17 +1,17 @@
-const { jobs, applications } = require('../../utils/api.js');
+const { jobs, applications, request } = require('../../utils/api.js');
 
 Page({
   data: {
-    stats: { applicants: 0, jobs: 0 },
+    statusBarHeight: 0,
+    loading: true,
+    stats: { jobs: 0, online: 0, applicants: 0, candidates: 0 },
     myJobs: [],
-    loading: false,
-    statusBarHeight: 0
+    recentApps: []
   },
 
   onLoad() {
     const sysInfo = wx.getSystemInfoSync();
     this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
-    this.checkUserRole();
     this.loadData();
   },
 
@@ -19,34 +19,43 @@ Page({
     this.loadData();
   },
 
-  checkUserRole() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.company_id) {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
-    }
-  },
-
   async loadData() {
     this.setData({ loading: true });
     try {
-      const myJobs = await jobs.getMyList();
-      const jobList = Array.isArray(myJobs) ? myJobs : (myJobs.list || myJobs.rows || []);
+      let jobList = [];
+      try {
+        const result = await jobs.getMyList();
+        jobList = Array.isArray(result) ? result : (result.list || result.rows || []);
+      } catch (e) {
+        console.log('jobs fallback:', e.message);
+      }
 
-      let totalApplicants = 0;
-      for (const job of jobList.slice(0, 5)) {
-        try {
-          const apps = await applications.getByJob(job.id, { limit: 1 });
-          totalApplicants += apps.total || 0;
-        } catch {}
+      let recentApps = [];
+      try {
+        recentApps = await request({ url: '/api/v1/enterprise/applications' });
+      } catch (e) {
+        console.log('apps fallback:', e.message);
+      }
+
+      const applicants = recentApps.length;
+      const uniqueCandidates = new Set();
+      for (let i = 0; i < recentApps.length; i++) {
+        uniqueCandidates.add(recentApps[i].user_name);
       }
 
       this.setData({
+        stats: {
+          jobs: jobList.length,
+          online: jobList.filter(function(item) { return item.status === 'online'; }).length,
+          applicants: applicants,
+          candidates: uniqueCandidates.size
+        },
+        recentApps: recentApps.slice(0, 5),
         myJobs: jobList.slice(0, 5),
-        stats: { applicants: totalApplicants, jobs: jobList.length }
+        loading: false
       });
     } catch (e) {
-      console.error('加载数据失败:', e);
-    } finally {
+      console.error('加载企业数据失败:', e);
       this.setData({ loading: false });
     }
   },
@@ -55,8 +64,39 @@ Page({
     wx.navigateTo({ url: '/pages/post-job/post-job' });
   },
 
+  goJobs() {
+    wx.switchTab({ url: '/pages/enterprise-jobs/enterprise-jobs' });
+  },
+
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  },
+
+  goApplications() {
+    wx.navigateTo({ url: '/pages/enterprise-applications/enterprise-applications' });
+  },
+
+  goCandidates() {
+    wx.switchTab({ url: '/pages/candidates/candidates' });
+  },
+
+  onChangeStatus(e) {
+    const id = e.currentTarget.dataset.id;
+    const current = e.currentTarget.dataset.status;
+    wx.showActionSheet({
+      itemList: ['标记为已查看', '标记为已通过', '标记为未通过'],
+      success: (res) => {
+        const map = ['viewed', 'accepted', 'rejected'];
+        const status = map[res.tapIndex];
+        if (status === current) return;
+        applications.updateStatus(id, status).then(() => {
+          wx.showToast({ title: '状态已更新', icon: 'success' });
+          this.loadData();
+        }).catch(e => {
+          wx.showToast({ title: e.message || '操作失败', icon: 'none' });
+        });
+      }
+    });
   }
 });

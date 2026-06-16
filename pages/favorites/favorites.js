@@ -1,19 +1,20 @@
-const { favorites } = require('../../utils/api.js');
+const { favorites } = require('../../utils/api');
 
 Page({
   data: { list: [], loading: true, showEmpty: false },
-  onLoad() { this.loadList(); },
+  onShow() { this.loadList(); },
   onPullDownRefresh() { this.loadList().finally(() => wx.stopPullDownRefresh()); },
   async loadList() {
     this.setData({ loading: true });
     try {
-      const result = await favorites.getList();
-      const list = Array.isArray(result) ? result : (result.data || result.list || []);
+      const list = await favorites.getList();
       this.setData({ list, loading: false, showEmpty: list.length === 0 });
-    } catch (error) {
+    } catch (e) {
       this.setData({ loading: false });
-      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+      wx.showToast({ title: e.message || '加载失败', icon: 'none' });
     }
   },
-  goDetail(e) { wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` }); }
+  goDetail(e) {
+    wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` });
+  }
 });

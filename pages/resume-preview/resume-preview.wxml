@@ -1,0 +1,77 @@
+<view class="page">
+  <view class="body">
+    <view wx:if="{{loading}}" class="loading-wrap">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <block wx:elif="{{resume && resume.content}}">
+      <view class="profile-card">
+        <view class="profile-avatar">{{resume.content.name ? resume.content.name.substring(0,1) : '我'}}</view>
+        <view class="profile-info">
+          <text class="profile-name">{{resume.content.name || resume.title || '我的简历'}}</text>
+          <text class="profile-title">{{resume.content.expectedJob || '求职中'}}</text>
+          <view class="profile-tags">
+            <text wx:if="{{resume.content.gender}}" class="profile-tag">{{resume.content.gender}}</text>
+            <text wx:if="{{resume.content.birthDate}}" class="profile-tag">{{resume.content.birthDate}}</text>
+            <text wx:if="{{resume.content.location}}" class="profile-tag">{{resume.content.location}}</text>
+            <text wx:if="{{resume.content.workType}}" class="profile-tag">{{resume.content.workType}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="contact-card">
+        <text class="contact-label">联系方式</text>
+        <text wx:if="{{resume.content.phone}}" class="contact-text">手机 {{resume.content.phone}}</text>
+        <text wx:if="{{resume.content.email}}" class="contact-text">邮箱 {{resume.content.email}}</text>
+      </view>
+
+      <view wx:if="{{resume.content.expectedJob || resume.content.expectedSalary || resume.content.expectedCity}}" class="section">
+        <text class="section-title">求职意向</text>
+        <view class="intent-grid">
+          <view class="intent-item" wx:if="{{resume.content.expectedJob}}">
+            <text class="intent-label">期望职位</text>
+            <text class="intent-value">{{resume.content.expectedJob}}</text>
+          </view>
+          <view class="intent-item" wx:if="{{resume.content.expectedSalary}}">
+            <text class="intent-label">期望薪资</text>
+            <text class="intent-value">{{resume.content.expectedSalary}}</text>
+          </view>
+          <view class="intent-item" wx:if="{{resume.content.expectedCity}}">
+            <text class="intent-label">期望城市</text>
+            <text class="intent-value">{{resume.content.expectedCity}}</text>
+          </view>
+          <view class="intent-item" wx:if="{{resume.content.workType}}">
+            <text class="intent-label">工作性质</text>
+            <text class="intent-value">{{resume.content.workType}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{resume.content.school}}" class="section">
+        <text class="section-title">教育经历</text>
+        <view class="edu-card">
+          <view class="edu-circle"></view>
+          <view class="edu-content">
+            <view class="edu-head">
+              <text class="edu-school">{{resume.content.school}}</text>
+              <text wx:if="{{resume.content.education}}" class="edu-badge">{{resume.content.education}}</text>
+            </view>
+            <text wx:if="{{resume.content.major}}" class="edu-major">{{resume.content.major}}</text>
+            <text class="edu-date">{{resume.content.startDate || ''}} - {{resume.content.endDate || '至今'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{resume.content.skills && resume.content.skills.length > 0}}" class="section">
+        <text class="section-title">专业技能</text>
+        <view class="skill-wrap">
+          <text class="skill-tag" wx:for="{{resume.content.skills}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{from !== 'enterprise'}}" class="bottom-bar">
+        <view class="btn-edit" bindtap="goEdit">编辑简历</view>
+      </view>
+    </block>
+  </view>
+</view>

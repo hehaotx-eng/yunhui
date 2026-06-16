@@ -1,16 +1,34 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-  <scroll-view class="message-list" scroll-y scroll-into-view="bottom" enhanced show-scrollbar="false">
-    <view wx:for="{{messages}}" wx:key="id" class="message-item {{item.senderId == myUserId || item.sender_id == myUserId ? 'mine' : ''}}">
-      <view class="avatar">{{getAvatarLetter(item)}}</view>
-      <view class="bubble-wrap">
-        <view wx:if="{{!(item.senderId == myUserId || item.sender_id == myUserId)}}" class="sender-name">{{item.enterpriseName || item.username || '对方'}}</view>
-        <view class="bubble">{{item.content}}</view>
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <text class="nav-back-icon">‹</text>
       </view>
+      <text class="nav-title">聊天</text>
+      <view class="nav-placeholder"></view>
     </view>
-    <view id="bottom"></view>
-  </scroll-view>
+  </view>
+
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+    <scroll-view class="msg-list" scroll-y scroll-into-view="bottom" enhanced show-scrollbar="{{false}}">
+      <view wx:if="{{messages.length === 0}}" class="empty-chat">
+        <text class="empty-chat-icon">💬</text>
+        <text class="empty-chat-text">发送第一条消息开始聊天</text>
+      </view>
+      <view wx:for="{{messages}}" wx:key="id" class="msg-item {{item.sender_id == myUserId ? 'mine' : ''}}">
+        <view class="msg-avatar">{{wxs.firstChar(item.nickname || item.sender_name)}}</view>
+        <view class="msg-content">
+          <text class="msg-name" wx:if="{{item.sender_id != myUserId}}">{{item.nickname || '对方'}}</text>
+          <view class="msg-bubble">{{item.content}}</view>
+        </view>
+      </view>
+      <view id="bottom"></view>
+    </scroll-view>
+  </view>
+
   <view class="input-bar">
-    <input value="{{inputValue}}" bindinput="onInput" placeholder="输入消息" confirm-type="send" bindconfirm="sendMessage" />
+    <input class="input-field" value="{{inputValue}}" bindinput="onInput" placeholder="输入消息" confirm-type="send" bindconfirm="sendMessage" />
     <view class="send-btn" bindtap="sendMessage">发送</view>
   </view>
 </view>

@@ -1,4 +1,5 @@
 const { applications } = require('../../utils/api.js');
+const { resolve } = require('../../utils/image');
 
 Page({
   data: {
@@ -33,7 +34,12 @@ Page({
     this.setData({ loading: true });
     try {
       const result = await applications.getMy();
-      const list = Array.isArray(result) ? result : (result.list || result || []);
+      let list = Array.isArray(result) ? result : (result.list || result || []);
+      list = list.map(item => {
+        if (item.company_logo) item.company_logo = resolve(item.company_logo);
+        if (item.logo) item.logo = resolve(item.logo);
+        return item;
+      });
       this.setData({ allList: list });
       this.filterList();
     } catch (error) {
@@ -52,18 +58,12 @@ Page({
     this.setData({ list: filtered, showEmpty: filtered.length === 0 });
   },
 
-  getStatusText(status) {
-    const map = {
-      pending: '待处理',
-      viewed: '已查看',
-      accepted: '已通过',
-      rejected: '已拒绝'
-    };
-    return map[status] || status;
-  },
-
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  },
+
+  goBrowse() {
+    wx.switchTab({ url: '/pages/webs/webs' });
   }
 });

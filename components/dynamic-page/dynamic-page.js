@@ -27,6 +27,7 @@ Component({
     activeCategory: '',
     categories: [{ id: '', name: '推荐' }],
     feedList: [],
+    companyPosts: [],
     skeleton: true
   },
 
@@ -94,13 +95,14 @@ Component({
 
     initWidgets(config) {
       console.log('[dynamic-page] initWidgets, types:', config.map(w => w.type).join(', '));
-      const needs = { banner: false, quick_links: false, notice_bar: false, category_tabs: false, job_list: false };
+      const needs = { banner: false, quick_links: false, notice_bar: false, category_tabs: false, job_list: false, company_posts: false };
       config.forEach(w => { if (needs.hasOwnProperty(w.type)) needs[w.type] = true; });
       if (needs.banner) this.loadBanners();
       if (needs.quick_links) this.loadQuickLinks();
       if (needs.notice_bar) this.loadNotices();
       if (needs.category_tabs) this.loadCategories();
       if (needs.job_list) this.loadJobs();
+      if (needs.company_posts) this.loadCompanyPosts();
     },
 
     async loadBanners() {
@@ -155,12 +157,29 @@ Component({
       }
     },
 
+    async loadCompanyPosts() {
+      const { request } = require('../../utils/api');
+      try {
+        const res = await request({ url: '/api/v1/company-posts', needAuth: false });
+        const list = Array.isArray(res) ? res : (res?.list || []);
+        this.setData({ companyPosts: list });
+        console.log('[dynamic-page] companyPosts loaded:', list.length);
+      } catch (e) { console.error('[dynamic-page] loadCompanyPosts failed:', e); }
+    },
+
     onSearchTap() { wx.navigateTo({ url: '/pages/search/search' }); },
     onBannerChange(e) { this.triggerEvent('bannerchange', { current: e.detail.current }); },
     onCategoryTap(e) { this.setData({ activeCategory: e.currentTarget.dataset.id }); this.triggerEvent('categorytap', { id: e.currentTarget.dataset.id }); },
-    onJobTap(e) { const id = e.currentTarget.dataset.id; if (id) wx.navigateTo({ url: `/pages/detail/detail?id=${id}` }); },
-    onQuickLinkTap(e) { const link = e.currentTarget.dataset.link; if (link) wx.navigateTo({ url: link }); },
+    onJobTap(e) { const id = e.currentTarget.dataset.id; const jobId = id || e.currentTarget.dataset.jobId; if (jobId) wx.navigateTo({ url: `/pages/detail/detail?id=${jobId}` }); },
+    onQuickLinkTap(e) {
+      const link = e.currentTarget.dataset.link;
+      console.log('[dynamic-page] quickLink tap, link:', link);
+      if (!link) { console.warn('[dynamic-page] quickLink has no link field'); return; }
+      if (!link.startsWith('/')) { console.warn('[dynamic-page] link must start with /'); return; }
+      wx.navigateTo({ url: link, fail: (err) => console.error('[dynamic-page] navigate failed:', err) });
+    },
     onNoticeTap() { wx.navigateTo({ url: '/pages/notifications/notifications' }); },
-    onCustomBlockTap(e) { const link = e.currentTarget.dataset.link; if (link) wx.navigateTo({ url: link }); }
+    onCustomBlockTap(e) { const link = e.currentTarget.dataset.link; if (link) wx.navigateTo({ url: link }); },
+    onPostDetail(e) { const id = e.currentTarget.dataset.id; if (id) wx.navigateTo({ url: `/pages/notifications/notifications?id=${id}` }); }
   }
 });

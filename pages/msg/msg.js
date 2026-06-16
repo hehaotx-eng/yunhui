@@ -2,12 +2,17 @@ const { chat } = require('../../utils/api.js');
 
 Page({
   data: {
+    statusBarHeight: 0,
     conversations: [],
     loading: true,
     showEmptyTip: false
   },
 
   onShow() {
+    if (!this.data.statusBarHeight) {
+      var sys = wx.getSystemInfoSync();
+      this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
+    }
     const app = getApp();
     const tabBar = this.getTabBar();
     if (tabBar) {

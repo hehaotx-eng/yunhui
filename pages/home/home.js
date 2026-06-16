@@ -25,6 +25,11 @@ Page({
   },
 
   async onLoad() {
+    const app = getApp();
+    if (app.globalData.isEnterprise) {
+      wx.redirectTo({ url: '/pages/enterprise-home/enterprise-home' });
+      return;
+    }
     const sysInfo = wx.getSystemInfoSync();
     this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
     const { request } = require('../../utils/api');
@@ -80,7 +85,14 @@ Page({
 
   goNotifications() { wx.navigateTo({ url: '/pages/notifications/notifications' }); },
 
-  onShow() { this.syncTabBar(); },
+  onShow() {
+    const app = getApp();
+    if (app.globalData.isEnterprise) {
+      wx.redirectTo({ url: '/pages/enterprise-home/enterprise-home' });
+      return;
+    }
+    this.syncTabBar();
+  },
 
   onPageScroll(e) {
     const threshold = 280;
@@ -134,7 +146,13 @@ Page({
     this.loadFeed();
   },
 
-  onQuickLinkTap(e) { const link = e.currentTarget.dataset.link; if (link) wx.navigateTo({ url: link }); },
+  onQuickLinkTap(e) {
+    const link = e.currentTarget.dataset.link;
+    console.log('[home] quickLink tap, link:', link);
+    if (!link) { console.warn('[home] link is empty'); return; }
+    if (!link.startsWith('/')) { console.warn('[home] link must start with /'); return; }
+    wx.navigateTo({ url: link, fail: (err) => console.error('[home] navigate failed:', err) });
+  },
 
   onBannerChange(e) { this.setData({ bannerCurrent: e.detail.current }); },
 
@@ -143,6 +161,8 @@ Page({
   goDetail(e) { const id = e.detail.id; if (id) wx.navigateTo({ url: `/pages/detail/detail?id=${id}` }); },
 
   goCompany(e) { const id = e.detail.id; if (id) wx.navigateTo({ url: `/pages/enterprise-detail/enterprise-detail?id=${id}` }); },
+
+  goCreateResume() { wx.navigateTo({ url: '/pages/create-resume/create-resume' }); },
 
   goAiRecommend() { wx.switchTab({ url: '/pages/aiRecommend/aiRecommend' }); },
 

@@ -1,49 +1,41 @@
+var api = require('../../utils/api');
+
 Page({
   data: {
+    statusBarHeight: 0,
     conversations: [],
-    showEmpty: false,
-    loading: false,
-    statusBarHeight: 0
+    loading: true,
+    showEmpty: false
   },
 
-  onLoad() {
-    const sysInfo = wx.getSystemInfoSync()
-    this.setData({
-      statusBarHeight: sysInfo.statusBarHeight || 20
-    })
-    this.checkUserRole()
-    this.loadConversations()
+  onLoad: function() {
+    var sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
   },
 
-  checkUserRole() {
-    const userInfo = wx.getStorageSync('userInfo') || {}
-    if (!userInfo.company_id) {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' })
+  onShow: function() {
+    this.loadConversations();
+  },
+
+  loadConversations: function() {
+    var that = this;
+    var token = wx.getStorageSync('token');
+    if (!token) {
+      that.setData({ conversations: [], loading: false, showEmpty: true });
+      return;
     }
+    that.setData({ loading: true });
+    api.chat.getConversations().then(function(list) {
+      var arr = Array.isArray(list) ? list : [];
+      that.setData({ conversations: arr, loading: false, showEmpty: arr.length === 0 });
+    }).catch(function(e) {
+      console.error('加载会话失败:', e);
+      that.setData({ conversations: [], loading: false, showEmpty: true });
+    });
   },
 
-  loadConversations() {
-    this.setData({ loading: true })
-    setTimeout(() => {
-      this.setData({
-        conversations: [
-          { id: 1, username: '张三', avatarLetter: '张', lastMessage: '您好，我对贵公司的前端岗位很感兴趣', formattedTime: '5分钟前', showBadge: true, badgeText: '3' },
-          { id: 2, username: '李四', avatarLetter: '李', lastMessage: '请问面试结果什么时候能出来？', formattedTime: '30分钟前', showBadge: false },
-          { id: 3, username: '王五', avatarLetter: '王', lastMessage: '简历已更新，请查看', formattedTime: '1小时前', showBadge: true, badgeText: '1' }
-        ],
-        loading: false,
-        showEmpty: false
-      })
-    }, 500)
-  },
-
-  goChat(e) {
-    const id = e.currentTarget.dataset.id
-    wx.navigateTo({ url: `/pages/chat/chat?id=${id}` })
-  },
-
-  goNotifications() {
-    wx.navigateTo({ url: '/pages/notifications/notifications' })
-  },
-
-})
+  goChat: function(e) {
+    var id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/chat/chat?conversationId=' + id });
+  }
+});

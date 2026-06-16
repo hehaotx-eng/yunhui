@@ -1,110 +1,83 @@
-<wxs src="./tags.wxs" module="tagsUtil" />
 <view class="page">
-  <view class="header">
-    <view class="header-content">
-      <view class="back-btn" bindtap="goBack">‹</view>
-      <view class="header-text">{{isEdit ? '编辑职位' : '发布职位'}}</view>
-      <view class="submit-btn" bindtap="submit">保存</view>
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <text class="nav-back-icon">‹</text>
+      </view>
+      <text class="nav-title">{{isEdit ? '编辑职位' : '发布职位'}}</text>
+      <view class="nav-placeholder"></view>
     </view>
   </view>
 
-  <scroll-view scroll-y class="form-content">
-    <view class="form-section">
-      <view class="section-title">基本信息</view>
-      
-      <view class="form-item">
-        <view class="form-label">职位名称 *</view>
-        <input class="form-input" placeholder="请输入职位名称" value="{{formData.title}}" bindinput="handleInput" data-field="title" />
+  <scroll-view class="body" scroll-y style="margin-top: {{statusBarHeight + 44}}px;">
+    <view class="section">
+      <text class="section-title">基本信息</text>
+      <view class="field">
+        <text class="field-label">职位名称 *</text>
+        <input class="field-input" placeholder="如：前端开发工程师" value="{{form.title}}" bindinput="onInput" data-field="form.title" />
       </view>
-
-      <view class="form-item">
-        <view class="form-label">薪资范围 *</view>
-        <view class="salary-input">
-          <input class="form-input salary" type="digit" placeholder="最低" value="{{formData.salaryMin}}" bindinput="handleInput" data-field="salaryMin" />
-          <view class="salary-separator">-</view>
-          <input class="form-input salary" type="digit" placeholder="最高" value="{{formData.salaryMax}}" bindinput="handleInput" data-field="salaryMax" />
-          <view class="salary-unit">元</view>
+      <view class="field-row">
+        <view class="field half">
+          <text class="field-label">最低薪资</text>
+          <input class="field-input" placeholder="如：10" type="digit" value="{{form.salary_min}}" bindinput="onInput" data-field="form.salary_min" />
         </view>
+        <text class="field-sep">-</text>
+        <view class="field half">
+          <text class="field-label">最高薪资</text>
+          <input class="field-input" placeholder="如：20" type="digit" value="{{form.salary_max}}" bindinput="onInput" data-field="form.salary_max" />
+        </view>
+        <text class="field-unit">K</text>
       </view>
-
-      <view class="form-item">
-        <view class="form-label">工作地点 *</view>
-        <input class="form-input" placeholder="请输入工作地点" value="{{formData.location}}" bindinput="handleInput" data-field="location" />
+      <view class="field">
+        <text class="field-label">工作地点 *</text>
+        <input class="field-input" placeholder="如：北京朝阳" value="{{form.location}}" bindinput="onInput" data-field="form.location" />
       </view>
-
-      <view class="form-row">
-        <view class="form-item half">
-          <view class="form-label">经验要求 *</view>
-          <picker mode="selector" range="{{experienceOptions}}" bindchange="onExperienceChange">
-            <view class="picker-value">{{formData.experience || '请选择'}}</view>
+      <view class="field-row">
+        <view class="field half">
+          <text class="field-label">经验要求</text>
+          <picker mode="selector" range="{{['不限','1年以下','1-3年','3-5年','5-10年','10年以上']}}" bindchange="onExperienceChange">
+            <view class="field-input picker {{form.experience ? '' : 'placeholder'}}">{{form.experience || '请选择'}}</view>
           </picker>
         </view>
-        <view class="form-item half">
-          <view class="form-label">学历要求 *</view>
-          <picker mode="selector" range="{{educationOptions}}" bindchange="onEducationChange">
-            <view class="picker-value">{{formData.education || '请选择'}}</view>
-          </picker>
-        </view>
-      </view>
-
-      <view class="form-row">
-        <view class="form-item half">
-          <view class="form-label">职位类型</view>
-          <picker mode="selector" range="{{typeOptions}}" bindchange="onTypeChange">
-            <view class="picker-value">{{formData.type === 'full-time' ? '全职' : (formData.type === 'part-time' ? '兼职' : (formData.type === 'intern' ? '实习' : '全职'))}}</view>
-          </picker>
-        </view>
-        <view class="form-item half">
-          <view class="form-label">截止日期</view>
-          <picker mode="date" value="{{formData.deadline}}" bindchange="onDeadlineChange">
-            <view class="picker-value">{{formData.deadline || '请选择'}}</view>
+        <view class="field half">
+          <text class="field-label">学历要求</text>
+          <picker mode="selector" range="{{['不限','高中','大专','本科','硕士','博士']}}" bindchange="onEducationChange">
+            <view class="field-input picker {{form.education ? '' : 'placeholder'}}">{{form.education || '请选择'}}</view>
           </picker>
         </view>
       </view>
-    </view>
-
-    <view class="form-section">
-      <view class="section-title">职位描述</view>
-      
-      <view class="form-item">
-        <view class="form-label">职位描述</view>
-        <textarea class="form-textarea" placeholder="请输入职位描述" value="{{formData.description}}" bindinput="handleInput" data-field="description" />
-      </view>
-
-      <view class="form-item">
-        <view class="form-label">任职要求</view>
-        <textarea class="form-textarea" placeholder="请输入任职要求" value="{{formData.requirements}}" bindinput="handleInput" data-field="requirements" />
+      <view class="field">
+        <text class="field-label">职位类型</text>
+        <picker mode="selector" range="{{['普通职位','VIP职位']}}" bindchange="onTypeChange">
+          <view class="field-input picker">{{form.job_type === 'premium' ? 'VIP职位' : '普通职位'}}</view>
+        </picker>
       </view>
     </view>
 
-    <view class="form-section">
-      <view class="section-title">标签</view>
-      
-      <view class="form-item">
-        <view class="form-label">选择标签</view>
-        <view class="welfare-list">
-          <view wx:for="{{tagOptions}}" wx:key="*this" class="welfare-tag {{tagsUtil.isSelected(formData.tags, item) ? 'active' : ''}}" bindtap="toggleTag" data-value="{{item}}">
-            {{item}}
-          </view>
-        </view>
+    <view class="section">
+      <text class="section-title">职位详情</text>
+      <view class="field">
+        <text class="field-label">职位描述 *</text>
+        <textarea class="field-textarea" placeholder="描述工作内容和职责" value="{{form.description}}" bindinput="onInput" data-field="form.description" />
       </view>
-      
-      <view class="form-item">
-        <view class="form-label">自定义标签</view>
-        <input class="form-input" placeholder="多个标签用逗号分隔" value="{{customTags}}" bindinput="handleCustomTags" />
+      <view class="field">
+        <text class="field-label">任职要求</text>
+        <textarea class="field-textarea" placeholder="描述任职条件和要求" value="{{form.requirements}}" bindinput="onInput" data-field="form.requirements" />
       </view>
     </view>
 
-    <view class="form-section">
-      <view class="section-title">职位状态</view>
-      
-      <view class="form-item">
-        <view class="form-label">状态</view>
-        <view class="status-options">
-          <view class="status-option {{formData.status === 'active' ? 'active' : ''}}" bindtap="setStatus" data-value="active">发布</view>
-          <view class="status-option {{formData.status === 'paused' ? 'active' : ''}}" bindtap="setStatus" data-value="paused">暂停</view>
-        </view>
+    <view class="section">
+      <text class="section-title">技能标签</text>
+      <view class="tag-wrap">
+        <text class="tag {{form.tags.indexOf(item) !== -1 ? 'active' : ''}}" wx:for="{{['Vue','React','Java','Python','Go','Node.js','MySQL','Redis','Docker','K8s','AI','产品设计','运营','销售','市场']}}" wx:key="*this" bindtap="toggleTag" data-value="{{item}}">{{item}}</text>
       </view>
     </view>
+
+    <view style="height: 160rpx;"></view>
   </scroll-view>
+
+  <view class="bottom-bar">
+    <view class="bar-btn preview" bindtap="preview">预览</view>
+    <view class="bar-btn save {{submitting ? 'disabled' : ''}}" bindtap="submit">{{submitting ? '保存中...' : '保存'}}</view>
+  </view>
 </view>

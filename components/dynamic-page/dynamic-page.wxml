@@ -102,9 +102,21 @@
             </view>
           </block>
           <block wx:elif="{{feedList.length > 0}}">
-            <view class="dp-job-card" wx:for="{{feedList}}" wx:key="id" data-id="{{item.id}}" bindtap="onJobTap">
-              <view class="dp-job-title">{{item.title}}</view>
-              <view class="dp-job-meta">{{item.salary_text || '薪资面议'}} · {{item.company_name || ''}}</view>
+            <view class="dp-job-card" wx:for="{{feedList}}" wx:key="id" data-id="{{item.payload.job_id || item.id}}" bindtap="onJobTap">
+              <view class="dp-job-title">{{item.payload.title || item.title}}</view>
+              <view class="dp-job-meta">
+                <text wx:if="{{item.payload.salary_min > 0 || item.payload.salary_max > 0}}" class="dp-salary">{{item.payload.salary_min}}-{{item.payload.salary_max}}元/月</text>
+                <text wx:else class="dp-salary">{{item.payload.salary || ''}}</text>
+                <text class="dp-company">{{item.payload.company_name || ''}}</text>
+              </view>
+              <view class="dp-job-extra">
+                <text wx:if="{{item.payload.location}}" class="dp-tag">{{item.payload.location}}</text>
+                <text wx:if="{{item.payload.experience}}" class="dp-tag">{{item.payload.experience}}</text>
+                <text wx:if="{{item.payload.education}}" class="dp-tag">{{item.payload.education}}</text>
+              </view>
+              <view class="dp-job-tags" wx:if="{{item.payload.tags && item.payload.tags.length > 0}}">
+                <text class="dp-welfare" wx:for="{{item.payload.tags}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+              </view>
             </view>
           </block>
           <block wx:else>
@@ -119,7 +131,18 @@
           <view class="dp-section-header">
             <text class="dp-section-title">{{item.props.title || '企业动态'}}</text>
           </view>
-          <view class="dp-empty">暂无动态</view>
+          <block wx:if="{{companyPosts.length > 0}}">
+            <view class="dp-post-card" wx:for="{{companyPosts}}" wx:key="id" data-id="{{item.id}}" bindtap="onPostDetail">
+              <view class="dp-post-avatar">{{item.company_name ? item.company_name[0] : '企'}}</view>
+              <view class="dp-post-info">
+                <view class="dp-post-title">{{item.title}}</view>
+                <view class="dp-post-meta">{{item.company_name || ''}} · {{item.created_at ? item.created_at.substring(0,10) : ''}}</view>
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="dp-empty">暂无企业动态</view>
+          </block>
         </view>
       </block>
     </block>

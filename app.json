@@ -22,7 +22,11 @@
     "pages/enterprise-msg/enterprise-msg",
     "pages/search/search",
     "pages/post-job/post-job",
-    "pages/qiye/qiye"
+    "pages/qiye/qiye",
+    "pages/custom/custom",
+    "pages/create-resume/create-resume",
+    "pages/resume-preview/resume-preview",
+    "pages/enterprise-applications/enterprise-applications"
   ],
   "window": {
     "navigationBarTextStyle": "black",

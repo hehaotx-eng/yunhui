@@ -1,73 +1,89 @@
-/* 页面背景 */
 .page {
-  background-color: #f6f7f9;
   min-height: 100vh;
-  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  background: #f6f7f9;
+  padding-bottom: 160rpx;
 }
 
-/* 顶部信息�?*/
-.header {
+.top-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  z-index: 10;
+  z-index: 100;
+  background: rgba(255,255,255,.25);
+  backdrop-filter: blur(40rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
 }
 
-.header-content {
+.nav-content {
+  height: 44px;
   display: flex;
   align-items: center;
-  padding: 24rpx;
-  padding-top: calc(24rpx + env(safe-area-inset-top));
+  padding: 0 28rpx;
+}
+
+.nav-logo {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.body {
+  padding: 0 20rpx 40rpx;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(15,23,42,.04);
+  margin-top: 16rpx;
 }
 
 .avatar {
-  width: 88rpx;
-  height: 88rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
-  overflow: hidden;
-  margin-right: 24rpx;
-}
-
-.avatar image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.user-info {
+  background: linear-gradient(135deg, #299ff0, #5ab8f5);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.username {
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
   font-size: 32rpx;
   font-weight: 700;
-  color: #111827;
-  margin-bottom: 8rpx;
+  color: #1a1a2e;
+  display: block;
 }
 
-.role {
+.profile-role {
   font-size: 24rpx;
   color: #9ca3af;
+  margin-top: 4rpx;
+  display: block;
 }
 
-/* 内容�?*/
-.content {
-  padding: 16rpx;
-}
-
-/* 统计卡片 */
 .stats-card {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
-  display: flex;
+  background: #fff;
+  border-radius: 16rpx;
   padding: 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  box-shadow: 0 2rpx 12rpx rgba(15,23,42,.04);
 }
 
 .stat-item {
@@ -78,10 +94,10 @@
 }
 
 .stat-value {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 8rpx;
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 6rpx;
 }
 
 .stat-label {
@@ -91,22 +107,22 @@
 
 .stat-divider {
   width: 1rpx;
-  background-color: #e5e7eb;
-  margin: 0 16rpx;
+  background: #e5e7eb;
+  margin: 0 24rpx;
 }
 
-/* 菜单卡片 */
 .menu-card {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
-  margin-bottom: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(15,23,42,.04);
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 20rpx 24rpx;
+  padding: 24rpx 24rpx;
   border-bottom: 1rpx solid #f3f4f6;
 }
 
@@ -114,65 +130,35 @@
   border-bottom: none;
 }
 
-.menu-icon {
-  width: 40rpx;
-  height: 40rpx;
+.menu-icon-text {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #299ff0;
+  font-weight: 500;
   margin-right: 16rpx;
 }
 
 .menu-text {
   flex: 1;
   font-size: 28rpx;
-  color: #111827;
+  color: #1a1a2e;
+  font-weight: 500;
 }
 
 .menu-arrow {
-  width: 24rpx;
-  height: 24rpx;
+  font-size: 32rpx;
+  color: #c0c4cc;
+  font-weight: 300;
 }
 
-/* 危险操作 */
 .menu-item.danger .menu-text {
   color: #ef4444;
 }
 
-/* Tabbar */
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  box-shadow: 0 -2rpx 20rpx rgba(0, 0, 0, 0.06);
-  padding-bottom: env(safe-area-inset-bottom);
+.menu-item.danger .menu-icon-text {
+  color: #ef4444;
 }
-
-.tab-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rpx;
-  height: 100%;
-}
-
-.tab-icon {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-.tab-text {
-  font-size: 22rpx;
-  color: #999;
-}
-
-.tab-item.active .tab-text {
-  color: #ff5c39;
-}
-
-page { padding-bottom: 60px; }

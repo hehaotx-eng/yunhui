@@ -1,0 +1,169 @@
+<view class="resume-page">
+  <!-- 顶部导航 -->
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <text class="nav-back-icon">‹</text>
+      </view>
+      <text class="nav-title">创建简历</text>
+      <view class="nav-placeholder"></view>
+    </view>
+  </view>
+
+  <!-- 步骤条 -->
+  <view class="steps-bar" style="margin-top: {{statusBarHeight + 44}}px;">
+    <view class="steps-inner">
+      <view wx:for="{{steps}}" wx:key="*this" class="step-item {{index <= currentStep ? 'step-active' : ''}}">
+        <view class="step-dot {{index < currentStep ? 'step-done' : ''}}">
+          <text wx:if="{{index < currentStep}}">✓</text>
+          <text wx:else>{{index + 1}}</text>
+        </view>
+        <text class="step-label">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 草稿提示 -->
+  <view class="draft-bar" wx:if="{{hasExisting}}">
+    <text class="draft-text">检测到未完成的简历草稿</text>
+    <view class="draft-actions">
+      <text class="draft-btn" bindtap="continueEditing">继续编辑</text>
+      <text class="draft-btn draft-btn-secondary" bindtap="startFresh">重新创建</text>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-body">
+    <!-- 步骤0：基本信息 -->
+    <block wx:if="{{currentStep === 0}}">
+      <view class="form-section">
+        <text class="section-title">基本信息</text>
+        <view class="form-group">
+          <text class="form-label">姓名</text>
+          <input class="form-input" placeholder="请输入姓名" value="{{form.name}}" data-field="name" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group form-group-inline">
+          <view class="form-half">
+            <text class="form-label">性别</text>
+            <picker mode="selector" range="{{['男','女']}}" bindchange="onGenderChange">
+              <view class="form-input form-picker {{form.gender ? '' : 'form-placeholder'}}">{{form.gender || '请选择性别'}}</view>
+            </picker>
+          </view>
+          <view class="form-half">
+            <text class="form-label">出生日期</text>
+            <picker mode="date" bindchange="onDateChange" data-field="birthDate" value="{{form.birthDate}}">
+              <view class="form-input form-picker {{form.birthDate ? '' : 'form-placeholder'}}">{{form.birthDate || '请选择'}}</view>
+            </picker>
+          </view>
+        </view>
+        <view class="form-group">
+          <text class="form-label">手机号</text>
+          <input class="form-input" placeholder="请输入手机号" type="number" maxlength="11" value="{{form.phone}}" data-field="phone" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">邮箱</text>
+          <input class="form-input" placeholder="请输入邮箱" type="email" value="{{form.email}}" data-field="email" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">居住地</text>
+          <input class="form-input" placeholder="请输入所在城市" value="{{form.location}}" data-field="location" bindinput="onFieldChange" />
+        </view>
+      </view>
+    </block>
+
+    <!-- 步骤1：求职意向 -->
+    <block wx:elif="{{currentStep === 1}}">
+      <view class="form-section">
+        <text class="section-title">求职意向</text>
+        <view class="form-group">
+          <text class="form-label">期望职位</text>
+          <input class="form-input" placeholder="如：前端开发工程师" value="{{form.expectedJob}}" data-field="expectedJob" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">期望薪资</text>
+          <input class="form-input" placeholder="如：15K-25K" value="{{form.expectedSalary}}" data-field="expectedSalary" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group form-group-inline">
+          <view class="form-half">
+            <text class="form-label">工作性质</text>
+            <view class="form-tag-group">
+              <text class="form-tag {{form.workType === '全职' ? 'tag-active' : ''}}" data-value="全职" bindtap="onWorkTypeChange">全职</text>
+              <text class="form-tag {{form.workType === '兼职' ? 'tag-active' : ''}}" data-value="兼职" bindtap="onWorkTypeChange">兼职</text>
+            </view>
+          </view>
+          <view class="form-half">
+            <text class="form-label">期望城市</text>
+            <input class="form-input" placeholder="如：北京" value="{{form.expectedCity}}" data-field="expectedCity" bindinput="onFieldChange" />
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 步骤2：教育经历 -->
+    <block wx:elif="{{currentStep === 2}}">
+      <view class="form-section">
+        <text class="section-title">教育经历</text>
+        <view class="form-group">
+          <text class="form-label">学校名称</text>
+          <input class="form-input" placeholder="请输入学校名称" value="{{form.school}}" data-field="school" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">专业</text>
+          <input class="form-input" placeholder="请输入专业名称" value="{{form.major}}" data-field="major" bindinput="onFieldChange" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">学历</text>
+          <picker mode="selector" range="{{['高中','大专','本科','硕士','博士']}}" bindchange="onEducationChange">
+            <view class="form-input form-picker {{form.education ? '' : 'form-placeholder'}}">{{form.education || '请选择学历'}}</view>
+          </picker>
+        </view>
+        <view class="form-group form-group-inline">
+          <view class="form-half">
+            <text class="form-label">开始时间</text>
+            <picker mode="date" bindchange="onDateChange" data-field="startDate" value="{{form.startDate}}">
+              <view class="form-input form-picker {{form.startDate ? '' : 'form-placeholder'}}">{{form.startDate || '请选择'}}</view>
+            </picker>
+          </view>
+          <view class="form-half">
+            <text class="form-label">结束时间</text>
+            <picker mode="date" bindchange="onDateChange" data-field="endDate" value="{{form.endDate}}">
+              <view class="form-input form-picker {{form.endDate ? '' : 'form-placeholder'}}">{{form.endDate || '请选择'}}</view>
+            </picker>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 步骤3：技能标签 -->
+    <block wx:elif="{{currentStep === 3}}">
+      <view class="form-section">
+        <text class="section-title">技能标签</text>
+        <text class="section-desc">添加你的专业技能，最多添加10个</text>
+        <view class="skill-input-wrap">
+          <input class="form-input skill-input" placeholder="输入技能名称，如：JavaScript" value="{{skillInput}}" bindinput="onSkillInput" />
+          <text class="skill-add-btn" bindtap="addSkill">添加</text>
+        </view>
+        <view class="skill-list" wx:if="{{form.skills.length > 0}}">
+          <view class="skill-item" wx:for="{{form.skills}}" wx:key="*this">
+            <text class="skill-text">{{item}}</text>
+            <text class="skill-remove" data-index="{{index}}" bindtap="removeSkill">×</text>
+          </view>
+        </view>
+        <view class="skill-empty" wx:if="{{form.skills.length === 0}}">
+          <text class="skill-empty-text">暂无技能标签，请在输入框中添加</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <view class="action-inner">
+      <view wx:if="{{currentStep > 0}}" class="action-btn action-btn-secondary" bindtap="prevStep">上一步</view>
+      <view wx:else class="action-btn action-btn-secondary action-btn-disabled">上一步</view>
+      <view class="action-btn action-btn-primary" bindtap="nextStep">
+        {{currentStep < steps.length - 1 ? '下一步' : '完成创建'}}
+      </view>
+    </view>
+  </view>
+</view>

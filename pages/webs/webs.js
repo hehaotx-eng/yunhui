@@ -1,16 +1,9 @@
-const { jobs, ai } = require('../../utils/api.js');
+const { jobs } = require('../../utils/api.js');
 
 Page({
   data: {
+    statusBarHeight: 0,
     keyword: '',
-    aiQuery: '',
-    showAiSearch: false,
-    aiSuggestions: [
-      '前端开发 15000以上',
-      '产品经理 双休',
-      '设计师 远程办公',
-      'Java工程师 3年以上经验'
-    ],
     activeCity: '',
     cities: ['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '武汉', '西安', '苏州'],
     jobs: [],
@@ -20,11 +13,12 @@ Page({
     loadingMore: false,
     hasMore: true,
     showEmpty: false,
-    skeleton: true,
-    isAiSearch: false
+    skeleton: true
   },
 
   onLoad() {
+    const sysInfo = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
     this.initJobs();
   },
 
@@ -74,13 +68,9 @@ Page({
     const params = { page, limit: this.data.pageSize };
 
     try {
-      let result;
-      if (this.data.isAiSearch && this.data.aiQuery) {
-        result = await jobs.aiSearch({ query: this.data.aiQuery, page, limit: this.data.pageSize });
-      } else {
-        result = await jobs.getAll(params);
-      }
-
+      const result = this.data.keyword
+        ? await jobs.search({ keyword: this.data.keyword, ...params })
+        : await jobs.getAll(params);
       const list = result.list || result.rows || result || [];
       const newJobs = reset ? list : [...this.data.jobs, ...list];
 
@@ -105,29 +95,6 @@ Page({
   },
 
   onSearch() {
-    this.setData({ isAiSearch: false });
-    this.initJobs();
-  },
-
-  toggleAiSearch() {
-    this.setData({ showAiSearch: !this.data.showAiSearch });
-  },
-
-  onAiInput(e) {
-    this.setData({ aiQuery: e.detail.value });
-  },
-
-  useAiSuggestion(e) {
-    const text = e.currentTarget.dataset.text;
-    this.setData({ aiQuery: text });
-  },
-
-  doAiSearch() {
-    if (!this.data.aiQuery) {
-      wx.showToast({ title: '请输入搜索内容', icon: 'none' });
-      return;
-    }
-    this.setData({ isAiSearch: true, showAiSearch: false });
     this.initJobs();
   },
 

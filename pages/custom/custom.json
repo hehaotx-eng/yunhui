@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "dynamic-page": "/components/dynamic-page/dynamic-page"
+  }
+}

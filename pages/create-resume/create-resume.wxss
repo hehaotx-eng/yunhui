@@ -1,0 +1,357 @@
+.resume-page {
+  min-height: 100vh;
+  background: var(--c-bg, #f6f7f9);
+  padding-bottom: 120rpx;
+}
+
+/* 顶部导航 */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255,255,255,.25);
+  backdrop-filter: blur(40rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
+}
+
+.nav-content {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 28rpx;
+}
+
+.nav-back {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-back-icon {
+  font-size: 44rpx;
+  color: var(--c-text, #1a1a2e);
+  font-weight: 300;
+}
+
+.nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--c-text, #1a1a2e);
+}
+
+.nav-placeholder {
+  width: 60rpx;
+}
+
+/* 步骤条 */
+.steps-bar {
+  background: linear-gradient(135deg, rgba(41, 159, 240, 0.16) 0%, rgba(41, 159, 240, 0.04) 60%, rgba(41, 159, 240, 0) 100%), linear-gradient(180deg, rgba(246, 247, 249, 0) 0%, #F6F7F9 80px);
+  padding: 24rpx 24rpx 36rpx;
+}
+
+.steps-inner {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.steps-inner::before {
+  content: '';
+  position: absolute;
+  top: 20rpx;
+  left: 50rpx;
+  right: 50rpx;
+  height: 4rpx;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.step-dot {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: 600;
+  transition: all .3s;
+}
+
+.step-dot.step-done {
+  background: var(--c-accent, #ff5c39);
+}
+
+.step-item.step-active .step-dot {
+  background: var(--c-accent, #ff5c39);
+  box-shadow: 0 4rpx 12rpx rgba(255, 92, 57, .3);
+}
+
+.step-item.step-active .step-label {
+  color: var(--c-text, #1a1a2e);
+  font-weight: 600;
+}
+
+.step-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* 草稿提示 */
+.draft-bar {
+  margin: 20rpx 24rpx;
+  background: #fff8f0;
+  border: 1rpx solid #fde68a;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.draft-text {
+  font-size: 24rpx;
+  color: #92400e;
+}
+
+.draft-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.draft-btn {
+  font-size: 24rpx;
+  color: var(--c-accent, #ff5c39);
+  font-weight: 500;
+  padding: 6rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 92, 57, .1);
+}
+
+.draft-btn-secondary {
+  color: #6b7280;
+  background: rgba(107, 114, 128, .1);
+}
+
+/* 表单内容 */
+.form-body {
+  padding: 0 24rpx;
+}
+
+.form-section {
+  background: var(--c-card, #ffffff);
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, .04);
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--c-text, #1a1a2e);
+  margin-bottom: 28rpx;
+}
+
+.section-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-top: -16rpx;
+  margin-bottom: 24rpx;
+}
+
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-group-inline {
+  display: flex;
+  gap: 20rpx;
+}
+
+.form-half {
+  flex: 1;
+}
+
+.form-label {
+  display: block;
+  font-size: 26rpx;
+  color: var(--c-text-2, #6b7280);
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  background: #f3f4f6;
+  border-radius: 14rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: var(--c-text, #1a1a2e);
+  box-sizing: border-box;
+}
+
+.form-picker {
+  display: flex;
+  align-items: center;
+  line-height: 80rpx;
+}
+
+.form-placeholder {
+  color: #9ca3af;
+}
+
+/* 标签选择 */
+.form-tag-group {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 4rpx;
+}
+
+.form-tag {
+  padding: 12rpx 28rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  transition: all .2s;
+}
+
+.form-tag.tag-active {
+  color: #fff;
+  background: #1a1a2e;
+  font-weight: 600;
+}
+
+/* 技能输入 */
+.skill-input-wrap {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.skill-input {
+  flex: 1;
+}
+
+.skill-add-btn {
+  flex-shrink: 0;
+  padding: 16rpx 32rpx;
+  background: var(--c-accent, #ff5c39);
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+  border-radius: 14rpx;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 12rpx 18rpx;
+  background: var(--c-accent-light, rgba(255, 92, 57, .08));
+  border-radius: 40rpx;
+}
+
+.skill-text {
+  font-size: 24rpx;
+  color: var(--c-accent, #ff5c39);
+  font-weight: 500;
+}
+
+.skill-remove {
+  font-size: 28rpx;
+  color: var(--c-accent, #ff5c39);
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skill-empty {
+  margin-top: 40rpx;
+  text-align: center;
+}
+
+.skill-empty-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, .04);
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+
+.action-inner {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: opacity .2s;
+}
+
+.action-btn:active {
+  opacity: .8;
+}
+
+.action-btn-primary {
+  background: linear-gradient(135deg, #ff5c39, #ff7a5c);
+  color: #fff;
+  box-shadow: 0 4rpx 16rpx rgba(255, 92, 57, .3);
+}
+
+.action-btn-secondary {
+  background: #f3f4f6;
+  color: var(--c-text, #1a1a2e);
+}
+
+.action-btn-disabled {
+  opacity: .4;
+}

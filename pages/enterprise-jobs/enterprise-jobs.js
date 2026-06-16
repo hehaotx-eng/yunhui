@@ -1,7 +1,8 @@
-const { jobs } = require('../../utils/api.js');
+var api = require('../../utils/api');
 
 Page({
   data: {
+    statusBarHeight: 0,
     activeTab: 'all',
     tabs: [
       { id: 'all', name: '全部' },
@@ -12,14 +13,12 @@ Page({
     allJobs: [],
     jobs: [],
     showEmpty: false,
-    loading: false,
-    statusBarHeight: 0
+    loading: false
   },
 
   onLoad() {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
-    this.checkUserRole();
+    var sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadJobs();
   },
 
@@ -27,79 +26,83 @@ Page({
     this.loadJobs();
   },
 
-  checkUserRole() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.company_id) {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
-    }
-  },
-
-  async loadJobs() {
-    this.setData({ loading: true });
-    try {
-      const result = await jobs.getMyList();
-      const list = Array.isArray(result) ? result : (result.list || result.rows || []);
-      this.setData({ allJobs: list });
-      this.filterJobs();
-    } catch (e) {
-      console.error('加载职位失败:', e);
+  loadJobs: function() {
+    var that = this;
+    that.setData({ loading: true });
+    api.jobs.getMyList().then(function(result) {
+      var list = Array.isArray(result) ? result : (result.list || result.rows || []);
+      that.setData({ allJobs: list });
+      that.filterJobs();
+    }).catch(function(e) {
       wx.showToast({ title: e.message || '加载失败', icon: 'none' });
-    } finally {
-      this.setData({ loading: false });
-    }
+    }).finally(function() {
+      that.setData({ loading: false });
+    });
   },
 
-  filterJobs() {
-    const { activeTab, allJobs } = this.data;
-    let filtered = allJobs;
-    if (activeTab !== 'all') {
-      filtered = allJobs.filter(j => j.status === activeTab);
+  filterJobs: function() {
+    var active = this.data.activeTab;
+    var all = this.data.allJobs;
+    var filtered = all;
+    if (active !== 'all') {
+      filtered = [];
+      for (var i = 0; i < all.length; i++) {
+        if (all[i].status === active) filtered.push(all[i]);
+      }
     }
     this.setData({ jobs: filtered, showEmpty: filtered.length === 0 });
   },
 
-  switchTab(e) {
-    const tab = e.currentTarget.dataset.tab;
-    this.setData({ activeTab: tab });
+  switchTab: function(e) {
+    this.setData({ activeTab: e.currentTarget.dataset.tab });
     this.filterJobs();
   },
 
-  goPostJob() {
+  goPostJob: function() {
     wx.navigateTo({ url: '/pages/post-job/post-job' });
   },
 
-  goDetail(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  goDetail: function(e) {
+    wx.navigateTo({ url: '/pages/detail/detail?id=' + e.currentTarget.dataset.id + '&from=enterprise' });
   },
 
-  async goOffline(e) {
-    const id = e.currentTarget.dataset.id;
+  goEdit: function(e) {
+    wx.showToast({ title: '编辑功能开发中', icon: 'none' });
+  },
+
+  toggleStatus: function(e) {
+    var that = this;
+    var id = e.currentTarget.dataset.id;
+    var job = null;
+    for (var i = 0; i < this.data.allJobs.length; i++) {
+      if (this.data.allJobs[i].id == id) { job = this.data.allJobs[i]; break; }
+    }
+    if (!job) return;
+
+    if (job.audit_status === 'pending') {
+      wx.showToast({ title: '审核中，暂不可操作', icon: 'none' });
+      return;
+    }
+    if (job.audit_status === 'rejected') {
+      wx.showToast({ title: '审核未通过，无法上线', icon: 'none' });
+      return;
+    }
+
+    var newStatus = job.status === 'online' ? 'offline' : 'online';
+    var text = newStatus === 'online' ? '上线' : '下线';
     wx.showModal({
-      title: '确认下线',
-      content: '确定要下线这个职位吗？',
-      success: async (res) => {
+      title: '确认' + text,
+      content: '确定要' + text + '这个职位吗？',
+      success: function(res) {
         if (res.confirm) {
-          try {
-            await jobs.update(id, { status: 'offline' });
-            wx.showToast({ title: '已下线', icon: 'success' });
-            this.loadJobs();
-          } catch (e) {
+          api.jobs.update(id, { status: newStatus }).then(function() {
+            wx.showToast({ title: '已' + text, icon: 'success' });
+            that.loadJobs();
+          }).catch(function(e) {
             wx.showToast({ title: e.message || '操作失败', icon: 'none' });
-          }
+          });
         }
       }
     });
-  },
-
-  async goOnline(e) {
-    const id = e.currentTarget.dataset.id;
-    try {
-      await jobs.update(id, { status: 'online' });
-      wx.showToast({ title: '已上线', icon: 'success' });
-      this.loadJobs();
-    } catch (e) {
-      wx.showToast({ title: e.message || '操作失败', icon: 'none' });
-    }
   }
 });

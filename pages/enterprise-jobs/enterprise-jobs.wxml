@@ -1,71 +1,45 @@
 <view class="page">
-
-<!-- 顶部导航 -->
-<view class="header" style="padding-top: {{statusBarHeight}}px;">
-  <view class="header-content">
-    <view class="header-title">岗位管理</view>
-    <view class="add-btn" bindtap="goAdd">+</view>
-  </view>
-</view>
-
-<!-- 内容 -->
-<view class="content">
-
-  <!-- Tabs 横向滚动 -->
-  <scroll-view class="tabs-scroll" scroll-x>
-    <view wx:for="{{tabs}}" wx:key="id" class="tab {{activeTab === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchTab">
-      {{item.name}}
-    </view>
-  </scroll-view>
-
-  <!-- 职位列表 -->
-  <view class="job-list">
-
-    <view wx:for="{{jobs}}" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{item.id}}">
-      
-      <!-- 职位标题 + 状态 -->
-      <view class="job-header">
-        <view class="job-title">{{item.title}}</view>
-        <view wx:if="{{item.status === 'active' || item.status === 'published'}}" class="status-tag active">进行中</view>
-        <view wx:elif="{{item.status === 'paused' || item.status === 'offline'}}" class="status-tag paused">已暂停</view>
-        <view wx:else class="status-tag">进行中</view>
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <text class="nav-logo">岗位管理</text>
+      <view class="nav-add" bindtap="goPostJob">
+        <text class="nav-add-icon">+</text>
       </view>
+    </view>
+  </view>
 
-      <!-- 薪资和信息 -->
-      <view class="job-salary">{{item.salary}}</view>
-      <view class="job-meta">{{item.area}} · {{item.category || '未分类'}}</view>
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+    <scroll-view class="tabs" scroll-x enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{tabs}}" wx:key="id" class="tab {{activeTab === item.id ? 'active' : ''}}" bindtap="switchTab" data-tab="{{item.id}}">{{item.name}}</view>
+    </scroll-view>
 
-      <!-- 底部操作 -->
-      <view class="job-footer">
-        <view class="stats">
-          <text class="stat">{{item.applicantCount || 0}}人投递</text>
-        </view>
-        <view class="actions">
-          <view class="action-btn" catchtap="goEdit" data-id="{{item.id}}">编辑</view>
-          <view class="action-btn" catchtap="goResume" data-id="{{item.id}}">简历</view>
-          <view class="action-btn status-btn" catchtap="toggleStatus" data-id="{{item.id}}">
-            {{item.status === 'active' || item.status === 'published' ? '下线' : '发布'}}
+    <view class="list">
+      <view wx:for="{{jobs}}" wx:key="id" class="card" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="card-top">
+          <text class="card-title">{{item.title}}</text>
+          <view class="status-group">
+            <text class="status-tag {{item.status === 'online' ? 'online' : 'offline'}}">{{item.status === 'online' ? '在线' : item.status === 'offline' ? '已下线' : item.status === 'draft' ? '草稿' : item.status}}</text>
+            <text wx:if="{{item.audit_status === 'pending'}}" class="audit-tag">审核中</text>
+            <text wx:elif="{{item.audit_status === 'rejected'}}" class="audit-tag rejected">未通过</text>
           </view>
-          <view class="action-btn delete-btn" catchtap="deleteJob" data-id="{{item.id}}">删除</view>
+        </view>
+        <text class="card-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + '元' : '薪资面议')}}</text>
+        <view class="card-actions">
+          <text class="meta-text">{{item.applicantCount || 0}}人投递</text>
+          <view class="action-btns">
+            <text class="action-btn" catchtap="goEdit" data-id="{{item.id}}">编辑</text>
+            <text wx:if="{{item.audit_status === 'approved'}}" class="action-btn status-btn" catchtap="toggleStatus" data-id="{{item.id}}">{{item.status === 'online' ? '下线' : '上线'}}</text>
+          </view>
         </view>
       </view>
 
+      <view wx:if="{{showEmpty}}" class="empty">
+        <text class="empty-text">暂无职位</text>
+        <text class="empty-btn" bindtap="goPostJob">去发布</text>
+      </view>
+      <view wx:if="{{loading}}" class="loading">加载中...</view>
     </view>
-
-    <!-- 空状态 -->
-    <view wx:if="{{showEmpty}}" class="empty-card">
-      <image class="empty-icon" src="/images/job-empty.png"/>
-      <view class="empty-text">暂无职位</view>
-      <view class="empty-btn" bindtap="goAdd">发布职位</view>
-    </view>
-
-    <!-- 加载 -->
-    <view wx:if="{{loading}}" class="loading">加载中...</view>
-
   </view>
-
-</view>
-
 </view>
 
 <enterprise-tabbar current="jobs" />

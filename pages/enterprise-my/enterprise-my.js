@@ -1,49 +1,49 @@
-const { auth, jobs, applications } = require('../../utils/api.js');
+var api = require('../../utils/api');
 
 Page({
   data: {
+    statusBarHeight: 0,
     userInfo: {},
-    stats: { jobs: 0, applications: 0 },
-    statusBarHeight: 0
+    stats: { jobs: 0, applications: 0 }
   },
 
-  onLoad() {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
-    this.checkUserRole();
+  onLoad: function() {
+    var sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadData();
   },
 
-  onShow() {
+  onShow: function() {
+    this.loadData();
   },
 
-  checkUserRole() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.company_id) {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
-    }
+  loadData: function() {
+    var that = this;
+    var userInfo = wx.getStorageSync('userInfo') || {};
+    that.setData({ userInfo: userInfo });
+
+    api.jobs.getMyList().then(function(result) {
+      var list = Array.isArray(result) ? result : (result.list || result.rows || []);
+      that.setData({ 'stats.jobs': list.length });
+    }).catch(function() {});
   },
 
-  async loadData() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    this.setData({ userInfo });
-
-    try {
-      const myJobs = await jobs.getMyList();
-      const jobList = Array.isArray(myJobs) ? myJobs : (myJobs.list || myJobs.rows || []);
-      this.setData({ 'stats.jobs': jobList.length });
-    } catch (e) {
-      console.error('加载统计失败:', e);
-    }
+  goJobs: function() {
+    wx.switchTab({ url: '/pages/enterprise-jobs/enterprise-jobs' });
   },
 
-  handleLogout() {
+  goApplications: function() {
+    wx.navigateTo({ url: '/pages/enterprise-applications/enterprise-applications' });
+  },
+
+  handleLogout: function() {
+    var that = this;
     wx.showModal({
       title: '确认退出',
       content: '确定要退出登录吗？',
-      success: (res) => {
+      success: function(res) {
         if (res.confirm) {
-          const app = getApp();
+          var app = getApp();
           app.clearUserState();
           app.updateTabBar('user');
           wx.reLaunch({ url: '/pages/home/home' });

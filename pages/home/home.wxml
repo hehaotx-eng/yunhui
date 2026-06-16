@@ -55,11 +55,25 @@
     <view wx:if="{{catSticky}}" style="height: 88rpx;"></view>
 
     <view class="container">
-      <view class="block" style="background-image: url('https://picsum.photos/id/104/800/200');">
-        <text class="block-text">发布岗位</text>
+        <!-- 发布岗位 -->
+      <view class="card card-orange" bindtap="goPublishJob">
+        <view class="icon-box">
+          <view class="icon"></view>
+        </view>
+        <view class="text-box">
+          <text class="title">发布岗位</text>
+        </view>
+        <view class="arrow">›</view>
       </view>
-      <view class="block" style="background-image: url('https://picsum.photos/id/96/800/200');">
-        <text class="block-text">创建简历</text>
+      <!-- 创建简历 -->
+      <view class="card card-blue" bindtap="goCreateResume">
+        <view class="icon-box">
+          <view class="icon"></view>
+        </view>
+        <view class="text-box">
+          <text class="title">创建简历</text>
+        </view>
+        <view class="arrow">›</view>
       </view>
     </view>
 

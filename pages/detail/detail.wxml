@@ -27,7 +27,7 @@
     <view class="company-card" bindtap="goCompany" data-id="{{detail.company_id}}">
       <image class="company-logo" src="{{detail.company_logo || detail.enterprise_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
       <view class="company-info">
-        <text class="company-name">{{detail.enterprise_name || '企业名称'}}</text>
+        <text class="company-name">{{detail.company_name || detail.enterprise_name || '企业名称'}}</text>
         <text class="company-meta">{{detail.industry || '互联网'}} · {{detail.scale || '20-99人'}}</text>
       </view>
       <text class="company-arrow">›</text>
@@ -59,7 +59,7 @@
       <view class="about-company" bindtap="goCompany" data-id="{{detail.company_id}}">
         <image class="about-logo" src="{{detail.company_logo || detail.enterprise_logo || '/pages/image/company-placeholder.png'}}" mode="aspectFill" />
         <view class="about-info">
-          <text class="about-name">{{detail.enterprise_name || '企业名称'}}</text>
+          <text class="about-name">{{detail.company_name || detail.enterprise_name || '企业名称'}}</text>
           <text class="about-desc">{{detail.industry || '互联网'}} · {{detail.scale || '20-99人'}} · {{detail.location || '北京'}}</text>
         </view>
         <text class="about-arrow">查看主页 ›</text>
@@ -92,23 +92,38 @@
 
   <!-- 底部操作栏 -->
   <view class="bottom-bar" wx:if="{{!skeleton && detail}}">
-    <view class="bar-left">
-      <view class="bar-action" bindtap="onFavorite">
-        <text class="bar-icon">{{isFavorite ? '❤' : '♡'}}</text>
-        <text class="bar-label">{{isFavorite ? '已收藏' : '收藏'}}</text>
+    <block wx:if="{{isEnterprise}}">
+      <view class="bar-left">
+        <view class="bar-action" bindtap="onShare">
+          <text class="bar-icon">↗</text>
+          <text class="bar-label">分享</text>
+        </view>
       </view>
-      <view class="bar-action" bindtap="onShare">
-        <text class="bar-icon">↗</text>
-        <text class="bar-label">分享</text>
+      <view class="bar-right">
+        <view class="bar-manage" bindtap="onManage">
+          <text>⚙ 管理</text>
+        </view>
       </view>
-    </view>
-    <view class="bar-right">
-      <view class="bar-chat" bindtap="onChat">
-        <text>立即沟通</text>
+    </block>
+    <block wx:else>
+      <view class="bar-left">
+        <view class="bar-action" bindtap="onFavorite">
+          <text class="bar-icon">{{isFavorite ? '❤' : '♡'}}</text>
+          <text class="bar-label">{{isFavorite ? '已收藏' : '收藏'}}</text>
+        </view>
+        <view class="bar-action" bindtap="onShare">
+          <text class="bar-icon">↗</text>
+          <text class="bar-label">分享</text>
+        </view>
       </view>
-      <view class="bar-apply" bindtap="onApply">
-        <text>投递简历</text>
+      <view class="bar-right">
+        <view class="bar-chat" bindtap="onChat">
+          <text>立即沟通</text>
+        </view>
+        <view class="bar-apply" bindtap="onApply">
+          <text>投递简历</text>
+        </view>
       </view>
-    </view>
+    </block>
   </view>
 </view>

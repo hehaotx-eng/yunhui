@@ -1,273 +1,208 @@
-/* 页面整体 */
 .page {
-  background-color: #f6f7f9;
   min-height: 100vh;
-  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  background: #f6f7f9;
+  padding-bottom: 160rpx;
 }
 
-/* 顶部导航�?*/
-.header {
+.top-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  z-index: 10;
+  z-index: 100;
+  background: rgba(255,255,255,.25);
+  backdrop-filter: blur(40rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
 }
 
-.header-content {
+.nav-content {
+  height: 44px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  height: 88rpx;
-  padding: 0 24rpx;
+  padding: 0 28rpx;
 }
 
-.header-title {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+.nav-logo {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1a1a2e;
+  flex: 1;
 }
 
-.add-btn {
-  font-size: 40rpx;
-  color: #ff5c39;
-  font-weight: bold;
-}
-
-/* 内容�?*/
-.content {
-  padding: 16rpx;
-  padding-top: calc(88rpx + env(safe-area-inset-top) + 20rpx);
-}
-
-/* Tabs 横向滚动 */
-.tabs-scroll {
+.nav-add {
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
-  margin-bottom: 16rpx;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a2e;
+  border-radius: 50%;
+}
+
+.nav-add-icon {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.body {
+  padding: 0 20rpx 40rpx;
+}
+
+.tabs {
+  display: flex;
+  white-space: nowrap;
+  padding: 16rpx 0;
 }
 
 .tab {
-  padding: 12rpx 24rpx;
+  display: inline-flex;
+  padding: 12rpx 28rpx;
   margin-right: 16rpx;
-  border-radius: 24rpx;
-  background-color: #ffffff;
-  font-size: 28rpx;
-  color: #4b5563;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.03);
+  font-size: 26rpx;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-radius: 40rpx;
+  font-weight: 500;
 }
 
 .tab.active {
-  background-color: #ff5c39;
-  color: #ffffff;
+  background: #1a1a2e;
+  color: #fff;
+  font-weight: 600;
 }
 
-/* 职位列表 */
-.job-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+.list {
+  padding-top: 8rpx;
 }
 
-.job-card {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03);
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx 20rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(15,23,42,.04);
 }
 
-.job-header {
+.card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 10rpx;
 }
 
-.job-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #111827;
+.card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  flex: 1;
+  margin-right: 16rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .status-tag {
-  font-size: 24rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  color: #ffffff;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
-.status-tag.active {
-  background-color: #22c55e;
+.status-tag.online {
+  background: #f0f9eb;
+  color: #389e0d;
 }
 
-.status-tag.paused {
-  background-color: #9ca3af;
+.status-tag.offline {
+  background: #f3f4f6;
+  color: #9ca3af;
 }
 
-/* 薪资和信�?*/
-.job-salary {
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.audit-tag {
+  font-size: 18rpx;
+  padding: 3rpx 10rpx;
+  border-radius: 4rpx;
+  background: #fef9ee;
+  color: #d48806;
+  font-weight: 500;
+}
+
+.audit-tag.rejected {
+  background: #fff2f0;
+  color: #cf1322;
+}
+
+.card-salary {
   font-size: 28rpx;
+  font-weight: 600;
   color: #ff5c39;
-  margin-bottom: 8rpx;
-}
-
-.job-meta {
-  font-size: 24rpx;
-  color: #6b7280;
+  display: block;
   margin-bottom: 16rpx;
 }
 
-/* 底部操作 */
-.job-footer {
+.card-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f3f4f6;
 }
 
-.stats .stat {
-  font-size: 24rpx;
-  color: #6b7280;
+.meta-text {
+  font-size: 22rpx;
+  color: #9ca3af;
 }
 
-.actions {
+.action-btns {
   display: flex;
   gap: 12rpx;
 }
 
 .action-btn {
   font-size: 24rpx;
-  padding: 6rpx 12rpx;
-  border-radius: 12rpx;
-  background-color: #f3f4f6;
-  color: #111827;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 500;
 }
 
-.status-btn {
-  background-color: #ff5c39;
-  color: #ffffff;
+.action-btn.status-btn {
+  background: rgba(255, 92, 57, .1);
+  color: #ff5c39;
 }
 
-.delete-btn {
-  background-color: #ef4444;
-  color: #ffffff;
-}
-
-/* 空状�?*/
-.empty-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 48rpx 0;
-  color: #9ca3af;
-}
-
-.empty-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 24rpx;
+.empty {
+  text-align: center;
+  padding: 80rpx 0;
 }
 
 .empty-text {
   font-size: 28rpx;
-  margin-bottom: 16rpx;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 20rpx;
 }
 
 .empty-btn {
-  font-size: 28rpx;
-  color: #ff5c39;
+  font-size: 26rpx;
+  color: #299ff0;
+  font-weight: 500;
 }
 
-/* Tabbar */
-.tabbar {
-  height: 88rpx;
-  background-color: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 -8rpx 24rpx rgba(15,23,42,.03);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+.loading {
+  text-align: center;
+  padding: 40rpx;
+  font-size: 26rpx;
+  color: #9ca3af;
 }
-
-.tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* 底部固定导航�?*/
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100rpx;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  box-shadow: 0 -2rpx 20rpx rgba(0, 0, 0, 0.06);
-  padding-bottom: env(safe-area-inset-bottom);
-  z-index: 100;
-}
-
-/* 单个 Tab �?*/
-.tab-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rpx;
-  height: 100%;
-}
-
-/* Tab 图标 */
-.tab-icon {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-/* Tab 文本 */
-.tab-text {
-  font-size: 22rpx;
-  color: #999;
-}
-
-/* 激活状�?*/
-.tab-item.active .tab-text {
-  color: #ff5c39;
-}
-
-/* 点击反馈 */
-.tab-item:active {
-  opacity: 0.7;
-  transition: all 0.15s;
-}
-
-/* 滚动优化 */
-.tabs-scroll {
-  white-space: nowrap;
-  overflow-x: auto;
-  padding-bottom: 8rpx;
-}
-
-.tab {
-  display: inline-block;
-}
-
-/* 按钮点击反馈 */
-.action-btn:active,
-.tab:active,
-.add-btn:active {
-  opacity: 0.7;
-  transform: scale(0.98);
-  transition: all 0.15s;
-}
-
-page { padding-bottom: 60px; }

@@ -1,125 +1,81 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-
-<!-- 顶部导航 -->
-<view class="header" style="padding-top: {{statusBarHeight}}px;">
-  <view class="header-content">
-    <view class="header-title">企业中心</view>
-  </view>
-</view>
-
-<!-- 内容 -->
-<view class="content">
-
-  <!-- 数据统计 -->
-  <view class="stats-card">
-
-    <view class="stat-item">
-      <view class="stat-value">{{stats.applicants || 0}}</view>
-      <view class="stat-label">今日投递</view>
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <text class="nav-logo">企业中心</text>
     </view>
-
-    <view class="stat-divider"></view>
-
-    <view class="stat-item">
-      <view class="stat-value">{{stats.interviews || 0}}</view>
-      <view class="stat-label">面试安排</view>
-    </view>
-
-    <view class="stat-divider"></view>
-
-    <view class="stat-item">
-      <view class="stat-value">{{stats.jobs || 0}}</view>
-      <view class="stat-label">发布职位</view>
-    </view>
-
   </view>
 
-  <!-- 快捷操作 -->
-  <view class="quick-actions">
-
-    <view class="action-card" bindtap="goPostJob">
-      <view class="action-icon">
-        <image class="icon-img" src="/pages/image/post.png" />
-      </view>
-      <view class="action-text">发布职位</view>
+  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+    <view class="welcome">
+      <text class="welcome-greeting">欢迎回来</text>
+      <text class="welcome-name">{{companyName}}</text>
     </view>
 
-    <view class="action-card" bindtap="goCandidates">
-      <view class="action-icon">
-        <image class="icon-img" src="/pages/image/user-search.png" />
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-value">{{stats.jobs}}</text>
+        <text class="stat-label">发布职位</text>
       </view>
-      <view class="action-text">人才搜索</view>
+      <view class="stat-card">
+        <text class="stat-value online">{{stats.online}}</text>
+        <text class="stat-label">在线中</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{stats.applicants}}</text>
+        <text class="stat-label">收到投递</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{stats.candidates}}</text>
+        <text class="stat-label">候选人</text>
+      </view>
     </view>
 
+    <view class="quick-actions">
+      <view class="action-item" bindtap="goPostJob">
+        <view class="action-icon add">+</view>
+        <text class="action-text">发布职位</text>
+      </view>
+      <view class="action-item" bindtap="goJobs">
+        <view class="action-icon list">≡</view>
+        <text class="action-text">我的岗位</text>
+      </view>
+      <view class="action-item" bindtap="goApplications">
+        <view class="action-icon search">◉</view>
+        <text class="action-text">投递管理</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">最近投递</text>
+      </view>
+      <view wx:if="{{recentApps.length === 0}}" class="empty">暂无投递记录</view>
+      <view wx:for="{{recentApps}}" wx:key="id" class="app-row">
+        <view class="app-avatar">{{wxs.firstChar(item.user_name)}}</view>
+        <view class="app-info">
+          <text class="app-name">{{item.user_name || '匿名'}}</text>
+          <text class="app-job">{{item.job_title || ''}}</text>
+        </view>
+        <text class="app-status status-{{item.status}}" bindtap="onChangeStatus" data-id="{{item.id}}" data-status="{{item.status}}">{{item.status === 'pending' ? '待处理' : item.status === 'viewed' ? '已查看' : item.status === 'accepted' ? '已通过' : item.status === 'rejected' ? '已拒绝' : item.status}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">我的职位</text>
+        <text class="section-more" bindtap="goJobs">查看全部</text>
+      </view>
+      <view wx:if="{{myJobs.length === 0}}" class="empty">暂无职位，去发布一个吧</view>
+      <view wx:for="{{myJobs}}" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="job-top">
+          <text class="job-title">{{item.title}}</text>
+          <text class="job-status status-{{item.status}}">{{item.status === 'online' ? '在线' : item.status === 'offline' ? '已下线' : item.status === 'draft' ? '草稿' : item.status}}</text>
+        </view>
+        <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + '元' : '薪资面议')}}</text>
+      </view>
+    </view>
   </view>
-
-  <!-- 我的职位 -->
-  <view class="section">
-
-    <view class="section-header">
-      <text class="section-title">我的职位</text>
-      <text class="section-more" bindtap="goJobs">查看全部</text>
-    </view>
-
-    <view class="job-list">
-
-      <view
-        wx:for="{{myJobs}}"
-        wx:key="id"
-        class="job-card"
-        bindtap="goJobDetail"
-        data-id="{{item.id}}"
-      >
-
-        <!-- 状态 -->
-        <view
-          class="job-tag {{item.status === 'paused' || item.status === 'offline' ? 'paused' : ''}}"
-        >
-          {{item.status === 'paused' || item.status === 'offline' ? '已暂停' : '进行中'}}
-        </view>
-
-        <!-- 标题 -->
-        <view class="job-title">{{item.title}}</view>
-
-        <!-- 薪资 + 时间 -->
-        <view class="job-meta">
-
-          <view class="job-salary">
-            {{item.salary}}
-          </view>
-
-          <view class="job-time">
-            {{item.createdAt ? (item.createdAt.length > 10 ? item.createdAt.substring(0,10) : item.createdAt) : '刚刚'}}
-          </view>
-
-        </view>
-
-        <!-- 标签 -->
-        <view class="welfare-list">
-
-          <view class="welfare-tag">{{item.area}}</view>
-          <view class="welfare-tag">{{item.category}}</view>
-
-        </view>
-
-        <!-- 底部信息 -->
-        <view class="job-footer">
-          <view class="job-area">{{item.area}}</view>
-        </view>
-
-      </view>
-
-      <!-- 空状态 -->
-      <view wx:if="{{myJobs.length === 0}}" class="empty-tip">
-        暂无发布职位
-      </view>
-
-    </view>
-
-  </view>
-
-</view>
-
 </view>
 
 <enterprise-tabbar current="home" />

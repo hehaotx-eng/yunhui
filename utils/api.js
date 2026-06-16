@@ -131,6 +131,12 @@ const jobs = {
   create(data) {
     return request({ url: '/api/v1/jobs', method: 'POST', data });
   },
+  update(id, data) {
+    return request({ url: `/api/v1/jobs/${id}`, method: 'PUT', data });
+  },
+  search(params = {}) {
+    return request({ url: `/api/v1/jobs/search${toQuery(params)}`, needAuth: false });
+  },
   aiSearch(params) {
     return request({ url: '/api/v1/jobs/ai-search', method: 'POST', data: params });
   }
@@ -318,9 +324,42 @@ const notifications = {
   }
 };
 
+const resumes = {
+  getMy() {
+    return request({ url: '/api/v1/resumes/me' });
+  },
+  getById(id) {
+    return request({ url: `/api/v1/resumes/${id}` });
+  },
+  create(data) {
+    return request({ url: '/api/v1/resumes', method: 'POST', data });
+  },
+  update(id, data) {
+    return request({ url: `/api/v1/resumes/${id}`, method: 'PUT', data });
+  },
+  remove(id) {
+    return request({ url: `/api/v1/resumes/${id}`, method: 'DELETE' });
+  }
+};
+
 const quickLinks = {
   getActive() {
     return request({ url: '/api/v1/quick-links', needAuth: false });
+  }
+};
+
+const favorites = {
+  getList() {
+    return request({ url: '/api/v1/favorites' });
+  },
+  toggle(jobId) {
+    return request({ url: '/api/v1/favorites', method: 'POST', data: { jobId } });
+  },
+  check(jobId) {
+    return request({ url: `/api/v1/favorites/check/${jobId}` });
+  },
+  getCount() {
+    return request({ url: '/api/v1/favorites/count' });
   }
 };
 
@@ -345,5 +384,7 @@ module.exports = {
   enterprises,
   categories,
   notifications,
-  quickLinks
+  quickLinks,
+  resumes,
+  favorites
 };

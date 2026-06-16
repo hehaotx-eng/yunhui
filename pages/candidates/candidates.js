@@ -1,91 +1,53 @@
-const { jobs, applications } = require('../../utils/api.js');
+var api = require('../../utils/api');
 
 Page({
   data: {
-    activeFilter: 'all',
-    filters: [
-      { id: 'all', name: '全部' },
-      { id: 'pending', name: '待处理' },
-      { id: 'viewed', name: '已查看' },
-      { id: 'accepted', name: '已通过' },
-      { id: 'rejected', name: '已拒绝' }
-    ],
-    allApplications: [],
-    applications: [],
-    showEmpty: false,
-    loading: false,
-    statusBarHeight: 0
+    statusBarHeight: 0,
+    loading: true,
+    keyword: '',
+    list: [],
+    showEmpty: false
   },
 
   onLoad() {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
-    this.checkUserRole();
+    var sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadData();
   },
 
   onShow() {
+    this.loadData();
   },
 
-  checkUserRole() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.company_id) {
-      wx.reLaunch({ url: '/pages/login-phone/login-phone' });
+  loadData: function() {
+    var that = this;
+    that.setData({ loading: true });
+    var url = '/api/v1/enterprise/candidates';
+    if (that.data.keyword) {
+      url = url + '?keyword=' + encodeURIComponent(that.data.keyword);
     }
+    api.request({ url: url }).then(function(list) {
+      that.setData({ list: list, showEmpty: list.length === 0, loading: false });
+    }).catch(function(e) {
+      wx.showToast({ title: e.message || '加载失败', icon: 'none' });
+      that.setData({ loading: false });
+    });
   },
 
-  async loadData() {
-    this.setData({ loading: true });
-    try {
-      const myJobs = await jobs.getMyList();
-      const jobList = Array.isArray(myJobs) ? myJobs : (myJobs.list || myJobs.rows || []);
+  onKeywordInput: function(e) {
+    this.setData({ keyword: e.detail.value });
+  },
 
-      let allApps = [];
-      for (const job of jobList) {
-        try {
-          const result = await applications.getByJob(job.id);
-          const apps = result.list || result.rows || result || [];
-          allApps = allApps.concat(apps.map(a => ({ ...a, job_title: job.title })));
-        } catch {}
-      }
+  onSearch: function() {
+    this.loadData();
+  },
 
-      this.setData({ allApplications: allApps });
-      this.filterApplications();
-    } catch (e) {
-      console.error('加载投递失败:', e);
-    } finally {
-      this.setData({ loading: false });
+  viewResume: function(e) {
+    var resumeId = e.currentTarget.dataset.resumeid;
+    if (!resumeId) {
+      wx.showToast({ title: '该用户暂无简历', icon: 'none' });
+      return;
     }
-  },
-
-  filterApplications() {
-    const { activeFilter, allApplications } = this.data;
-    let filtered = allApplications;
-    if (activeFilter !== 'all') {
-      filtered = allApplications.filter(a => a.status === activeFilter);
-    }
-    this.setData({ applications: filtered, showEmpty: filtered.length === 0 });
-  },
-
-  switchFilter(e) {
-    const filter = e.currentTarget.dataset.filter;
-    this.setData({ activeFilter: filter });
-    this.filterApplications();
-  },
-
-  async updateStatus(e) {
-    const { id, status } = e.currentTarget.dataset;
-    try {
-      await applications.updateStatus(id, status);
-      wx.showToast({ title: '操作成功', icon: 'success' });
-      this.loadData();
-    } catch (e) {
-      wx.showToast({ title: e.message || '操作失败', icon: 'none' });
-    }
-  },
-
-  goDetail(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    wx.navigateTo({ url: '/pages/resume-preview/resume-preview?id=' + resumeId + '&from=enterprise' });
   }
 });

@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/webs/webs",
-          "pathName": "pages/webs/webs",
+          "name": "pages/my/my",
+          "pathName": "pages/my/my",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/webs/webs",
+          "pathName": "pages/webs/webs",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
