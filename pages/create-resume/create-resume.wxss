@@ -183,6 +183,66 @@
   margin-bottom: 24rpx;
 }
 
+.form-group-school {
+  position: relative;
+}
+
+.school-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--c-card, #fff);
+  border-radius: 14rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,.12);
+  max-height: 400rpx;
+  overflow-y: auto;
+  margin-top: 4rpx;
+}
+
+.school-option {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 20rpx;
+  border-bottom: 1rpx solid var(--c-border, #f3f4f6);
+}
+
+.school-option:last-child {
+  border-bottom: none;
+}
+
+.school-option:active {
+  background: var(--c-bg, #f6f7f9);
+}
+
+.school-option-name {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--c-text, #1a1a2e);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.school-option-level {
+  font-size: 22rpx;
+  color: var(--c-accent, #ff5c39);
+  background: var(--c-accent-light, rgba(255,92,57,.08));
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.school-option-location {
+  font-size: 22rpx;
+  color: var(--c-text-3, #9ca3af);
+  flex-shrink: 0;
+}
+
 .form-group-inline {
   display: flex;
   gap: 20rpx;

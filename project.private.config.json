@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/my/my",
-          "pathName": "pages/my/my",
+          "name": "pages/resume-preview/resume-preview",
+          "pathName": "pages/resume-preview/resume-preview",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/my/my",
+          "pathName": "pages/my/my",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/webs/webs",

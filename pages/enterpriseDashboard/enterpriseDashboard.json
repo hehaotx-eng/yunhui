@@ -1,6 +1,6 @@
 {
+  "navigationBarTitleText": "招聘仪表盘",
   "usingComponents": {
     "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
-  },
-  "navigationStyle": "custom"
+  }
 }

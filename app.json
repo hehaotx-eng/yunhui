@@ -26,7 +26,11 @@
     "pages/custom/custom",
     "pages/create-resume/create-resume",
     "pages/resume-preview/resume-preview",
-    "pages/enterprise-applications/enterprise-applications"
+    "pages/enterprise-applications/enterprise-applications",
+    "pages/edit-profile/edit-profile",
+    "pages/enterprise-favorites/enterprise-favorites",
+    "pages/vip/vip",
+    "pages/aiAssistant/aiAssistant"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -41,7 +45,7 @@
     "backgroundColor": "#ffffff",
     "list": [
       { "pagePath": "pages/home/home", "text": "发现" },
-      { "pagePath": "pages/webs/webs", "text": "职位" },
+      { "pagePath": "pages/webs/webs", "text": "公司" },
       { "pagePath": "pages/aiRecommend/aiRecommend", "text": "推荐" },
       { "pagePath": "pages/msg/msg", "text": "消息" },
       { "pagePath": "pages/my/my", "text": "我的" }

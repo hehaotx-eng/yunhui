@@ -1,0 +1,39 @@
+<wxs src="../../utils/wxs.wxs" module="wxs" />
+<view class="page">
+  <scroll-view class="body" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="list">
+      <view wx:for="{{list}}" wx:key="id" class="glass-card" bindtap="viewResume" data-resumeid="{{item.resume_id}}">
+        <view class="card-top">
+          <image wx:if="{{item.avatar}}" class="card-avatar-img" src="{{item.avatar}}" mode="aspectFill" />
+          <view wx:else class="card-avatar">{{wxs.firstChar(item.nickname)}}</view>
+          <view class="card-info">
+            <text class="card-name">{{item.nickname || '候选人'}}</text>
+            <text class="card-title">{{item.expectedJob || item.title || '求职中'}}</text>
+          </view>
+        </view>
+        <view class="card-tags" wx:if="{{item.skills && item.skills.length > 0}}">
+          <text class="tag" wx:for="{{item.skills}}" wx:key="*this">{{item}}</text>
+        </view>
+        <view class="card-details" wx:if="{{item.expectedSalary || item.major || item.experience}}">
+          <text wx:if="{{item.expectedSalary}}" class="detail-item">💰 {{item.expectedSalary}}</text>
+          <text wx:if="{{item.major}}" class="detail-item">📚 {{item.major}}</text>
+          <text wx:if="{{item.experience}}" class="detail-item">⏱ {{item.experience}}</text>
+        </view>
+        <view class="card-meta">
+          <text wx:if="{{item.school}}" class="meta-item">{{item.school}}</text>
+          <text wx:if="{{item.education}}" class="meta-item">{{item.education}}</text>
+          <text wx:if="{{item.location}}" class="meta-item">{{item.location}}</text>
+        </view>
+        <text wx:if="{{item.summary}}" class="card-summary line-clamp-2">{{item.summary}}</text>
+        <view class="card-action" bindtap="viewResume" data-resumeid="{{item.resume_id}}">查看完整简历 ›</view>
+      </view>
+
+      <view wx:if="{{showEmpty}}" class="empty">
+        <view class="empty-icon">♥</view>
+        <text class="empty-text">暂无收藏的候选人</text>
+      </view>
+      <view wx:if="{{loading}}" class="loading">加载中...</view>
+    </view>
+    <view style="height: 40rpx;"></view>
+  </scroll-view>
+</view>

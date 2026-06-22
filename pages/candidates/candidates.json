@@ -1,6 +1,6 @@
 {
+  "navigationBarTitleText": "人才搜索",
   "usingComponents": {
     "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
-  },
-  "navigationStyle": "custom"
+  }
 }

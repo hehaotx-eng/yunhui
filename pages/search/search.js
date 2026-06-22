@@ -1,10 +1,9 @@
-const { job } = require('../../services/index');
+var feedStream = require('../../services/core/feedStream');
 
-const HISTORY_KEY = 'search_history';
+var HISTORY_KEY = 'search_history';
 
 Page({
   data: {
-    statusBarHeight: 0,
     keyword: '',
     hotKeywords: ['前端开发', '产品经理', 'Java开发', 'UI设计', '运营', '数据分析', 'Python', '人工智能'],
     historyKeywords: [],
@@ -14,103 +13,95 @@ Page({
     loading: false
   },
 
-  onLoad() {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
+  onLoad: function () {
     this.loadHistory();
   },
 
-  loadHistory() {
-    const history = wx.getStorageSync(HISTORY_KEY) || [];
+  loadHistory: function () {
+    var history = wx.getStorageSync(HISTORY_KEY) || [];
     this.setData({ historyKeywords: history.slice(0, 10) });
   },
 
-  saveHistory(keyword) {
-    let history = wx.getStorageSync(HISTORY_KEY) || [];
-    history = history.filter(k => k !== keyword);
+  saveHistory: function (keyword) {
+    var history = wx.getStorageSync(HISTORY_KEY) || [];
+    history = history.filter(function (k) { return k !== keyword; });
     history.unshift(keyword);
     history = history.slice(0, 20);
     wx.setStorageSync(HISTORY_KEY, history);
     this.setData({ historyKeywords: history.slice(0, 10) });
   },
 
-  onInput(e) {
-    const value = e.detail.value;
+  onInput: function (e) {
+    var value = e.detail.value;
     this.setData({ keyword: value });
-
     if (!value) {
       this.setData({ showResults: false, exactResults: [], recommendResults: [] });
       if (this._searchTimer) clearTimeout(this._searchTimer);
       return;
     }
-
     if (value.length < 2) return;
-
     if (this._searchTimer) clearTimeout(this._searchTimer);
-    this._searchTimer = setTimeout(() => {
+    this._searchTimer = setTimeout(function () {
       this.doSearch(value);
-    }, 300);
+    }.bind(this), 300);
   },
 
-  onConfirm() {
-    this.doSearch(this.data.keyword);
+  clearKeyword: function () {
+    this.setData({ keyword: '', showResults: false, exactResults: [], recommendResults: [] });
   },
 
-  selectKeyword(e) {
-    const keyword = e.currentTarget.dataset.keyword;
-    this.setData({ keyword });
+  onConfirm: function () { this.doSearch(this.data.keyword); },
+
+  selectKeyword: function (e) {
+    var keyword = e.currentTarget.dataset.keyword;
+    this.setData({ keyword: keyword });
     this.doSearch(keyword);
   },
 
-  async doSearch(kw) {
-    const keyword = (kw || this.data.keyword).trim();
-    if (!keyword) return;
-
-    if (!kw) this.saveHistory(keyword);
-
-    this.setData({ loading: true, showResults: true });
-
+  _getUserData: function () {
     try {
-      const [exactRes, recommendRes] = await Promise.all([
-        job.searchJobs({ keyword, page: 1, limit: 10 }),
-        job.recommendJobs({ keyword, page: 1, limit: 10 })
-      ]);
+      var info = wx.getStorageSync('userInfo');
+      return info || null;
+    } catch (e) { return null; }
+  },
 
-      const exactIds = new Set(exactRes.list.map(j => j.job_id || j.id));
-      const recommendList = recommendRes.list.filter(j => !exactIds.has(j.job_id || j.id));
-
-      this.setData({
-        exactResults: exactRes.list,
-        recommendResults: recommendList
-      });
+  doSearch: async function (kw) {
+    var keyword = (kw || this.data.keyword).trim();
+    if (!keyword) return;
+    if (!kw) this.saveHistory(keyword);
+    this.setData({ loading: true, showResults: true });
+    try {
+      var userData = this._getUserData();
+      var result = await feedStream.get({ keyword: keyword, page: 1, limit: 20, userData: userData });
+      var list = result.list || [];
+      this.setData({ exactResults: list.slice(0, 10), recommendResults: list.slice(10, 20) });
     } catch (e) {
-      console.error('搜索失败:', e);
+      console.error('search fail:', e);
       this.setData({ exactResults: [], recommendResults: [] });
     } finally {
       this.setData({ loading: false });
     }
   },
 
-  goDetail(e) {
-    const id = e.detail.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  goDetail: function (e) {
+    var id = e.detail && e.detail.id;
+    if (id) wx.navigateTo({ url: '/pages/detail/detail?id=' + id });
   },
 
-  clearHistory() {
+  clearHistory: function () {
+    var that = this;
     wx.showModal({
       title: '确认清除',
       content: '确定要清除搜索历史吗？',
-      success: (res) => {
+      success: function (res) {
         if (res.confirm) {
           wx.removeStorageSync(HISTORY_KEY);
-          this.setData({ historyKeywords: [] });
+          that.setData({ historyKeywords: [] });
           wx.showToast({ title: '已清除', icon: 'success' });
         }
       }
     });
   },
 
-  goBack() {
-    wx.navigateBack();
-  }
+  goBack: function () { wx.navigateBack(); }
 });

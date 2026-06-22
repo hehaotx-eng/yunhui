@@ -1,6 +1,5 @@
 Page({
   data: {
-    statusBarHeight: 0,
     currentDate: '',
     loading: true,
     metricList: [],
@@ -12,8 +11,6 @@ Page({
   },
 
   onLoad() {
-    const sys = wx.getSystemInfoSync()
-    this.setData({ statusBarHeight: sys.statusBarHeight || 20 })
     this.setCurrentDate()
     this.loadData()
   },

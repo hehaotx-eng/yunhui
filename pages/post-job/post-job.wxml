@@ -1,83 +1,196 @@
 <view class="page">
-  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-content">
-      <view class="nav-back" bindtap="goBack">
-        <text class="nav-back-icon">‹</text>
-      </view>
-      <text class="nav-title">{{isEdit ? '编辑职位' : '发布职位'}}</text>
-      <view class="nav-placeholder"></view>
-    </view>
+  <!-- 顶部进度提示 -->
+  <view class="progress-bar" wx:if="{{!isEdit}}">
+    <view class="progress-fill" style="width: {{progress}}%;"></view>
   </view>
 
-  <scroll-view class="body" scroll-y style="margin-top: {{statusBarHeight + 44}}px;">
+  <scroll-view class="body" scroll-y enhanced show-scrollbar="{{false}}">
+
+    <!-- 基本信息 -->
     <view class="section">
-      <text class="section-title">基本信息</text>
+      <view class="section-header">
+        <view class="section-icon">📋</view>
+        <text class="section-title">基本信息</text>
+        <text class="section-tag">必填</text>
+      </view>
+
       <view class="field">
-        <text class="field-label">职位名称 *</text>
-        <input class="field-input" placeholder="如：前端开发工程师" value="{{form.title}}" bindinput="onInput" data-field="form.title" />
+        <text class="field-label">职位名称</text>
+        <input
+          class="field-input {{form.title ? 'filled' : ''}}"
+          placeholder="如：前端开发工程师"
+          placeholder-class="placeholder"
+          value="{{form.title}}"
+          bindinput="onInput"
+          data-field="form.title"
+          maxlength="50"
+        />
+        <text class="char-count" wx:if="{{form.title}}">{{form.title.length}}/50</text>
       </view>
-      <view class="field-row">
-        <view class="field half">
-          <text class="field-label">最低薪资</text>
-          <input class="field-input" placeholder="如：10" type="digit" value="{{form.salary_min}}" bindinput="onInput" data-field="form.salary_min" />
-        </view>
-        <text class="field-sep">-</text>
-        <view class="field half">
-          <text class="field-label">最高薪资</text>
-          <input class="field-input" placeholder="如：20" type="digit" value="{{form.salary_max}}" bindinput="onInput" data-field="form.salary_max" />
-        </view>
-        <text class="field-unit">K</text>
-      </view>
+
       <view class="field">
-        <text class="field-label">工作地点 *</text>
-        <input class="field-input" placeholder="如：北京朝阳" value="{{form.location}}" bindinput="onInput" data-field="form.location" />
+        <text class="field-label">薪资范围 (K/月)</text>
+        <view class="salary-row">
+          <view class="salary-input-wrap">
+            <input
+              class="field-input salary-input {{form.salary_min ? 'filled' : ''}}"
+              placeholder="最低"
+              placeholder-class="placeholder"
+              type="digit"
+              value="{{form.salary_min}}"
+              bindinput="onInput"
+              data-field="form.salary_min"
+            />
+          </view>
+          <view class="salary-sep">
+            <text>—</text>
+          </view>
+          <view class="salary-input-wrap">
+            <input
+              class="field-input salary-input {{form.salary_max ? 'filled' : ''}}"
+              placeholder="最高"
+              placeholder-class="placeholder"
+              type="digit"
+              value="{{form.salary_max}}"
+              bindinput="onInput"
+              data-field="form.salary_max"
+            />
+          </view>
+        </view>
+        <!-- 快捷薪资选择 -->
+        <view class="salary-quick">
+          <text
+            class="salary-chip {{salaryChipActive(item) ? 'active' : ''}}"
+            wx:for="{{salaryRanges}}"
+            wx:key="label"
+            bindtap="selectSalary"
+            data-min="{{item.min}}"
+            data-max="{{item.max}}"
+          >{{item.label}}</text>
+        </view>
       </view>
+
+      <view class="field">
+        <text class="field-label">工作地点</text>
+        <input
+          class="field-input {{form.location ? 'filled' : ''}}"
+          placeholder="如：北京朝阳区"
+          placeholder-class="placeholder"
+          value="{{form.location}}"
+          bindinput="onInput"
+          data-field="form.location"
+        />
+      </view>
+
       <view class="field-row">
         <view class="field half">
           <text class="field-label">经验要求</text>
-          <picker mode="selector" range="{{['不限','1年以下','1-3年','3-5年','5-10年','10年以上']}}" bindchange="onExperienceChange">
-            <view class="field-input picker {{form.experience ? '' : 'placeholder'}}">{{form.experience || '请选择'}}</view>
+          <picker mode="selector" range="{{experienceOptions}}" range-key="label" bindchange="onExperienceChange">
+            <view class="field-input picker {{form.experience ? 'filled' : 'placeholder'}}">
+              <text>{{form.experience || '不限'}}</text>
+              <text class="picker-arrow">›</text>
+            </view>
           </picker>
         </view>
         <view class="field half">
           <text class="field-label">学历要求</text>
-          <picker mode="selector" range="{{['不限','高中','大专','本科','硕士','博士']}}" bindchange="onEducationChange">
-            <view class="field-input picker {{form.education ? '' : 'placeholder'}}">{{form.education || '请选择'}}</view>
+          <picker mode="selector" range="{{educationOptions}}" range-key="label" bindchange="onEducationChange">
+            <view class="field-input picker {{form.education ? 'filled' : 'placeholder'}}">
+              <text>{{form.education || '不限'}}</text>
+              <text class="picker-arrow">›</text>
+            </view>
           </picker>
         </view>
       </view>
-      <view class="field">
-        <text class="field-label">职位类型</text>
-        <picker mode="selector" range="{{['普通职位','VIP职位']}}" bindchange="onTypeChange">
-          <view class="field-input picker">{{form.job_type === 'premium' ? 'VIP职位' : '普通职位'}}</view>
-        </picker>
-      </view>
     </view>
 
+    <!-- 职位详情 -->
     <view class="section">
-      <text class="section-title">职位详情</text>
-      <view class="field">
-        <text class="field-label">职位描述 *</text>
-        <textarea class="field-textarea" placeholder="描述工作内容和职责" value="{{form.description}}" bindinput="onInput" data-field="form.description" />
+      <view class="section-header">
+        <view class="section-icon">📝</view>
+        <text class="section-title">职位详情</text>
+        <text class="section-tag">必填</text>
       </view>
+
+      <view class="field">
+        <text class="field-label">职位描述</text>
+        <textarea
+          class="field-textarea {{form.description ? 'filled' : ''}}"
+          placeholder="描述工作内容、职责和日常工作场景&#10;&#10;示例：&#10;1. 负责公司小程序的前端开发和维护&#10;2. 与设计师和后端工程师协作完成产品需求&#10;3. 优化页面性能，提升用户体验"
+          placeholder-class="placeholder"
+          value="{{form.description}}"
+          bindinput="onInput"
+          data-field="form.description"
+          maxlength="1000"
+          auto-height
+        />
+        <text class="char-count">{{form.description.length || 0}}/1000</text>
+      </view>
+
       <view class="field">
         <text class="field-label">任职要求</text>
-        <textarea class="field-textarea" placeholder="描述任职条件和要求" value="{{form.requirements}}" bindinput="onInput" data-field="form.requirements" />
+        <textarea
+          class="field-textarea {{form.requirements ? 'filled' : ''}}"
+          placeholder="描述任职条件和技能要求&#10;&#10;示例：&#10;1. 本科及以上学历，计算机相关专业&#10;2. 3年以上前端开发经验&#10;3. 熟悉 Vue/React 等主流框架"
+          placeholder-class="placeholder"
+          value="{{form.requirements}}"
+          bindinput="onInput"
+          data-field="form.requirements"
+          maxlength="1000"
+          auto-height
+        />
+        <text class="char-count">{{form.requirements.length || 0}}/1000</text>
       </view>
     </view>
 
+    <!-- 技能标签 -->
     <view class="section">
-      <text class="section-title">技能标签</text>
-      <view class="tag-wrap">
-        <text class="tag {{form.tags.indexOf(item) !== -1 ? 'active' : ''}}" wx:for="{{['Vue','React','Java','Python','Go','Node.js','MySQL','Redis','Docker','K8s','AI','产品设计','运营','销售','市场']}}" wx:key="*this" bindtap="toggleTag" data-value="{{item}}">{{item}}</text>
+      <view class="section-header">
+        <view class="section-icon">🏷️</view>
+        <text class="section-title">技能标签</text>
+        <text class="section-hint">选填，最多10个</text>
+      </view>
+
+      <view class="tag-group" wx:for="{{tagGroups}}" wx:key="category" wx:for-index="catIdx">
+        <text class="tag-group-title">{{item.category}}</text>
+        <view class="tag-wrap">
+          <text
+            class="tag {{form.tags.indexOf(tag) !== -1 ? 'active' : ''}}"
+            wx:for="{{item.tags}}"
+            wx:for-item="tag"
+            wx:key="*this"
+            bindtap="toggleTag"
+            data-value="{{tag}}"
+          >{{tag}}</text>
+        </view>
+      </view>
+
+      <!-- 已选标签 -->
+      <view class="selected-tags" wx:if="{{form.tags.length > 0}}">
+        <text class="selected-label">已选标签：</text>
+        <view class="selected-wrap">
+          <text class="selected-tag" wx:for="{{form.tags}}" wx:key="*this">
+            {{item}}
+            <text class="tag-remove" bindtap="toggleTag" data-value="{{item}}">×</text>
+          </text>
+        </view>
       </view>
     </view>
 
-    <view style="height: 160rpx;"></view>
+    <view style="height: 200rpx;"></view>
   </scroll-view>
 
+  <!-- 底部操作栏 -->
   <view class="bottom-bar">
-    <view class="bar-btn preview" bindtap="preview">预览</view>
-    <view class="bar-btn save {{submitting ? 'disabled' : ''}}" bindtap="submit">{{submitting ? '保存中...' : '保存'}}</view>
+    <view class="bar-inner">
+      <view class="bar-btn preview" bindtap="preview" wx:if="{{savedId || jobId}}">
+        <text class="preview-icon">👁</text>
+        <text>预览</text>
+      </view>
+      <view class="bar-btn save {{submitting ? 'disabled' : ''}}" bindtap="submit">
+        <text wx:if="{{submitting}}" class="save-loading">⏳</text>
+        <text>{{submitting ? '发布中...' : (isEdit ? '更新职位' : '发布职位')}}</text>
+      </view>
+    </view>
   </view>
 </view>

@@ -2,14 +2,12 @@ var api = require('../../utils/api');
 
 Page({
   data: {
-    statusBarHeight: 0,
     userInfo: {},
-    stats: { jobs: 0, applications: 0 }
+    stats: { jobs: 0, applications: 0, favorites: 0 },
+    favorites: []
   },
 
   onLoad: function() {
-    var sys = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadData();
   },
 
@@ -26,6 +24,11 @@ Page({
       var list = Array.isArray(result) ? result : (result.list || result.rows || []);
       that.setData({ 'stats.jobs': list.length });
     }).catch(function() {});
+
+    api.request({ url: '/api/v1/enterprise/favorites' }).then(function(data) {
+      var list = data.list || [];
+      that.setData({ 'stats.favorites': list.length, favorites: list });
+    }).catch(function() {});
   },
 
   goJobs: function() {
@@ -34,6 +37,10 @@ Page({
 
   goApplications: function() {
     wx.navigateTo({ url: '/pages/enterprise-applications/enterprise-applications' });
+  },
+
+  goFavorites: function() {
+    wx.navigateTo({ url: '/pages/enterprise-favorites/enterprise-favorites' });
   },
 
   handleLogout: function() {

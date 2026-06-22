@@ -1,6 +1,6 @@
 {
+  "navigationBarTitleText": "企业中心",
   "usingComponents": {
     "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
-  },
-  "navigationStyle": "custom"
+  }
 }

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const { BASE_URL } = require('../../config/base');
 
 const interceptors = {
   request: [],
@@ -21,6 +21,10 @@ function runInterceptorChain(chain, input) {
   return result;
 }
 
+function getToken() {
+  try { return wx.getStorageSync('token') || ''; } catch (e) { return ''; }
+}
+
 function request(options) {
   const { url, method = 'GET', data = {}, header = {}, needAuth = true } = options;
 
@@ -31,6 +35,13 @@ function request(options) {
     header: { 'Content-Type': 'application/json', ...header },
     needAuth
   };
+
+  if (needAuth) {
+    const token = getToken();
+    if (token) {
+      config.header.Authorization = `Bearer ${token}`;
+    }
+  }
 
   try {
     config = runInterceptorChain(interceptors.request, config);
@@ -47,12 +58,29 @@ function request(options) {
       timeout: 30000,
       success(res) {
         try {
-          const result = runInterceptorChain(interceptors.response, {
-            statusCode: res.statusCode,
-            data: res.data,
-            config
-          });
-          resolve(result);
+          if (interceptors.response.length > 0) {
+            const result = runInterceptorChain(interceptors.response, {
+              statusCode: res.statusCode,
+              data: res.data,
+              config
+            });
+            resolve(result);
+          } else {
+            const body = res.data || {};
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              if (body.code === 0 || body.code === 200) {
+                resolve(body.data);
+              } else {
+                reject(new Error(body.message || '请求失败'));
+              }
+            } else if (res.statusCode === 401) {
+              reject(new Error(config.needAuth ? '登录已失效，请重新登录' : '需要登录'));
+            } else if (res.statusCode === 403) {
+              reject(new Error('权限不足'));
+            } else {
+              reject(new Error(body.message || '服务异常'));
+            }
+          }
         } catch (err) {
           reject(err);
         }

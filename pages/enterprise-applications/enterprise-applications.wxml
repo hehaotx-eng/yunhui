@@ -1,16 +1,6 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-content">
-      <view class="nav-back" bindtap="goBack">
-        <text class="nav-back-icon">‹</text>
-      </view>
-      <text class="nav-title">投递管理</text>
-      <view class="nav-placeholder"></view>
-    </view>
-  </view>
-
-  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+  <view class="body">
     <scroll-view class="tabs" scroll-x enhanced show-scrollbar="{{false}}">
       <view wx:for="{{filters}}" wx:key="id" class="tab {{activeFilter === item.id ? 'active' : ''}}" bindtap="switchFilter" data-filter="{{item.id}}">{{item.name}}</view>
     </scroll-view>

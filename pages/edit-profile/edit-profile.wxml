@@ -1,0 +1,22 @@
+<view class="edit-page">
+  <view class="edit-body">
+    <view class="avatar-section" bindtap="onEditAvatar">
+      <image wx:if="{{avatar}}" class="avatar-img" src="{{avatar}}" mode="aspectFill" />
+      <view wx:else class="avatar-img avatar-fallback">{{avatarLetter}}</view>
+      <view class="avatar-change">点击更换头像</view>
+    </view>
+
+    <view class="form-card">
+      <view class="form-group">
+        <text class="form-label">昵称</text>
+        <input class="form-input" placeholder="请输入昵称" value="{{nickname}}" bindinput="onNicknameInput" maxlength="20" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">手机号</text>
+        <text class="form-value">{{phone}}</text>
+      </view>
+    </view>
+
+    <view class="save-btn" bindtap="saveProfile">保存</view>
+  </view>
+</view>

@@ -1,6 +1,6 @@
 {
+  "navigationBarTitleText": "岗位管理",
   "usingComponents": {
     "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
-  },
-  "navigationStyle": "custom"
+  }
 }

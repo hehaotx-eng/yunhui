@@ -7,7 +7,11 @@
     data-index="{{index}}"
     bindtap="switchTab"
   >
-    <view class="tab-icon {{selected === index ? 'icon-active' : ''}}">{{item.icon}}</view>
+    <view class="tab-icon-wrap">
+      <image wx:if="{{item.iconImage}}" class="tab-icon-img" src="{{selected === index ? item.iconImageActive : item.iconImage}}" mode="aspectFit" />
+      <view wx:else class="tab-icon {{selected === index ? 'icon-active' : ''}}">{{item.icon}}</view>
+      <view wx:if="{{badges[index] > 0}}" class="tab-badge">{{badges[index] > 99 ? '99+' : badges[index]}}</view>
+    </view>
     <view class="tab-text">{{item.text}}</view>
   </view>
 </view>

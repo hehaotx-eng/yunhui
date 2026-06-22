@@ -1,17 +1,14 @@
 Page({
   data: {
     pagePath: '',
-    navTitle: '',
-    statusBarHeight: 0
+    navTitle: ''
   },
 
   onLoad(options) {
-    const sysInfo = wx.getSystemInfoSync();
     const pagePath = options.page || 'home';
     this.setData({
       pagePath,
-      navTitle: options.title || '',
-      statusBarHeight: sysInfo.statusBarHeight || 20
+      navTitle: options.title || ''
     });
     console.log('[custom] loading page:', pagePath, 'title:', options.title);
   },

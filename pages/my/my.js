@@ -1,4 +1,6 @@
 const { auth, applications, resumes, favorites } = require('../../utils/api.js');
+const { resolve } = require('../../utils/image.js');
+const vip = require('../../services/core/vip');
 
 Page({
   data: {
@@ -6,6 +8,7 @@ Page({
     userInfo: null,
     isEnterprise: false,
     isLoggedIn: false,
+    isVip: false,
     avatarLetter: '用',
     stats: {
       applicationCount: 0,
@@ -37,57 +40,67 @@ Page({
     this.loadUserInfo();
   },
 
-  async loadUserInfo() {
+  loadUserInfo() {
     const app = getApp();
     const token = app.globalData.token || wx.getStorageSync('token');
     const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo');
 
     if (!token) {
-      this.setData({ isLoggedIn: false, userInfo: null });
+      this.setData({ isLoggedIn: false, userInfo: null, isVip: false });
       return;
     }
 
-    this.setData({ isLoggedIn: true });
+    this.setData({ isLoggedIn: true, isVip: vip.isVip() });
 
-    try {
-      const fresh = await auth.getMe();
+    auth.getMe().then((fresh) => {
       if (fresh) {
+        if (fresh.avatar) fresh.avatar = resolve(fresh.avatar);
         app.updateUserState(fresh, token);
         this.setData({
           userInfo: fresh,
           isEnterprise: !!fresh.company_id,
+          isVip: !!fresh.is_vip,
           avatarLetter: (fresh.nickname || fresh.phone || '用').substring(0, 1)
         });
       }
-    } catch {
+    }).catch(() => {
       if (userInfo) {
+        if (userInfo.avatar) userInfo.avatar = resolve(userInfo.avatar);
         this.setData({
           userInfo,
           isEnterprise: !!userInfo.company_id,
+          isVip: !!userInfo.is_vip,
           avatarLetter: (userInfo.nickname || userInfo.phone || '用').substring(0, 1)
         });
       }
-    }
-
-    this.loadStats();
+    }).finally(() => {
+      this.loadStats();
+    });
   },
 
-  async loadStats() {
-    try {
-      const [myApps, myResumes, fav] = await Promise.all([
-        applications.getMy().catch(() => []),
-        resumes.getMy().catch(() => []),
-        favorites.getCount().catch(() => ({ count: 0 }))
-      ]);
-      this.setData({
+  loadStats() {
+    const that = this;
+    const appPromise = applications.getMy().catch(() => []);
+    const resumePromise = resumes.getMy().catch(() => []);
+    const favPromise = favorites.getCount().catch(() => ({ count: 0 }));
+
+    Promise.all([appPromise, resumePromise, favPromise]).then(function(results) {
+      const myApps = results[0];
+      const myResumes = results[1];
+      const fav = results[2];
+      that.setData({
         'stats.applicationCount': Array.isArray(myApps) ? myApps.length : 0,
         'stats.favoriteCount': fav.count || 0,
         'stats.resumeCount': Array.isArray(myResumes) ? myResumes.length : 0,
         resumeList: Array.isArray(myResumes) ? myResumes : []
       });
-    } catch (e) {
+    }).catch(function(e) {
       console.error('加载统计失败:', e);
-    }
+    });
+  },
+
+  goEditProfile() {
+    wx.navigateTo({ url: '/pages/edit-profile/edit-profile' });
   },
 
   goPage(e) {
@@ -105,7 +118,7 @@ Page({
 
   goPreviewResume(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/resume-preview/resume-preview?id=${id}` });
+    wx.navigateTo({ url: '/pages/resume-preview/resume-preview?id=' + id });
   },
 
   goLogin() {
@@ -116,7 +129,7 @@ Page({
     wx.showModal({
       title: '确认退出',
       content: '确定要退出登录吗？',
-      success: (res) => {
+      success: function(res) {
         if (res.confirm) {
           const app = getApp();
           app.clearUserState();

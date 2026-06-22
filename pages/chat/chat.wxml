@@ -1,34 +1,101 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
+
 <view class="page">
+
+  <!-- 顶部导航 -->
   <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-content">
       <view class="nav-back" bindtap="goBack">
-        <text class="nav-back-icon">‹</text>
+        <text class="back-icon">‹</text>
       </view>
-      <text class="nav-title">聊天</text>
+      <view class="nav-info">
+        <text class="nav-title">{{targetName || '在线沟通'}}</text>
+      </view>
       <view class="nav-placeholder"></view>
     </view>
   </view>
 
-  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
-    <scroll-view class="msg-list" scroll-y scroll-into-view="bottom" enhanced show-scrollbar="{{false}}">
-      <view wx:if="{{messages.length === 0}}" class="empty-chat">
-        <text class="empty-chat-icon">💬</text>
-        <text class="empty-chat-text">发送第一条消息开始聊天</text>
-      </view>
-      <view wx:for="{{messages}}" wx:key="id" class="msg-item {{item.sender_id == myUserId ? 'mine' : ''}}">
-        <view class="msg-avatar">{{wxs.firstChar(item.nickname || item.sender_name)}}</view>
-        <view class="msg-content">
-          <text class="msg-name" wx:if="{{item.sender_id != myUserId}}">{{item.nickname || '对方'}}</text>
-          <view class="msg-bubble">{{item.content}}</view>
+  <!-- 消息区 -->
+  <view class="body" style="padding-top: {{statusBarHeight + 44}}px;">
+
+    <view wx:if="{{loading}}" class="loading-wrap">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <scroll-view
+      wx:else
+      class="msg-list"
+      scroll-y
+      show-scrollbar="false"
+      scroll-with-animation
+      scroll-into-view="{{toView}}"
+    >
+
+      <view class="top-safe"></view>
+
+      <!-- 消息列表 -->
+      <block wx:for="{{messages}}" wx:key="id">
+
+        <view class="msg-item {{item.isSelf ? 'mine' : 'other'}}">
+
+          <!-- 对方头像 -->
+          <view class="msg-avatar" wx:if="{{!item.isSelf}}">
+            <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill" />
+            <text wx:else class="avatar-text">{{item.avatarChar}}</text>
+          </view>
+
+          <view class="msg-content">
+
+            <!-- 气泡 -->
+            <view class="msg-bubble {{item.isSelf ? 'mine-bubble' : 'other-bubble'}} {{item.status}}">
+              <text class="msg-text">{{item.content}}</text>
+
+              <!-- 状态 -->
+              <view class="msg-status" wx:if="{{item.isSelf}}">
+                <text wx:if="{{item.status === 'sending'}}" class="status-icon">⏳</text>
+                <text wx:if="{{item.status === 'failed'}}" class="status-icon failed-icon">!</text>
+              </view>
+            </view>
+
+            <text class="msg-time">{{wxs.formatTime(item.created_at)}}</text>
+
+          </view>
+
+          <!-- 我方头像 -->
+          <view class="msg-avatar mine-avatar" wx:if="{{item.isSelf}}">
+            <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill" />
+            <text wx:else class="avatar-text">{{item.avatarChar}}</text>
+          </view>
+
         </view>
-      </view>
-      <view id="bottom"></view>
+
+      </block>
+
+      <view id="bottom-anchor"></view>
+
     </scroll-view>
+
   </view>
 
+  <!-- 输入区 -->
   <view class="input-bar">
-    <input class="input-field" value="{{inputValue}}" bindinput="onInput" placeholder="输入消息" confirm-type="send" bindconfirm="sendMessage" />
-    <view class="send-btn" bindtap="sendMessage">发送</view>
+
+    <view class="input-wrap">
+      <input
+        class="input"
+        value="{{inputValue}}"
+        bindinput="onInput"
+        placeholder="输入消息..."
+        confirm-type="send"
+        bindconfirm="sendMessage"
+      />
+    </view>
+
+    <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">
+      <text>发送</text>
+    </view>
+
   </view>
+
 </view>

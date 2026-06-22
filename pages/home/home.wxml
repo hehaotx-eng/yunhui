@@ -55,15 +55,24 @@
     <view wx:if="{{catSticky}}" style="height: 88rpx;"></view>
 
     <view class="container">
-        <!-- 发布岗位 -->
-      <view class="card card-orange" bindtap="goPublishJob">
-        <view class="icon-box">
-          <view class="icon"></view>
+        <!-- VIP 卡片 -->
+      <view class="card card-vip" bindtap="goVip">
+        <view class="vip-card-glow"></view>
+        <view class="vip-card-inner">
+          <view class="vip-left">
+            <!-- <text class="vip-crown">👑</text> -->
+            <view class="vip-info">
+              <text class="vip-title" wx:if="{{!isVip}}">开通 AI 智能求职会员</text>
+              <text class="vip-title" wx:else>VIP会员</text>
+              <text class="vip-desc" wx:if="{{!isVip}}">简历优化 + AI 推荐 + AI 面试</text>
+              <text class="vip-desc" wx:else>全部 AI 功能已解锁</text>
+            </view>
+          </view>
+          <view class="vip-action">
+            <text wx:if="{{!isVip}}">立即开通</text>
+            <text wx:else>查看权益</text>
+          </view>
         </view>
-        <view class="text-box">
-          <text class="title">发布岗位</text>
-        </view>
-        <view class="arrow">›</view>
       </view>
       <!-- 创建简历 -->
       <view class="card card-blue" bindtap="goCreateResume">

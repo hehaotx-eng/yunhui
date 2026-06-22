@@ -1,13 +1,5 @@
 <view class="page">
 
-<!-- 自定义导航栏 -->
-<view class="navbar">
-  <view class="navbar-content">
-    <view class="nav-back" bindtap="goBack">←</view>
-    <view class="nav-placeholder"></view>
-  </view>
-</view>
-
 <!-- Hero 顶部欢迎 -->
 <view class="hero register-hero">
   <view class="hero-title">

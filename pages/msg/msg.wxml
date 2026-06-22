@@ -21,16 +21,18 @@
     </view>
 
     <view wx:else class="list">
-      <view wx:for="{{conversations}}" wx:key="id" class="card" bindtap="goChat" data-id="{{item.id}}">
+      <view wx:for="{{conversations}}" wx:key="id" class="card" bindtap="goChat" data-id="{{item.id}}" data-name="{{item.name}}" data-avatar="{{item.avatar}}">
         <view class="card-left">
-          <view class="avatar">{{wxs.firstChar(item.other_name)}}</view>
+          <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill" />
+          <view wx:else class="avatar">{{item.avatarChar}}</view>
+          <view wx:if="{{item.unreadCount > 0}}" class="unread-badge">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
         </view>
         <view class="card-body">
           <view class="card-top">
-            <text class="card-name">{{item.other_name || '对方'}}</text>
-            <text class="card-time">{{wxs.formatTime(item.last_message_at)}}</text>
+            <text class="card-name">{{item.name || '对方'}}</text>
+            <text class="card-time">{{wxs.formatTime(item.lastMessageTime)}}</text>
           </view>
-          <text class="card-preview">{{item.last_message || '暂无消息'}}</text>
+          <text class="card-preview {{item.unreadCount > 0 ? 'unread' : ''}}">{{item.lastMessage || '暂无消息'}}</text>
         </view>
       </view>
     </view>

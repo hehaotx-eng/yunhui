@@ -9,70 +9,113 @@
     </view>
   </view>
 
-  <!-- AI 状态头 -->
-  <view class="ai-header" style="margin-top: {{statusBarHeight + 88}}px;">
-    <view class="header-card">
-      <view class="header-glow"></view>
-      <view class="header-content">
-        <view class="header-left">
-          <text class="header-title">智能匹配中</text>
-          <text class="header-desc">已分析 {{totalCount}} 个机会，找到 {{matchCount}} 个高匹配</text>
-        </view>
-        <view class="header-action" bindtap="onRefresh">
-          <text class="refresh-text">刷新</text>
-        </view>
-      </view>
-
-      <!-- 筛选标签 -->
-      <view class="filter-tags">
-        <view
-          class="filter-tag {{activeFilter === item.key ? 'filter-active' : ''}}"
-          wx:for="{{filters}}"
-          wx:key="key"
-          data-key="{{item.key}}"
-          bindtap="onFilterTap"
-        >
-          <text>{{item.label}}</text>
-        </view>
-      </view>
+  <!-- 未登录提示 -->
+  <view wx:if="{{!isLoggedIn}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
+    <view class="empty-icon-wrap">
+      <text class="empty-icon">🔐</text>
+    </view>
+    <text class="empty-title">登录后查看AI推荐</text>
+    <text class="empty-subtitle">登录后系统将根据你的简历智能匹配职位</text>
+    <view class="empty-btn" bindtap="showLoginDialog">
+      <text>立即登录</text>
     </view>
   </view>
 
-  <!-- 统一推荐列表 -->
-  <view class="recommend-list" wx:if="{{!skeleton}}">
-    <block wx:for="{{list}}" wx:key="id">
-      <ai-recommend-card
-        item="{{item.payload}}"
-        bind:tap="goDetail"
-        bind:company="goCompany"
-        bind:action="onCardAction"
+  <!-- 非会员提示 -->
+  <view wx:elif="{{!isVip}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
+    <view class="empty-icon-wrap">
+      <text class="empty-icon">👑</text>
+    </view>
+    <text class="empty-title">VIP会员专享</text>
+    <text class="empty-subtitle">AI智能推荐是VIP会员专属功能，开通后即可享受精准职位匹配</text>
+    <view class="empty-btn" bindtap="showVipDialog">
+      <text>立即开通</text>
+    </view>
+  </view>
+
+  <!-- 无简历提示 -->
+  <view wx:elif="{{!hasResume}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
+    <view class="empty-icon-wrap">
+      <text class="empty-icon">📝</text>
+    </view>
+    <text class="empty-title">创建简历获取AI推荐</text>
+    <text class="empty-subtitle">完善简历信息，AI将为你精准匹配职位</text>
+    <view class="empty-btn" bindtap="goCreateResume">
+      <text>创建简历</text>
+    </view>
+  </view>
+
+  <!-- 已登录且有简历 -->
+  <block wx:else>
+    <!-- AI 状态头 -->
+    <view class="ai-header" style="margin-top: {{statusBarHeight + 88}}px;">
+      <view class="header-card">
+        <view class="header-glow"></view>
+        <view class="header-content">
+          <view class="header-left">
+            <text class="header-title">智能匹配中</text>
+            <text class="header-desc">已分析 {{totalCount}} 个机会，找到 {{matchCount}} 个高匹配</text>
+          </view>
+          <view class="header-action" bindtap="onRefresh">
+            <text class="refresh-text">刷新</text>
+          </view>
+        </view>
+
+        <!-- 筛选标签 -->
+        <view class="filter-tags">
+          <view
+            class="filter-tag {{activeFilter === item.key ? 'filter-active' : ''}}"
+            wx:for="{{filters}}"
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="onFilterTap"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统一推荐列表 -->
+    <view class="recommend-list" wx:if="{{!skeleton}}">
+      <block wx:for="{{filteredList}}" wx:key="id">
+        <ai-recommend-card
+          item="{{item.payload}}"
+          bind:tap="goDetail"
+          bind:company="goCompany"
+          bind:action="onCardAction"
+        />
+      </block>
+
+      <empty-state
+        wx:if="{{filteredList.length === 0}}"
+        title="暂无推荐"
+        subtitle="完善简历获得更精准的推荐"
       />
-    </block>
+    </view>
 
-    <empty-state
-      wx:if="{{list.length === 0 && !loading}}"
-      title="暂无推荐"
-      subtitle="完善简历获得更精准的推荐"
-    />
-
-    <load-more loading="{{loadingMore}}" hasMore="{{has_more}}" />
-  </view>
-
-  <!-- 骨架屏 -->
-  <view wx:if="{{skeleton}}" class="skeleton-wrap">
-    <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
-      <view class="skeleton-row">
-        <view class="skeleton-circle skeleton-pulse"></view>
-        <view class="skeleton-col">
-          <view class="skeleton-line skeleton-line-lg skeleton-pulse"></view>
-          <view class="skeleton-line skeleton-line-sm skeleton-pulse"></view>
+    <!-- 骨架屏 -->
+    <view wx:if="{{skeleton}}" class="skeleton-wrap">
+      <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-row">
+          <view class="skeleton-circle skeleton-pulse"></view>
+          <view class="skeleton-col">
+            <view class="skeleton-line skeleton-line-lg skeleton-pulse"></view>
+            <view class="skeleton-line skeleton-line-sm skeleton-pulse"></view>
+          </view>
+        </view>
+        <view class="skeleton-block skeleton-pulse"></view>
+        <view class="skeleton-tags">
+          <view class="skeleton-tag skeleton-pulse" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
         </view>
       </view>
-      <view class="skeleton-block skeleton-pulse"></view>
-      <view class="skeleton-tags">
-        <view class="skeleton-tag skeleton-pulse" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
-      </view>
     </view>
+  </block>
+
+  <!-- AI 助手悬浮球 -->
+  <view class="fab-button" bindtap="goAiAssistant">
+    <view class="fab-icon">🤖</view>
+    <text class="fab-text">AI助手</text>
   </view>
 </view>
 

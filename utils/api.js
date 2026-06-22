@@ -1,20 +1,24 @@
-const BASE_URL = 'http://localhost:3000';
+const { BASE_URL } = require('../config/base');
+const cache = require('./cache');
 
 function getToken() {
-  return wx.getStorageSync('token') || '';
+  try { return wx.getStorageSync('token') || ''; } catch (e) { return ''; }
 }
 
 function setToken(token) {
-  wx.setStorageSync('token', token);
+  try { wx.setStorageSync('token', token); } catch (e) {}
 }
 
 function setUserInfo(user) {
-  wx.setStorageSync('userInfo', user);
+  try { wx.setStorageSync('userInfo', user); } catch (e) {}
 }
 
 function clearAuth() {
-  wx.removeStorageSync('token');
-  wx.removeStorageSync('userInfo');
+  try {
+    wx.removeStorageSync('token');
+    wx.removeStorageSync('userInfo');
+    cache.clearAllCache();
+  } catch (e) {}
 }
 
 function request(options) {
@@ -23,7 +27,9 @@ function request(options) {
 
   if (needAuth) {
     const token = getToken();
-    if (token) finalHeader.Authorization = `Bearer ${token}`;
+    if (token) {
+      finalHeader.Authorization = `Bearer ${token}`;
+    }
   }
 
   return new Promise((resolve, reject) => {
@@ -33,15 +39,6 @@ function request(options) {
       data,
       header: finalHeader,
       success: (res) => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          const body = res.data || {};
-          if (body.code === 0 || body.code === 200) {
-            resolve(body.data);
-          } else {
-            reject(new Error(body.message || '请求失败'));
-          }
-          return;
-        }
         if (res.statusCode === 401) {
           if (needAuth) {
             clearAuth();
@@ -53,6 +50,15 @@ function request(options) {
         }
         if (res.statusCode === 403) {
           reject(new Error('权限不足'));
+          return;
+        }
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          const body = res.data || {};
+          if (body.code === 0 || body.code === 200) {
+            resolve(body.data);
+          } else {
+            reject(new Error(body.message || '请求失败'));
+          }
           return;
         }
         reject(new Error((res.data && res.data.message) || `服务异常 ${res.statusCode}`));
@@ -107,13 +113,20 @@ function saveLogin(data) {
 // ========== 用户 ==========
 const auth = {
   login(phone, password) {
+    cache.clearAllCache();
     return request({ url: '/api/v1/users/login', method: 'POST', data: { phone, password }, needAuth: false }).then(saveLogin);
   },
   register(data) {
     return request({ url: '/api/v1/users/register', method: 'POST', data, needAuth: false });
   },
   getMe() {
-    return request({ url: '/api/v1/users/me' });
+    return cache.cachedFetch('user_me', function() {
+      return request({ url: '/api/v1/users/me' });
+    }, 5 * 60 * 1000);
+  },
+  updateProfile(data) {
+    cache.removeCache('user_me');
+    return request({ url: '/api/v1/users/profile', method: 'PUT', data });
   }
 };
 
@@ -172,11 +185,20 @@ const chat = {
   getConversations() {
     return request({ url: '/api/v1/chat/conversations' });
   },
-  sendMessage(conversationId, content) {
-    return request({ url: '/api/v1/chat/messages', method: 'POST', data: { conversation_id: conversationId, content } });
+  getConversationDetail(conversationId) {
+    return request({ url: `/api/v1/chat/conversations/${conversationId}` });
+  },
+  sendMessage(conversationId, content, messageType) {
+    return request({ url: '/api/v1/chat/messages', method: 'POST', data: { conversation_id: conversationId, content, message_type: messageType || 'text' } });
   },
   getMessages(conversationId, params = {}) {
     return request({ url: `/api/v1/chat/messages/${conversationId}${toQuery(params)}` });
+  },
+  markRead(conversationId) {
+    return request({ url: `/api/v1/chat/conversations/${conversationId}/read`, method: 'PUT' });
+  },
+  getUnreadCount() {
+    return request({ url: '/api/v1/chat/unread/count' });
   }
 };
 
@@ -193,6 +215,13 @@ const ai = {
   },
   getReason(jobId) {
     return request({ url: `/api/v1/ai/recommendations/reason/${jobId}` });
+  }
+};
+
+// ========== AI 助手 ==========
+const aiAssistant = {
+  analyze(input) {
+    return request({ url: '/api/v1/ai-assistant/analyze', method: 'POST', data: { input } });
   }
 };
 
@@ -287,7 +316,9 @@ const admin = {
 
 const banners = {
   getActive() {
-    return request({ url: '/api/v1/banners', needAuth: false });
+    return cache.cachedFetch('banners_active', function() {
+      return request({ url: '/api/v1/banners', needAuth: false });
+    }, 30 * 60 * 1000);
   }
 };
 
@@ -296,9 +327,12 @@ const enterprises = {
     return request({ url: `/api/v1/enterprises/${id}`, needAuth: false });
   },
   getList() {
-    return request({ url: '/api/v1/enterprises', needAuth: false });
+    return cache.cachedFetch('enterprises_list', function() {
+      return request({ url: '/api/v1/enterprises', needAuth: false });
+    }, 30 * 60 * 1000);
   },
   create(data) {
+    cache.removeCache('enterprises_list');
     return request({ url: '/api/v1/enterprises', method: 'POST', data });
   },
   join(id) {
@@ -308,18 +342,23 @@ const enterprises = {
 
 const categories = {
   getList() {
-    return request({ url: '/api/v1/categories', needAuth: false });
+    return cache.cachedFetch('categories_list', function() {
+      return request({ url: '/api/v1/categories', needAuth: false });
+    }, 60 * 60 * 1000);
   }
 };
 
 const notifications = {
   getActive() {
-    return request({ url: '/api/v1/notifications', needAuth: false });
+    return cache.cachedFetch('notifications_active', function() {
+      return request({ url: '/api/v1/notifications', needAuth: false });
+    }, 10 * 60 * 1000);
   },
   getMine() {
     return request({ url: '/api/v1/notifications' });
   },
   markRead(id) {
+    cache.removeCache('notifications_active');
     return request({ url: `/api/v1/notifications/${id}/read`, method: 'PUT' });
   }
 };
@@ -344,7 +383,15 @@ const resumes = {
 
 const quickLinks = {
   getActive() {
-    return request({ url: '/api/v1/quick-links', needAuth: false });
+    return cache.cachedFetch('quicklinks_active', function() {
+      return request({ url: '/api/v1/quick-links', needAuth: false });
+    }, 30 * 60 * 1000);
+  }
+};
+
+const universities = {
+  search(keyword) {
+    return request({ url: `/api/v1/universities?keyword=${encodeURIComponent(keyword)}`, needAuth: false });
   }
 };
 
@@ -378,6 +425,7 @@ module.exports = {
   applications,
   chat,
   ai,
+  aiAssistant,
   upload,
   admin,
   banners,
@@ -386,5 +434,6 @@ module.exports = {
   notifications,
   quickLinks,
   resumes,
-  favorites
+  favorites,
+  universities
 };

@@ -1,8 +1,7 @@
-const { resumes } = require('../../utils/api');
+const { resumes, universities } = require('../../utils/api');
 
 Page({
   data: {
-    statusBarHeight: 0,
     currentStep: 0,
     resumeId: null,
     steps: ['基本信息', '求职意向', '教育经历', '技能标签'],
@@ -26,12 +25,23 @@ Page({
     },
     skillInput: '',
     loading: false,
-    hasExisting: false
+    hasExisting: false,
+    schoolSuggestions: [],
+    showSchoolDropdown: false
   },
 
   onLoad(options) {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
+    const app = getApp();
+    const userInfo = app.globalData.userInfo;
+    if (userInfo) {
+      const prefill = {};
+      if (userInfo.nickname) prefill.name = userInfo.nickname;
+      if (userInfo.phone) prefill.phone = userInfo.phone;
+      if (Object.keys(prefill).length > 0) {
+        this.setData({ form: { ...this.data.form, ...prefill } });
+      }
+    }
+
     if (options.id) {
       this.setData({ resumeId: options.id });
       this.loadResume(options.id);
@@ -105,6 +115,51 @@ Page({
   onDateChange(e) {
     const { field } = e.currentTarget.dataset;
     this.setData({ [`form.${field}`]: e.detail.value });
+  },
+
+  onSchoolInput(e) {
+    const value = e.detail.value;
+    this.setData({ 'form.school': value });
+
+    if (value.trim().length < 1) {
+      this.setData({ schoolSuggestions: [], showSchoolDropdown: false });
+      return;
+    }
+
+    clearTimeout(this._schoolTimer);
+    this._schoolTimer = setTimeout(async () => {
+      try {
+        const list = await universities.search(value.trim());
+        this.setData({
+          schoolSuggestions: Array.isArray(list) ? list : [],
+          showSchoolDropdown: Array.isArray(list) && list.length > 0
+        });
+      } catch {
+        this.setData({ schoolSuggestions: [], showSchoolDropdown: false });
+      }
+    }, 200);
+  },
+
+  onSchoolSelect(e) {
+    const data = e.currentTarget.dataset;
+    this.setData({
+      'form.school': data.name,
+      'form.education': data.level || '',
+      schoolSuggestions: [],
+      showSchoolDropdown: false
+    });
+  },
+
+  onSchoolBlur() {
+    setTimeout(() => {
+      this.setData({ showSchoolDropdown: false });
+    }, 200);
+  },
+
+  onSchoolFocus() {
+    if (this.data.schoolSuggestions.length > 0) {
+      this.setData({ showSchoolDropdown: true });
+    }
   },
 
   prevStep() {

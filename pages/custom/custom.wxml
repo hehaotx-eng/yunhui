@@ -1,15 +1,5 @@
 <view class="custom-page">
-  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-inner">
-      <view class="nav-back" bindtap="goBack">
-        <text class="nav-back-arrow">‹</text>
-        <text class="nav-back-text">返回</text>
-      </view>
-      <text class="nav-title">{{navTitle}}</text>
-      <view class="nav-placeholder"></view>
-    </view>
-  </view>
-  <view class="custom-body" style="padding-top: {{statusBarHeight + 44}}px;">
+  <view class="custom-body">
     <dynamic-page pagePath="{{pagePath}}" />
   </view>
 </view>

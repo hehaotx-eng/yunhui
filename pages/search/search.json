@@ -1,5 +1,5 @@
 {
-  "navigationStyle": "custom",
+  "navigationBarTitleText": "搜索",
   "usingComponents": {
     "feed-card": "/components/feed-card/feed-card"
   }

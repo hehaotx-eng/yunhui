@@ -1,5 +1,5 @@
 {
-  "navigationStyle": "custom",
+  "navigationBarTitleText": "页面",
   "usingComponents": {
     "dynamic-page": "/components/dynamic-page/dynamic-page"
   }

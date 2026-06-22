@@ -1,13 +1,5 @@
 <view class="page">
 
-<view class="navbar">
-  <view class="navbar-content">
-    <view class="nav-back" bindtap="goBack">←</view>
-    <view class="nav-title">{{role === 'enterprise' ? '企业登录' : '用户登录'}}</view>
-    <view class="nav-placeholder"></view>
-  </view>
-</view>
-
 <view class="hero">
   <view class="hero-title">欢迎回来</view>
   <view class="hero-desc">{{role === 'enterprise' ? '登录后管理职位、招募人才' : '登录后查看职位、投递简历'}}</view>

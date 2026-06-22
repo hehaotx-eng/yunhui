@@ -1,0 +1,147 @@
+<view class="assistant-page">
+ 
+
+  <!-- 聊天区域 -->
+  <scroll-view class="chat-area" scroll-y scroll-into-view="{{scrollToId}}" style="padding-top: {{statusBarHeight + 44}}px;">
+    <!-- 欢迎消息 -->
+    <view class="message assistant" id="msg-welcome">
+      <view class="msg-avatar">
+        <view class="avatar-ai">AI</view>
+      </view>
+      <view class="msg-content">
+        <view class="msg-bubble">
+          <text class="msg-text">你好！我是AI求职助手 👋\n\n告诉我你想找什么样的工作，比如：\n• "我想找日结的电焊工"\n• "附近有什么兼职"\n• "找一份前端开发的全职工作"\n\n我会帮你精准匹配平台内的岗位！</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <block wx:for="{{messages}}" wx:key="id">
+      <!-- 用户消息 -->
+      <view wx:if="{{item.type === 'user'}}" class="message user" id="msg-{{item.id}}">
+        <view class="msg-content">
+          <view class="msg-bubble">
+            <text class="msg-text">{{item.text}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- AI回复 -->
+      <view wx:if="{{item.type === 'assistant'}}" class="message assistant" id="msg-{{item.id}}">
+        <view class="msg-avatar">
+          <view class="avatar-ai">AI</view>
+        </view>
+        <view class="msg-content">
+          <!-- 分析结果 -->
+          <view wx:if="{{item.analysis}}" class="analysis-card">
+            <view class="analysis-header">
+              <text class="analysis-title">📋 需求分析</text>
+              <text class="confidence-badge">置信度 {{item.analysis.confidence}}%</text>
+            </view>
+            <view class="analysis-body">
+              <view class="analysis-item">
+                <text class="label">求职意向</text>
+                <text class="value">{{item.analysis.intent_text}}</text>
+              </view>
+              <view class="analysis-item" wx:if="{{item.analysis.job_type}}">
+                <text class="label">职业类型</text>
+                <text class="value">{{item.analysis.job_type}}</text>
+              </view>
+              <view class="analysis-item" wx:if="{{item.analysis.skills_text}}">
+                <text class="label">技能匹配</text>
+                <text class="value">{{item.analysis.skills_text}}</text>
+              </view>
+              <view class="analysis-item" wx:if="{{item.analysis.salary}}">
+                <text class="label">期望薪资</text>
+                <text class="value">{{item.analysis.salary}}</text>
+              </view>
+            </view>
+            <view class="analysis-reason" wx:if="{{item.analysis.reason}}">
+              <text class="reason-icon">💡</text>
+              <text class="reason-text">{{item.analysis.reason}}</text>
+            </view>
+          </view>
+
+          <!-- 推荐职位列表 -->
+          <view wx:if="{{item.jobs && item.jobs.length > 0}}" class="job-list">
+            <view class="job-list-header">
+              <text class="job-list-title">🎯 为你推荐 {{item.jobs.length}} 个岗位</text>
+              <view class="refresh-btn" data-id="{{item.id}}" data-text="{{item.userText}}" bindtap="reAnalyze">
+                <text class="refresh-text">🔄 换一批</text>
+              </view>
+            </view>
+            <view wx:for="{{item.jobs}}" wx:for-item="job" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{job.id}}">
+              <view class="job-main">
+                <view class="job-title-row">
+                  <text class="job-title">{{job.title}}</text>
+                  <text class="job-salary">{{job.salary_text}}</text>
+                </view>
+                <view class="job-company">
+                  <text class="company-name">{{job.company_name || '企业'}}</text>
+                  <text class="job-location">{{job.location || ''}}</text>
+                </view>
+                <view wx:if="{{job.match_score > 0}}" class="job-match">
+                  <text class="match-score">匹配度 {{job.match_score}}%</text>
+                  <text class="match-reason" wx:if="{{job.match_reason}}">· {{job.match_reason}}</text>
+                </view>
+                <view class="job-tags" wx:if="{{job.tags && job.tags.length > 0}}">
+                  <text class="job-tag" wx:for="{{job.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+                </view>
+              </view>
+              <text class="job-arrow">›</text>
+            </view>
+          </view>
+
+          <!-- 无结果提示 -->
+          <view wx:if="{{item.noResult}}" class="no-result">
+            <text class="no-result-icon">😔</text>
+            <text class="no-result-text">暂未找到匹配的岗位</text>
+            <text class="no-result-tip">试试换个关键词描述？</text>
+          </view>
+
+          <!-- 加载中 -->
+          <view wx:if="{{item.loading}}" class="loading-card">
+            <view class="loading-header">
+              <view class="loading-spinner"></view>
+              <text class="loading-title">AI 匹配中，请耐心等待...</text>
+            </view>
+            <view class="loading-steps">
+              <view class="loading-step active">
+                <text class="step-icon">✓</text>
+                <text class="step-text">理解求职需求</text>
+              </view>
+              <view class="loading-step active">
+                <text class="step-icon">✓</text>
+                <text class="step-text">分析平台岗位</text>
+              </view>
+              <view class="loading-step running">
+                <view class="step-spinner"></view>
+                <text class="step-text">智能匹配推荐</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 底部占位 -->
+    <view id="msg-bottom" style="height: 20rpx;"></view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <view class="input-wrap">
+      <input
+        class="input"
+        placeholder="描述你想找的工作..."
+        value="{{inputValue}}"
+        bindinput="onInput"
+        bindconfirm="sendMessage"
+        confirm-type="send"
+      />
+    </view>
+    <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">
+      <text>发送</text>
+    </view>
+  </view>
+</view>

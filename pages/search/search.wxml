@@ -1,24 +1,22 @@
 <view class="search-page">
-  <!-- 导航栏 -->
-  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-content">
-      <view class="nav-back" bindtap="goBack">‹</view>
-      <view class="search-input-wrap">
-        <image class="search-icon" src="/pages/image/sousuo.png" />
-        <input
-          class="search-input"
-          placeholder="输入职位关键词搜索"
-          value="{{keyword}}"
-          bindinput="onInput"
-          bindconfirm="onConfirm"
-          focus
-        />
-      </view>
+  <!-- 搜索输入框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <image class="search-icon" src="/pages/image/sousuo.png" />
+      <input
+        class="search-input"
+        placeholder="输入职位关键词搜索"
+        value="{{keyword}}"
+        bindinput="onInput"
+        bindconfirm="onConfirm"
+        focus
+      />
+      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword">x</view>
     </view>
   </view>
 
   <!-- 搜索建议 -->
-  <view class="suggest-wrap" wx:if="{{!showResults}}" style="margin-top: {{statusBarHeight + 56}}px;">
+  <view class="suggest-wrap" wx:if="{{!showResults}}">
     <view class="section" wx:if="{{hotKeywords.length > 0}}">
       <view class="section-header">
         <text class="section-title">热门搜索</text>
@@ -40,7 +38,7 @@
   </view>
 
   <!-- 搜索结果 -->
-  <view class="results-wrap" wx:if="{{showResults}}" style="margin-top: {{statusBarHeight + 56}}px;">
+  <view class="results-wrap" wx:if="{{showResults}}">
     <view wx:if="{{loading}}" class="loading-text">搜索中...</view>
 
     <!-- 精确匹配 -->

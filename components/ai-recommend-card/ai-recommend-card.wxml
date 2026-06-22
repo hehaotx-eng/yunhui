@@ -7,7 +7,23 @@
     </view>
     <view class="feed-header-info">
       <text class="feed-header-name">智能推荐</text>
-      <text class="feed-header-meta">匹配度 {{item.match_score || 95}}%</text>
+      <text class="feed-header-meta">综合匹配 {{item.match_score}}%</text>
+    </view>
+    <view class="match-score-badge" wx:if="{{item.match_score >= 80}}">
+      <text>高匹配</text>
+    </view>
+  </view>
+
+  <!-- 匹配分数明细 -->
+  <view class="score-breakdown">
+    <view class="score-item">
+      <text class="score-label">语义匹配</text>
+      <text class="score-value">{{item.ai_score || 0}}</text>
+    </view>
+    <view class="score-divider">+</view>
+    <view class="score-item">
+      <text class="score-label">关键词匹配</text>
+      <text class="score-value">{{item.keyword_score || 0}}</text>
     </view>
   </view>
 
@@ -24,31 +40,26 @@
       <text class="reason-text line-clamp-2">{{item.reason}}</text>
     </view>
 
-    <!-- 匹配标签 -->
+    <!-- 技能匹配标签 -->
     <view class="feed-tags" wx:if="{{item.match_tags && item.match_tags.length > 0}}">
-      <text class="feed-tag" wx:for="{{item.match_tags}}" wx:key="*this" wx:if="{{index < 4}}">{{item}}</text>
+      <text class="feed-tag" wx:for="{{item.match_tags}}" wx:key="*this" wx:if="{{index < 5}}">{{item}}</text>
     </view>
 
-    <!-- 匹配维度条 -->
-    <view class="match-dims" wx:if="{{item.match_dimensions}}">
-      <view class="dim-row" wx:for="{{item.match_dimensions}}" wx:key="label">
-        <text class="dim-label">{{item.label}}</text>
-        <view class="dim-bar">
-          <view class="dim-fill dim-fill--{{item.level}}" style="width: {{item.value}}%;"></view>
-        </view>
-        <text class="dim-value">{{item.value}}%</text>
-      </view>
+    <!-- 风险提示 -->
+    <view class="risk-note" wx:if="{{item.risk_note}}">
+      <text class="risk-icon">⚠️</text>
+      <text class="risk-text">{{item.risk_note}}</text>
     </view>
 
     <!-- 企业行 -->
-    <view class="feed-header" style="padding: 18rpx 0 0; border-top: 1rpx solid var(--c-border, #f0f0f0);">
-      <view class="feed-header-avatar" catchtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}">
+    <view class="company-row">
+      <view class="company-avatar" catchtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}">
         <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
         <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
       </view>
-      <view class="feed-header-info">
-        <text class="feed-header-name">{{item.company_name || item.enterprise_name || '企业'}}</text>
-        <text class="feed-header-meta">{{item.location || '地点不限'}} · {{item.experience || '经验不限'}}</text>
+      <view class="company-info">
+        <text class="company-name">{{item.company_name || item.enterprise_name || '企业'}}</text>
+        <text class="company-meta">{{item.location || '地点不限'}} · {{item.experience || '经验不限'}}</text>
       </view>
     </view>
   </view>

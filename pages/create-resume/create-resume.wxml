@@ -1,17 +1,6 @@
 <view class="resume-page">
-  <!-- 顶部导航 -->
-  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-content">
-      <view class="nav-back" bindtap="goBack">
-        <text class="nav-back-icon">‹</text>
-      </view>
-      <text class="nav-title">创建简历</text>
-      <view class="nav-placeholder"></view>
-    </view>
-  </view>
-
   <!-- 步骤条 -->
-  <view class="steps-bar" style="margin-top: {{statusBarHeight + 44}}px;">
+  <view class="steps-bar">
     <view class="steps-inner">
       <view wx:for="{{steps}}" wx:key="*this" class="step-item {{index <= currentStep ? 'step-active' : ''}}">
         <view class="step-dot {{index < currentStep ? 'step-done' : ''}}">
@@ -103,9 +92,16 @@
     <block wx:elif="{{currentStep === 2}}">
       <view class="form-section">
         <text class="section-title">教育经历</text>
-        <view class="form-group">
+        <view class="form-group form-group-school">
           <text class="form-label">学校名称</text>
-          <input class="form-input" placeholder="请输入学校名称" value="{{form.school}}" data-field="school" bindinput="onFieldChange" />
+          <input class="form-input" placeholder="输入学校名称搜索" value="{{form.school}}" bindinput="onSchoolInput" bindfocus="onSchoolFocus" bindblur="onSchoolBlur" />
+          <view wx:if="{{showSchoolDropdown && schoolSuggestions.length > 0}}" class="school-dropdown">
+            <view wx:for="{{schoolSuggestions}}" wx:key="name" class="school-option" data-name="{{item.name}}" data-level="{{item.level}}" bindtap="onSchoolSelect">
+              <text class="school-option-name">{{item.name}}</text>
+              <text class="school-option-level">{{item.level}}</text>
+              <text class="school-option-location">{{item.location}}</text>
+            </view>
+          </view>
         </view>
         <view class="form-group">
           <text class="form-label">专业</text>

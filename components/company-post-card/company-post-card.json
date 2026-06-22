@@ -1,7 +1,5 @@
 {
   "component": true,
   "addGlobalClass": true,
-  "usingComponents": {
-    "feed-card-base": "/components/feed-card-base/feed-card-base"
-  }
+  "usingComponents": {}
 }

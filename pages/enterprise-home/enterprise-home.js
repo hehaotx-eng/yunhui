@@ -2,7 +2,6 @@ const { jobs, applications, request } = require('../../utils/api.js');
 
 Page({
   data: {
-    statusBarHeight: 0,
     loading: true,
     stats: { jobs: 0, online: 0, applicants: 0, candidates: 0 },
     myJobs: [],
@@ -10,8 +9,6 @@ Page({
   },
 
   onLoad() {
-    const sysInfo = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
     this.loadData();
   },
 

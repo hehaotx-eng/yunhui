@@ -2,6 +2,7 @@ var api = require('../../utils/api');
 var services = require('../../services/index');
 var auth = services.auth;
 var enterprise = services.enterprise;
+var jobSvc = services.job;
 var resolve = require('../../utils/image').resolve;
 
 Page({
@@ -21,6 +22,12 @@ Page({
     var sys = wx.getSystemInfoSync();
     this.setData({ statusBarHeight: sys.statusBarHeight || 20, id: options.id, isEnterprise: isEnterprise });
     this.loadDetail();
+  },
+
+  onShow: function () {
+    if (this.data.detail && this.data.detail.id && !this._viewTracked) {
+      this._viewTracked = true;
+    }
   },
 
   onPullDownRefresh() {
@@ -104,12 +111,42 @@ Page({
       wx.showToast({ title: '无法发起聊天', icon: 'none' });
       return;
     }
+
+    var userInfo = wx.getStorageSync('userInfo') || {};
+    var currentUserId = userInfo.id ? String(userInfo.id) : '';
+    var targetAvatar = detail.company_logo || '';
+    var targetName = detail.enterprise_name || detail.company_name || '';
+
     wx.showLoading({ title: '连接中...' });
     api.chat.createConversation(detail.enterprise_id).then(function(conv) {
-      wx.hideLoading();
       if (conv && conv.id) {
-        wx.navigateTo({ url: '/pages/chat/chat?conversationId=' + conv.id });
+        var jobContent = JSON.stringify({
+          type: 'job',
+          id: detail.id,
+          title: detail.title || '',
+          company: detail.company_name || detail.enterprise_name || '',
+          salary: detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + 'K' : ''),
+          location: detail.location || ''
+        });
+        api.chat.sendMessage(conv.id, jobContent, 'job').then(function() {
+          wx.hideLoading();
+          wx.navigateTo({
+            url: '/pages/chat/chat?conversationId=' + conv.id +
+              '&currentUserId=' + encodeURIComponent(currentUserId) +
+              '&targetAvatar=' + encodeURIComponent(targetAvatar) +
+              '&targetName=' + encodeURIComponent(targetName)
+          });
+        }).catch(function() {
+          wx.hideLoading();
+          wx.navigateTo({
+            url: '/pages/chat/chat?conversationId=' + conv.id +
+              '&currentUserId=' + encodeURIComponent(currentUserId) +
+              '&targetAvatar=' + encodeURIComponent(targetAvatar) +
+              '&targetName=' + encodeURIComponent(targetName)
+          });
+        });
       } else {
+        wx.hideLoading();
         wx.showToast({ title: '创建会话失败', icon: 'none' });
       }
     }).catch(function(e) {

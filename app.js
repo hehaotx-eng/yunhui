@@ -1,10 +1,70 @@
+var socket = require('./services/socket/socket');
+
 App({
   onLaunch() {
     this.initUserState()
+    this._connectSocket()
+    this._bindSocketStateChange = this._onSocketStateChange.bind(this);
+    socket.on('stateChange', this._bindSocketStateChange);
   },
 
   onShow() {
     this.checkUserRole()
+    this._reconnectSocket()
+    socket.resumeHeartbeat()
+  },
+
+  onHide() {
+    socket.pauseHeartbeat()
+  },
+
+  _onSocketStateChange(data) {
+    if (data && data.state === 'CONNECTED') {
+      this._stopAllPolling();
+    }
+  },
+
+  _stopAllPolling() {
+    var pages = getCurrentPages();
+    for (var i = 0; i < pages.length; i++) {
+      var page = pages[i];
+      if (page.stopPolling && typeof page.stopPolling === 'function') {
+        page.stopPolling();
+      }
+      if (page._stopPolling && typeof page._stopPolling === 'function') {
+        page._stopPolling();
+      }
+    }
+
+    var tabBar = this._getTabBar();
+    if (tabBar && tabBar.stopPolling) {
+      tabBar.stopPolling();
+    }
+  },
+
+  _getTabBar() {
+    var pages = getCurrentPages();
+    if (pages.length > 0) {
+      var page = pages[pages.length - 1];
+      if (page.getTabBar) {
+        return page.getTabBar();
+      }
+    }
+    return null;
+  },
+
+  _connectSocket() {
+    var token = wx.getStorageSync('token')
+    if (token) {
+      socket.connect()
+    }
+  },
+
+  _reconnectSocket() {
+    var token = wx.getStorageSync('token')
+    if (token) {
+      socket.connect()
+    }
   },
 
   initUserState() {
@@ -38,6 +98,8 @@ App({
   },
 
   clearUserState() {
+    socket.disconnect()
+
     this.globalData = {
       ...this.globalData,
       token: null,

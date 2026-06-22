@@ -1,12 +1,6 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
-  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
-    <view class="nav-content">
-      <text class="nav-logo">我的</text>
-    </view>
-  </view>
-
-  <view class="body" style="margin-top: {{statusBarHeight + 44}}px;">
+  <view class="body">
     <view class="profile-card">
       <view class="avatar">{{wxs.firstChar(userInfo.nickname)}}</view>
       <view class="profile-info">
@@ -15,17 +9,22 @@
       </view>
     </view>
 
-    <view class="stats-card">
-      <view class="stat-item" bindtap="goJobs">
-        <text class="stat-value">{{stats.jobs || 0}}</text>
-        <text class="stat-label">发布职位</text>
+      <view class="stats-card">
+        <view class="stat-item" bindtap="goJobs">
+          <text class="stat-value">{{stats.jobs || 0}}</text>
+          <text class="stat-label">发布职位</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item" bindtap="goApplications">
+          <text class="stat-value">{{stats.applications || 0}}</text>
+          <text class="stat-label">收到投递</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item" bindtap="goFavorites">
+          <text class="stat-value">{{stats.favorites || 0}}</text>
+          <text class="stat-label">我的收藏</text>
+        </view>
       </view>
-      <view class="stat-divider"></view>
-      <view class="stat-item" bindtap="goApplications">
-        <text class="stat-value">{{stats.applications || 0}}</text>
-        <text class="stat-label">收到投递</text>
-      </view>
-    </view>
 
     <view class="menu-card">
       <view class="menu-item" bindtap="goJobs">
@@ -36,6 +35,12 @@
       <view class="menu-item" bindtap="goApplications">
         <text class="menu-icon-text">◎</text>
         <text class="menu-text">投递管理</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goFavorites">
+        <text class="menu-icon-text">♥</text>
+        <text class="menu-text">我的收藏</text>
+        <text class="menu-badge">{{stats.favorites || 0}}</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>

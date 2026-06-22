@@ -1,3 +1,22 @@
+function pad(n) { return n < 10 ? '0' + n : n; }
+
+function formatChatTime(t) {
+  if (!t) return '';
+  var d = getDate(t);
+  var now = getDate();
+  var Y = d.getFullYear();
+  var M = d.getMonth() + 1;
+  var D = d.getDate();
+  var h = pad(d.getHours());
+  var m = pad(d.getMinutes());
+  var timeStr = h + ':' + m;
+  if (Y === now.getFullYear() && M === now.getMonth() + 1 && D === now.getDate()) return timeStr;
+  var yesterday = getDate();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (Y === yesterday.getFullYear() && M === yesterday.getMonth() + 1 && D === yesterday.getDate()) return '昨天 ' + timeStr;
+  return pad(M) + '-' + pad(D) + ' ' + timeStr;
+}
+
 var tools = {
   firstChar: function(str) {
     if (!str) return '企';
@@ -47,6 +66,8 @@ var tools = {
     };
     return flows[status] || flows.pending;
   },
+  formatChatTime: formatChatTime,
+
   formatTime: function(t) {
     if (!t) return '';
     var d = getDate(t);

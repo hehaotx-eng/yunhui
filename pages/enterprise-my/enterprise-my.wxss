@@ -155,6 +155,17 @@
   font-weight: 300;
 }
 
+.menu-badge {
+  font-size: 22rpx;
+  color: #fff;
+  background: #ff5c39;
+  padding: 2rpx 14rpx;
+  border-radius: 20rpx;
+  margin-right: 12rpx;
+  min-width: 28rpx;
+  text-align: center;
+}
+
 .menu-item.danger .menu-text {
   color: #ef4444;
 }

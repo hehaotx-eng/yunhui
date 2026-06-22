@@ -1,0 +1,58 @@
+<view class="vip-page">
+  <!-- 顶部导航 -->
+  <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-back" bindtap="goBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">会员中心</text>
+      <view style="width: 60rpx;"></view>
+    </view>
+  </view>
+  <view style="height: 20px;">11</view>
+
+
+  <view class="page-body" style="padding-top: {{statusBarHeight + 44}}px;">
+    <!-- 会员卡 -->
+    <view class="vip-card">
+      <view class="vip-card-bg"></view>
+      <view class="vip-card-content">
+        <view class="vip-crown">1</view>
+        <text class="vip-title">求职会员</text>
+        <text class="vip-status" wx:if="{{isVip}}">已开通 · 有效期至 {{vipEndTime}}</text>
+        <text class="vip-status" wx:else>未开通</text>
+      </view>
+    </view>
+    <!-- 会员权益 -->
+    <view class="section">
+      <text class="section-title">会员权益</text>
+      <view class="benefits-grid">
+        <view class="benefit-item" wx:for="{{benefits}}" wx:key="title">
+          <text class="benefit-icon">{{item.icon}}</text>
+          <text class="benefit-title">{{item.title}}</text>
+          <text class="benefit-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 套餐选择 -->
+    <view class="section" wx:if="{{!isVip}}">
+      <text class="section-title">选择套餐</text>
+      <view class="plans-row">
+        <view wx:for="{{plans}}" wx:key="key" class="plan-card {{selectedPlan === item.key ? 'plan-active' : ''}}" bindtap="selectPlan" data-key="{{item.key}}">
+          <view class="plan-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+          <text class="plan-name">{{item.name}}</text>
+          <text class="plan-price">¥{{item.price}}</text>
+          <text class="plan-period">/{{item.period}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="bottom-bar">
+      <view class="buy-btn {{isVip || loading ? 'buy-btn-disabled' : ''}}" bindtap="handleBuy">
+        <text>{{loading ? '开通中...' : (isVip ? '已是会员' : '立即开通')}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -5,7 +5,6 @@
   "onReachBottomDistance": 100,
   "usingComponents": {
     "ai-recommend-card": "/components/ai-recommend-card/ai-recommend-card",
-    "tag-cloud": "/components/tag-cloud/tag-cloud",
     "empty-state": "/components/empty-state/empty-state",
     "load-more": "/components/load-more/load-more",
     "custom-tab-bar": "/custom-tab-bar/custom-tab-bar"

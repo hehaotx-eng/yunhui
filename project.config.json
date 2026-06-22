@@ -2,7 +2,32 @@
   "compileType": "miniprogram",
   "libVersion": "3.16.0",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "folder",
+        "value": "node-jobs"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": "yarn.lock"
+      },
+      {
+        "type": "file",
+        "value": "1.全国普通高等学校名单.xls"
+      }
+    ],
     "include": []
   },
   "setting": {

@@ -57,12 +57,7 @@
           <!-- 左侧：节点 + 连接线 -->
           <view class="timeline-left">
             <view class="node-wrapper">
-              <view class="node 
-                {{step.active ? 'node-active' : ''}} 
-                {{step.result === 'pass' ? 'node-pass' : ''}} 
-                {{step.result === 'fail' ? 'node-fail' : ''}}
-                {{step.done && !step.active && !step.result ? 'node-done' : ''}}
-              ">
+              <view class="node {{step.active ? 'node-active' : ''}} {{step.result === 'pass' ? 'node-pass' : ''}} {{step.result === 'fail' ? 'node-fail' : ''}} {{step.done && !step.active && !step.result ? 'node-done' : ''}}">
                 <text wx:if="{{step.result === 'pass'}}">✓</text>
                 <text wx:elif="{{step.result === 'fail'}}">✕</text>
                 <text wx:elif="{{step.active}}">●</text>
@@ -78,20 +73,8 @@
           <!-- 右侧：标题 + 状态标签 + 提示文字 -->
           <view class="timeline-right">
             <view class="timeline-header">
-              <text class="timeline-title 
-                {{step.active ? 'title-active' : ''}} 
-                {{step.result === 'pass' ? 'title-pass' : ''}} 
-                {{step.result === 'fail' ? 'title-fail' : ''}}
-              ">
-                {{step.label}}
-              </text>
-              <!-- 微型状态标签 -->
-              <text class="mini-tag 
-                {{step.active ? 'tag-doing' : ''}} 
-                {{step.result === 'pass' ? 'tag-pass' : ''}} 
-                {{step.result === 'fail' ? 'tag-fail' : ''}}
-                {{step.done && !step.active && !step.result ? 'tag-done' : ''}}
-              ">
+              <text class="timeline-title {{step.active ? 'title-active' : ''}} {{step.result === 'pass' ? 'title-pass' : ''}} {{step.result === 'fail' ? 'title-fail' : ''}}">{{step.label}}</text>
+              <text class="mini-tag {{step.active ? 'tag-doing' : ''}} {{step.result === 'pass' ? 'tag-pass' : ''}} {{step.result === 'fail' ? 'tag-fail' : ''}} {{step.done && !step.active && !step.result ? 'tag-done' : ''}}">
                 <text wx:if="{{step.active && !step.result}}">进行中</text>
                 <text wx:elif="{{step.result === 'pass'}}">通过</text>
                 <text wx:elif="{{step.result === 'fail'}}">未通过</text>

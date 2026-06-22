@@ -1,17 +1,14 @@
-const { jobs } = require('../../utils/api.js');
+const { enterprises } = require('../../utils/api.js');
+const { resolve } = require('../../utils/image.js');
 
 Page({
   data: {
     statusBarHeight: 0,
     keyword: '',
-    activeCity: '',
-    cities: ['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '武汉', '西安', '苏州'],
-    jobs: [],
-    page: 1,
-    pageSize: 10,
+    companies: [],
     loading: false,
     loadingMore: false,
-    hasMore: true,
+    hasMore: false,
     showEmpty: false,
     skeleton: true
   },
@@ -19,7 +16,7 @@ Page({
   onLoad() {
     const sysInfo = wx.getSystemInfoSync();
     this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
-    this.initJobs();
+    this.initCompanies();
   },
 
   onShow() {
@@ -32,56 +29,41 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.initJobs().finally(() => wx.stopPullDownRefresh());
+    this.initCompanies().finally(() => wx.stopPullDownRefresh());
   },
 
-  onReachBottom() {
-    if (!this.data.loadingMore && this.data.hasMore) {
-      this.loadMoreJobs();
-    }
-  },
-
-  async initJobs() {
-    this.setData({ skeleton: true, loading: true, page: 1, hasMore: true, showEmpty: false, jobs: [] });
+  async initCompanies() {
+    this.setData({ skeleton: true, loading: true, showEmpty: false, companies: [] });
     try {
-      await this.fetchJobs(1, true);
-    } catch (e) {
-      console.error('初始化职位失败:', e);
-    } finally {
-      this.setData({ skeleton: false, loading: false });
-    }
-  },
+      const result = await enterprises.getList();
+      let rawList = Array.isArray(result) ? result : (result.list || result.data || []);
 
-  async loadMoreJobs() {
-    if (this.data.loadingMore || !this.data.hasMore) return;
-    this.setData({ loadingMore: true });
-    try {
-      await this.fetchJobs(this.data.page + 1, false);
-    } catch (e) {
-      console.error('加载更多失败:', e);
-    } finally {
-      this.setData({ loadingMore: false });
-    }
-  },
+      // 客户端过滤
+      if (this.data.keyword) {
+        const kw = this.data.keyword.toLowerCase();
+        rawList = rawList.filter(function(item) {
+          return (item.name && item.name.toLowerCase().indexOf(kw) !== -1) ||
+                 (item.description && item.description.toLowerCase().indexOf(kw) !== -1);
+        });
+      }
 
-  async fetchJobs(page, reset) {
-    const params = { page, limit: this.data.pageSize };
-
-    try {
-      const result = this.data.keyword
-        ? await jobs.search({ keyword: this.data.keyword, ...params })
-        : await jobs.getAll(params);
-      const list = result.list || result.rows || result || [];
-      const newJobs = reset ? list : [...this.data.jobs, ...list];
+      const list = rawList.map(function(item) {
+        return {
+          ...item,
+          _logo: resolve(item.logo || '')
+        };
+      });
 
       this.setData({
-        jobs: newJobs,
-        page,
-        hasMore: list.length >= this.data.pageSize,
-        showEmpty: newJobs.length === 0
+        companies: list,
+        showEmpty: list.length === 0,
+        hasMore: false
       });
-    } catch (error) {
-      wx.showToast({ title: error.message || '加载失败', icon: 'none' });
+    } catch (e) {
+      console.error('加载公司列表失败:', e);
+      wx.showToast({ title: '加载失败', icon: 'none' });
+    } finally {
+      this.setData({ skeleton: false, loading: false });
     }
   },
 
@@ -91,21 +73,15 @@ Page({
 
   clearKeyword() {
     this.setData({ keyword: '' });
-    this.initJobs();
+    this.initCompanies();
   },
 
   onSearch() {
-    this.initJobs();
-  },
-
-  switchCity(e) {
-    const city = e.currentTarget.dataset.city;
-    this.setData({ activeCity: city === this.data.activeCity ? '' : city });
-    this.initJobs();
+    this.initCompanies();
   },
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    wx.navigateTo({ url: `/pages/enterprise-detail/enterprise-detail?id=${id}` });
   }
 });

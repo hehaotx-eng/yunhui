@@ -1,4 +1,5 @@
-const IMG_HOST = 'http://localhost:3000';
+const { BASE_URL } = require('../../config/base');
+const IMG_HOST = BASE_URL;
 
 function resolveImageUrl(url) {
   if (!url) return '';
@@ -113,6 +114,23 @@ function createCompanyCard(data = {}) {
 }
 
 function createAICard(data = {}) {
+  var salary = data.salary || '';
+  if (!salary && data.salary_min && data.salary_max) {
+    salary = data.salary_min + '-' + data.salary_max + 'K';
+  } else if (!salary && data.salary_min) {
+    salary = data.salary_min + 'K起';
+  }
+
+  // match_score 后端返回的是百分比(0-100)或小数(0-1)
+  var rawScore = data.match_score || data.combined_score || data.score || 0;
+  var matchScore = rawScore <= 1 ? Math.round(rawScore * 100) : Math.round(rawScore);
+
+  // 技能匹配标签
+  var matchTags = data.match_tags || data.skill_tags || [];
+  if (matchTags.length === 0 && data.skill_match && Array.isArray(data.skill_match)) {
+    matchTags = data.skill_match;
+  }
+
   return {
     recommend_id: data.recommend_id || data.id || '',
     job_id: data.job_id || '',
@@ -120,21 +138,24 @@ function createAICard(data = {}) {
     company_name: data.company_name || data.enterprise_name || '',
     company_logo: resolveImageUrl(data.company_logo || data.enterprise_logo || data.enterprise_avatar),
     title: data.title || data.job_title || '',
-    salary: data.salary || '',
+    salary: salary,
     salary_min: data.salary_min || 0,
     salary_max: data.salary_max || 0,
     location: data.location || '',
     experience: data.experience || '',
-    match_score: data.match_score || data.score || 0,
+    match_score: matchScore,
+    ai_score: data.ai_score || 0,
+    keyword_score: data.keyword_score || 0,
     match_dimensions: data.match_dimensions || {
       skills: { value: data.skill_match || 0, level: 'medium' },
       experience: { value: data.experience_match || 0, level: 'medium' },
       location: { value: data.location_match || 0, level: 'medium' },
       salary: { value: data.salary_match || 0, level: 'medium' }
     },
-    reason: data.reason || data.recommend_reason || '',
-    match_tags: data.match_tags || data.skill_tags || [],
-    confidence_level: data.confidence_level || deriveConfidence(data.match_score || data.score || 0),
+    reason: data.reason || data.match_reason || data.recommend_reason || '',
+    match_tags: matchTags,
+    risk_note: data.risk_note || '',
+    confidence_level: data.confidence_level || deriveConfidence(matchScore),
     vip_required: data.vip_required || false,
     is_favorite: data.is_favorite || false,
     created_at: data.created_at || ''

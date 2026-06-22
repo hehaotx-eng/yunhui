@@ -2,7 +2,6 @@ var api = require('../../utils/api');
 
 Page({
   data: {
-    statusBarHeight: 0,
     loading: true,
     activeFilter: 'all',
     filters: [
@@ -18,8 +17,6 @@ Page({
   },
 
   onLoad() {
-    var sys = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadData();
   },
 

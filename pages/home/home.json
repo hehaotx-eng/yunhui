@@ -7,7 +7,6 @@
     "feed-card": "/components/feed-card/feed-card",
     "company-post-card": "/components/company-post-card/company-post-card",
     "ai-recommend-card": "/components/ai-recommend-card/ai-recommend-card",
-    "scroll-tabs": "/components/scroll-tabs/scroll-tabs",
     "empty-state": "/components/empty-state/empty-state",
     "load-more": "/components/load-more/load-more",
     "custom-tab-bar": "/custom-tab-bar/custom-tab-bar",

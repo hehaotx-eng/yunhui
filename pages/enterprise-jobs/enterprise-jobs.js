@@ -2,7 +2,6 @@ var api = require('../../utils/api');
 
 Page({
   data: {
-    statusBarHeight: 0,
     activeTab: 'all',
     tabs: [
       { id: 'all', name: '全部' },
@@ -17,8 +16,6 @@ Page({
   },
 
   onLoad() {
-    var sys = wx.getSystemInfoSync();
-    this.setData({ statusBarHeight: sys.statusBarHeight || 20 });
     this.loadJobs();
   },
 
