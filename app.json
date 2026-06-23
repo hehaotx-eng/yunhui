@@ -17,6 +17,8 @@
     "pages/notifications/notifications",
     "pages/login/login",
     "pages/login-phone/login-phone",
+    "pages/complete-profile/complete-profile",
+    "pages/approval-pending/approval-pending",
     "pages/register/register",
     "pages/chat/chat",
     "pages/enterprise-msg/enterprise-msg",
@@ -28,6 +30,7 @@
     "pages/resume-preview/resume-preview",
     "pages/enterprise-applications/enterprise-applications",
     "pages/edit-profile/edit-profile",
+    "pages/edit-company/edit-company",
     "pages/enterprise-favorites/enterprise-favorites",
     "pages/vip/vip",
     "pages/aiAssistant/aiAssistant"
@@ -53,5 +56,10 @@
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于发送位置消息"
+    }
+  }
 }

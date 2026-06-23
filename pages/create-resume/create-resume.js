@@ -251,5 +251,13 @@ Page({
   startFresh() {
     wx.removeStorageSync('resume_draft');
     this.setData({ hasExisting: false });
+  },
+
+  onShareAppMessage() {
+    return { title: '创建简历 - 完善个人信息', path: '/pages/create-resume/create-resume' };
+  },
+
+  onShareTimeline() {
+    return { title: '创建简历 - 完善个人信息' };
   }
 });

@@ -2,7 +2,6 @@
 
 <view class="page">
 
-  <!-- 顶部导航 -->
   <view class="top-nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-content">
       <view class="nav-back" bindtap="goBack">
@@ -15,7 +14,6 @@
     </view>
   </view>
 
-  <!-- 消息区 -->
   <view class="body" style="padding-top: {{statusBarHeight + 44}}px;">
 
     <view wx:if="{{loading}}" class="loading-wrap">
@@ -30,16 +28,15 @@
       show-scrollbar="false"
       scroll-with-animation
       scroll-into-view="{{toView}}"
+      scroll-enabled="{{!showQuickPhrasesModal}}"
     >
 
       <view class="top-safe"></view>
 
-      <!-- 消息列表 -->
       <block wx:for="{{messages}}" wx:key="id">
 
         <view class="msg-item {{item.isSelf ? 'mine' : 'other'}}">
 
-          <!-- 对方头像 -->
           <view class="msg-avatar" wx:if="{{!item.isSelf}}">
             <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill" />
             <text wx:else class="avatar-text">{{item.avatarChar}}</text>
@@ -47,11 +44,67 @@
 
           <view class="msg-content">
 
-            <!-- 气泡 -->
-            <view class="msg-bubble {{item.isSelf ? 'mine-bubble' : 'other-bubble'}} {{item.status}}">
-              <text class="msg-text">{{item.content}}</text>
+            <view wx:if="{{item.type === 'job_card'}}" class="job-card-wrapper">
+              <view class="job-card {{item.isSelf ? 'mine-job' : 'other-job'}}">
+                <view class="job-card-header">
+                  <text class="job-card-icon">💼</text>
+                  <text class="job-card-label">职位推荐</text>
+                </view>
+                <text class="job-card-title">{{item.jobTitle}}</text>
+                <view class="job-card-meta">
+                  <text wx:if="{{item.jobSalary}}" class="job-card-salary">{{item.jobSalary}}</text>
+                  <text wx:if="{{item.jobLocation}}" class="job-card-location">{{item.jobLocation}}</text>
+                </view>
+                <text wx:if="{{item.jobCompany}}" class="job-card-company">{{item.jobCompany}}</text>
+                <view wx:if="{{item.jobTags && item.jobTags.length > 0}}" class="job-card-tags">
+                  <text wx:for="{{item.jobTags}}" wx:key="*this" class="job-card-tag">{{item}}</text>
+                </view>
+                <view class="job-card-footer">
+                  <view class="job-card-btn secondary" bindtap="goJobDetail" data-id="{{item.jobId}}">
+                    <text>查看详情</text>
+                  </view>
+                  <view class="job-card-btn primary {{item.isApplied ? 'applied' : ''}}" bindtap="onJobApply" data-job-id="{{item.jobId}}" data-message-id="{{item.id}}">
+                    <text>{{item.isApplied ? '已投递' : '立即投递'}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
 
-              <!-- 状态 -->
+            <view wx:elif="{{item.type === 'resume_card'}}" class="resume-card-wrapper" bindtap="onViewResume" data-resume-id="{{item.resumeId}}" data-message-id="{{item.id}}">
+              <view class="resume-card {{item.isSelf ? 'mine-resume' : 'other-resume'}}">
+                <view class="resume-card-header">
+                  <text class="resume-card-icon">📄</text>
+                  <text class="resume-card-label">简历</text>
+                  <view class="resume-status {{item.resumeStatus === 'read' ? 'read' : 'unread'}}">
+                    <text>{{item.resumeStatus === 'read' ? '已读' : '未读'}}</text>
+                  </view>
+                </view>
+                <view class="resume-card-body">
+                  <text class="resume-card-name">{{item.resumeName || '求职者'}}</text>
+                  <text class="resume-card-intention">{{item.resumeIntention || '求职意向'}}</text>
+                  <view class="resume-card-info">
+                    <text wx:if="{{item.resumeExperience}}" class="resume-card-experience">{{item.resumeExperience}}经验</text>
+                    <text wx:if="{{item.resumeEducation}}" class="resume-card-education">{{item.resumeEducation}}</text>
+                  </view>
+                  <view class="resume-card-action">
+                    <text>查看简历 ›</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+
+            <view wx:elif="{{item.type === 'location'}}" class="location-card-wrapper">
+              <view class="location-card {{item.isSelf ? 'mine-location' : 'other-location'}}" bindtap="openLocation" data-latitude="{{item.latitude}}" data-longitude="{{item.longitude}}" data-name="{{item.locationName}}">
+                <view class="location-icon">📍</view>
+                <view class="location-info">
+                  <text wx:if="{{item.locationName}}" class="location-name">{{item.locationName}}</text>
+                  <text class="location-address">{{item.locationAddress || '点击查看位置'}}</text>
+                </view>
+              </view>
+            </view>
+
+            <view wx:else class="msg-bubble {{item.isSelf ? 'mine-bubble' : 'other-bubble'}} {{item.status}}">
+              <text class="msg-text">{{item.content}}</text>
               <view class="msg-status" wx:if="{{item.isSelf}}">
                 <text wx:if="{{item.status === 'sending'}}" class="status-icon">⏳</text>
                 <text wx:if="{{item.status === 'failed'}}" class="status-icon failed-icon">!</text>
@@ -62,7 +115,6 @@
 
           </view>
 
-          <!-- 我方头像 -->
           <view class="msg-avatar mine-avatar" wx:if="{{item.isSelf}}">
             <image wx:if="{{item.avatar}}" class="avatar-img" src="{{item.avatar}}" mode="aspectFill" />
             <text wx:else class="avatar-text">{{item.avatarChar}}</text>
@@ -78,8 +130,18 @@
 
   </view>
 
-  <!-- 输入区 -->
   <view class="input-bar">
+    <view class="input-tools">
+      <view class="tool-btn quick-phrase-btn" bindtap="showQuickPhrases">
+        <text class="tool-icon">⚡</text>
+      </view>
+      <view class="tool-btn send-location-btn" bindtap="sendLocation">
+        <text class="tool-icon">📍</text>
+      </view>
+      <view class="tool-btn send-resume-btn" bindtap="sendResume">
+        <text class="tool-icon">📄</text>
+      </view>
+    </view>
 
     <view class="input-wrap">
       <input
@@ -98,4 +160,25 @@
 
   </view>
 
-</view>
+  </view>
+
+  <view class="quick-phrases-modal-wrap" wx:if="{{showQuickPhrasesModal}}">
+    <view class="qpm-overlay" bindtap="closeQuickPhrasesModal" catchtouchmove="onModalTouchMove"></view>
+    <view class="qpm-content">
+      <view class="qpm-header">
+        <text class="qpm-title">快捷短语</text>
+        <view class="qpm-close" bindtap="closeQuickPhrasesModal">✕</view>
+      </view>
+      <view class="qpm-list">
+        <view 
+          wx:for="{{quickPhrases}}" 
+          wx:key="index" 
+          class="qpm-item"
+          bindtap="onQuickPhraseSelect"
+          data-phrase="{{item}}"
+        >
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>

@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="form-card">
+    <view class="form-field logo-field">
+      <text class="form-label">公司 Logo</text>
+      <view class="logo-uploader" bindtap="chooseLogo">
+        <image wx:if="{{form.logo}}" class="logo-preview" src="{{form.logo}}" mode="aspectFill" />
+        <view wx:else class="logo-placeholder">
+          <text class="logo-plus">+</text>
+          <text class="logo-hint">上传Logo</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-field">
+      <text class="form-label">公司名称 <text class="required">*</text></text>
+      <input class="form-input" value="{{form.name}}" bindinput="onInput" data-field="name" placeholder="请输入公司全称" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">联系人</text>
+      <input class="form-input" value="{{form.contact_name}}" bindinput="onInput" data-field="contact_name" placeholder="招聘联系人姓名" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">联系电话</text>
+      <input class="form-input" value="{{form.contact_phone}}" bindinput="onInput" data-field="contact_phone" placeholder="联系电话" type="number" maxlength="11" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">公司地址</text>
+      <input class="form-input" value="{{form.address}}" bindinput="onInput" data-field="address" placeholder="详细办公地址" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">公司介绍</text>
+      <textarea class="form-textarea" value="{{form.description}}" bindinput="onInput" data-field="description" placeholder="公司简介、企业文化、福利待遇等" maxlength="500" auto-height />
+      <text class="char-count">{{form.description.length || 0}}/500</text>
+    </view>
+  </view>
+
+  <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="save">
+    {{saving ? '保存中...' : '保存'}}
+  </view>
+</view>

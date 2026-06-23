@@ -4,7 +4,7 @@
     <view wx:if="{{loading}}" class="loading">加载中...</view>
 
     <view wx:elif="{{showEmpty}}" class="empty">
-      <text class="empty-icon">💬</text>
+      <view class="empty-icon icon-ph"></view>
       <text class="empty-text">暂无消息</text>
     </view>
 

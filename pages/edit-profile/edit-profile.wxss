@@ -1,152 +1,83 @@
-page {
-  background: var(--c-bg, #f6f7f9);
+@import '../../styles/tokens.wxss';
+
+.page {
+  background: var(--c-bg);
   min-height: 100vh;
+  padding: var(--sp-24);
 }
 
-.edit-page {
-  min-height: 100vh;
-}
-
-/* ── Top Nav ── */
-.top-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(255,255,255,.75);
-  backdrop-filter: blur(40rpx) saturate(180%);
-  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
-  border-bottom: 1rpx solid rgba(0,0,0,.03);
-}
-
-.nav-content {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  padding: 0 28rpx;
-}
-
-.nav-back {
-  width: 60rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 44rpx;
-  color: var(--c-text, #1a1a2e);
-  font-weight: 300;
-  flex-shrink: 0;
-}
-
-.nav-title {
-  flex: 1;
-  text-align: center;
-  font-size: 32rpx;
-  font-weight: 700;
-  color: var(--c-text, #1a1a2e);
-}
-
-.nav-placeholder {
-  width: 60rpx;
-}
-
-/* ── Body ── */
-.edit-body {
-  padding: 0 20rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ── Avatar ── */
 .avatar-section {
   display: flex;
+  justify-content: center;
+  padding: 40rpx 0 32rpx;
+}
+.avatar-img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--c-border);
+}
+.avatar-placeholder {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: #f5f5f5;
+  border: 4rpx dashed var(--c-border);
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
-  padding: 48rpx 0 36rpx;
-}
-
-.avatar-img {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 50%;
-  display: block;
-}
-
-.avatar-fallback {
-  background: linear-gradient(135deg, var(--c-accent, #ff5c39), #ff7a5c);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 56rpx;
-  font-weight: 700;
-  color: #fff;
+  gap: 6rpx;
+}
+.avatar-icon {
+  font-size: 48rpx;
+}
+.avatar-hint {
+  font-size: var(--fs-xxs);
+  color: var(--c-text-3);
 }
 
-.avatar-change {
-  font-size: 26rpx;
-  color: var(--c-accent, #ff5c39);
-  font-weight: 500;
-}
-
-/* ── Form ── */
 .form-card {
-  width: 100%;
-  background: var(--c-card, #fff);
-  border-radius: 20rpx;
-  padding: 8rpx 0;
-  box-shadow: 0 2rpx 16rpx rgba(15,23,42,.04);
+  background: var(--c-card);
+  border-radius: var(--card-radius);
+  padding: 0 var(--sp-24);
+  box-shadow: var(--card-shadow);
 }
-
-.form-group {
-  display: flex;
-  align-items: center;
-  padding: 28rpx 28rpx;
-  border-bottom: 1rpx solid var(--c-border, #f3f4f6);
+.form-field {
+  padding: var(--sp-24) 0;
+  border-bottom: 1rpx solid var(--c-border);
 }
-
-.form-group:last-child {
+.form-field:last-child {
   border-bottom: none;
 }
-
 .form-label {
-  width: 140rpx;
-  font-size: 28rpx;
-  color: var(--c-text-2, #6b7280);
-  font-weight: 500;
-  flex-shrink: 0;
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--sp-10);
 }
-
 .form-input {
-  flex: 1;
-  height: 48rpx;
-  font-size: 28rpx;
-  color: var(--c-text, #1a1a2e);
-  background: transparent;
-  text-align: right;
-}
-
-.form-value {
-  flex: 1;
-  font-size: 28rpx;
-  color: var(--c-text-3, #9ca3af);
-  text-align: right;
-}
-
-/* ── Save Button ── */
-.save-btn {
   width: 100%;
+  font-size: var(--fs-md);
+  color: var(--c-text);
+  height: 72rpx;
+  box-sizing: border-box;
+}
+
+.save-btn {
+  margin-top: 40rpx;
   height: 88rpx;
+  background: linear-gradient(135deg, var(--c-accent), #ff7a5c);
+  color: #fff;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  border-radius: var(--card-radius);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--c-accent, #ff5c39), #ff7a5c);
-  color: #fff;
-  font-size: 30rpx;
-  font-weight: 700;
-  border-radius: 20rpx;
-  margin-top: 40rpx;
-  box-shadow: 0 6rpx 24rpx rgba(255,92,57,.25);
+  box-shadow: 0 8rpx 24rpx rgba(255,92,57,.2);
+}
+.save-btn.disabled {
+  opacity: .6;
 }

@@ -15,5 +15,13 @@ Page({
 
   goBack() {
     wx.navigateBack({ delta: 1 });
+  },
+
+  onShareAppMessage() {
+    return { title: '找工作', path: '/pages/home/home' };
+  },
+
+  onShareTimeline() {
+    return { title: '找工作' };
   }
 });

@@ -35,7 +35,7 @@
           <!-- 分析结果 -->
           <view wx:if="{{item.analysis}}" class="analysis-card">
             <view class="analysis-header">
-              <text class="analysis-title">📋 需求分析</text>
+              <view style="display:flex;align-items:center"><view class="icon-ph"></view><text class="analysis-title"> 需求分析</text></view>
               <text class="confidence-badge">置信度 {{item.analysis.confidence}}%</text>
             </view>
             <view class="analysis-body">
@@ -57,7 +57,7 @@
               </view>
             </view>
             <view class="analysis-reason" wx:if="{{item.analysis.reason}}">
-              <text class="reason-icon">💡</text>
+              <view class="reason-icon icon-ph"></view>
               <text class="reason-text">{{item.analysis.reason}}</text>
             </view>
           </view>
@@ -65,9 +65,9 @@
           <!-- 推荐职位列表 -->
           <view wx:if="{{item.jobs && item.jobs.length > 0}}" class="job-list">
             <view class="job-list-header">
-              <text class="job-list-title">🎯 为你推荐 {{item.jobs.length}} 个岗位</text>
+              <view style="display:flex;align-items:center"><view class="icon-ph"></view><text class="job-list-title"> 为你推荐 {{item.jobs.length}} 个岗位</text></view>
               <view class="refresh-btn" data-id="{{item.id}}" data-text="{{item.userText}}" bindtap="reAnalyze">
-                <text class="refresh-text">🔄 换一批</text>
+                <view style="display:flex;align-items:center"><view class="icon-ph"></view><text class="refresh-text"> 换一批</text></view>
               </view>
             </view>
             <view wx:for="{{item.jobs}}" wx:for-item="job" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{job.id}}">

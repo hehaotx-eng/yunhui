@@ -1,4 +1,6 @@
 var api = require('../../utils/api');
+var { resolve } = require('../../utils/image');
+var cached = require('../../utils/cached-request');
 
 Page({
   data: {
@@ -34,22 +36,44 @@ Page({
     if (that.data.keyword) {
       url += '&keyword=' + encodeURIComponent(that.data.keyword);
     }
-    api.request({ url: url }).then(function(data) {
-      var list = data.list || [];
-      var newList = reset ? list : that.data.list.concat(list);
-      that.setData({
-        list: newList,
-        total: data.total || 0,
-        page: data.page || page,
-        hasMore: (data.page || page) * 20 < (data.total || 0),
-        showEmpty: newList.length === 0,
-        loading: false,
-        loadingMore: false
-      });
+
+    // 第一页走缓存，翻页不缓存
+    var fetch = page === 1
+      ? cached.cachedGet(url, {}, {
+          ttl: 3 * 60 * 1000,
+          onUpdate: function(data) { that._processData(data, reset, page); }
+        })
+      : api.request({ url: url });
+
+    fetch.then(function(data) {
+      that._processData(data, reset, page);
     }).catch(function(e) {
       wx.showToast({ title: e.message || '加载失败', icon: 'none' });
       that.setData({ loading: false, loadingMore: false });
     });
+  },
+
+  _processData: function(data, reset, page) {
+    var rawList = data.list || [];
+    var list = rawList.map(function(item) {
+      return Object.assign({}, item, { avatar: item.avatar ? resolve(item.avatar) : '' });
+    });
+    var newList = reset ? list : this.data.list.concat(list);
+    this.setData({
+      list: newList,
+      total: data.total || 0,
+      page: data.page || page,
+      hasMore: (data.page || page) * 20 < (data.total || 0),
+      showEmpty: newList.length === 0,
+      loading: false,
+      loadingMore: false
+    });
+  },
+
+  onPullDownRefresh: function() {
+    cached.bust('/api/v1/enterprise/candidates');
+    this.loadData(true);
+    wx.stopPullDownRefresh();
   },
 
   onKeywordInput: function(e) {
@@ -77,5 +101,13 @@ Page({
       return;
     }
     wx.navigateTo({ url: '/pages/resume-preview/resume-preview?id=' + resumeId + '&from=enterprise' });
+  },
+
+  onShareAppMessage() {
+    return { title: '候选人管理', path: '/pages/candidates/candidates' };
+  },
+
+  onShareTimeline() {
+    return { title: '候选人管理' };
   }
 });

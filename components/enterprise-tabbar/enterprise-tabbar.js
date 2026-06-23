@@ -1,4 +1,5 @@
 const { BASE_URL } = require('../../config/base');
+const socket = require('../../services/socket/socket');
 
 Component({
   properties: {
@@ -28,10 +29,15 @@ Component({
   ready: function () {
     this.fetchUnread();
     this.startPolling();
+    this._onStateChange = this._handleSocketStateChange.bind(this);
+    socket.on('stateChange', this._onStateChange);
   },
 
   detached: function () {
     this.stopPolling();
+    if (this._onStateChange) {
+      socket.off('stateChange', this._onStateChange);
+    }
   },
 
   methods: {
@@ -39,6 +45,14 @@ Component({
       this.setBadge('msg', count);
       var app2 = getApp();
       app2.globalData.unreadCount = count;
+    },
+
+    _handleSocketStateChange: function(data) {
+      if (data.state === 'CONNECTED') {
+        this.stopPolling();
+      } else if (data.state === 'IDLE' || data.state === 'RECONNECTING' || data.state === 'CLOSED') {
+        this.startPolling();
+      }
     },
     switchTab(e) {
       const id = e.currentTarget.dataset.id;
@@ -62,8 +76,17 @@ Component({
 
     startPolling: function() {
       this.stopPolling();
+      var socketState = socket.getState();
+      if (socketState === 'CONNECTED') return;
       var that = this;
-      this._pollTimer = setInterval(function() { that.fetchUnread(); }, 10000);
+      this._pollTimer = setInterval(function() {
+        var state = socket.getState();
+        if (state === 'CONNECTED') {
+          that.stopPolling();
+          return;
+        }
+        that.fetchUnread();
+      }, 10000);
     },
 
     stopPolling() {
@@ -74,6 +97,8 @@ Component({
     },
 
     fetchUnread: function() {
+      var socketState = socket.getState();
+      if (socketState === 'CONNECTED') return;
       var token = wx.getStorageSync('token');
       if (!token) return;
       var that = this;

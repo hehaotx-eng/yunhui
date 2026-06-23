@@ -1,0 +1,96 @@
+.resume-card {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06);
+  padding: 24rpx;
+}
+
+.resume-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.resume-card-icon {
+  font-size: 28rpx;
+}
+
+.resume-card-label {
+  font-size: 22rpx;
+  color: #8a9aa8;
+  flex: 1;
+}
+
+.resume-status {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.resume-status.unread {
+  background: #f5f5f5;
+}
+
+.resume-status.unread text {
+  color: #8a9aa8;
+}
+
+.resume-status.read {
+  background: #e8f5e9;
+}
+
+.resume-status.read text {
+  color: #4caf50;
+}
+
+.resume-card-body {
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.resume-card-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.resume-card-intention {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.resume-card-info {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.resume-card-experience,
+.resume-card-education {
+  font-size: 22rpx;
+  color: #8a9aa8;
+  background: #f5f5f5;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.resume-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  background: linear-gradient(135deg, #299ff0, #1a8fe0);
+  border-radius: 32rpx;
+}
+
+.resume-card-action text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #fff;
+}

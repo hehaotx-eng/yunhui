@@ -1,4 +1,5 @@
 var socket = require('./services/socket/socket');
+var swrCache = require('./utils/swr-cache');
 
 App({
   onLaunch() {
@@ -6,6 +7,9 @@ App({
     this._connectSocket()
     this._bindSocketStateChange = this._onSocketStateChange.bind(this);
     socket.on('stateChange', this._bindSocketStateChange);
+
+    // 冷启动：清除核心数据缓存，保证首次打开数据新鲜
+    this._coldStartRefresh();
   },
 
   onShow() {
@@ -144,7 +148,15 @@ App({
             'pages/enterprise-jobs/enterprise-jobs',
             'pages/candidates/candidates',
             'pages/enterpriseDashboard/enterpriseDashboard',
-            'pages/enterprise-my/enterprise-my'
+            'pages/enterprise-my/enterprise-my',
+            'pages/edit-profile/edit-profile',
+            'pages/edit-company/edit-company',
+            'pages/enterprise-applications/enterprise-applications',
+            'pages/enterprise-favorites/enterprise-favorites',
+            'pages/post-job/post-job',
+            'pages/chat/chat',
+            'pages/approval-pending/approval-pending',
+            'pages/complete-profile/complete-profile'
           ]
           if (!enterprisePages.includes(currentRoute)) {
             wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })
@@ -163,7 +175,16 @@ App({
     return !!(userInfo && userInfo.company_id)
   },
 
+  // 冷启动刷新核心数据
+  _coldStartRefresh() {
+    var token = wx.getStorageSync('token');
+    if (!token) return;
+    // 清除用户信息缓存，强制重新拉取
+    swrCache.remove('/api/v1/users/me');
+  },
+
   globalData: {
+    _memCache: {},    // 内存缓存池
     token: null,
     userInfo: null,
     isEnterprise: false,

@@ -83,5 +83,13 @@ Page({
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: `/pages/enterprise-detail/enterprise-detail?id=${id}` });
+  },
+
+  onShareAppMessage() {
+    return { title: '公司 - 发现优质企业', path: '/pages/webs/webs' };
+  },
+
+  onShareTimeline() {
+    return { title: '公司 - 发现优质企业' };
   }
 });

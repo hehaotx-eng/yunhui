@@ -2,7 +2,7 @@ const { request } = require('./request');
 
 const TOKEN_KEY = 'token';
 const USER_KEY = 'userInfo';
-const LOGIN_PAGE = '/pages/login-phone/login-phone';
+const LOGIN_PAGE = '/pages/login/login';
 const REDIRECT_KEY = '_loginRedirect';
 
 function getToken() {

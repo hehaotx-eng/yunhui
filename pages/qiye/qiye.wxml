@@ -7,7 +7,10 @@
   </view>
 
   <view class="filter-scroll">
-    <view wx:for="{{filters}}" wx:key="id" class="filter-item {{activeFilter === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchFilter">{{item.name}}</view>
+    <view wx:for="{{filters}}" wx:key="id" class="filter-item {{activeFilter === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="switchFilter">
+      {{item.name}}
+      <text wx:if="{{item.id === 'pending' && pendingCount > 0}}" class="badge">{{pendingCount}}</text>
+    </view>
   </view>
 
   <view class="company-list">
@@ -21,10 +24,14 @@
         </view>
         <view class="meta">{{item.industry || '行业待完善'}} · {{item.scale || '规模待完善'}}</view>
         <view class="desc">{{item.description || '企业介绍待完善'}}</view>
-        <view class="address">📍 {{item.address || '地址待完善'}}</view>
-      </view>
-      <view class="arrow">›</view>
+      <view class="address">📍 {{item.address || '地址待完善'}}</view>
     </view>
+    <view wx:if="{{isAdmin && activeFilter === 'pending'}}" class="audit-actions">
+      <view class="audit-btn approve" data-id="{{item.id}}" data-action="approved" catchtap="handleAudit">通过</view>
+      <view class="audit-btn reject" data-id="{{item.id}}" data-action="rejected" catchtap="handleAudit">拒绝</view>
+    </view>
+    <view wx:else class="arrow">›</view>
+  </view>
     <view wx:if="{{showEmpty}}" class="empty-card">
       <view class="empty-icon">🏢</view>
       <view class="empty-text">暂无企业</view>

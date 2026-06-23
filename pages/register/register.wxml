@@ -53,16 +53,38 @@
 
   <block wx:else>
     <view class="form-item">
-      <view class="label">企业名称</view>
+      <view class="label">企业 Logo</view>
+      <view class="logo-uploader" bindtap="chooseLogo">
+        <image wx:if="{{form.logo}}" class="logo-preview" src="{{form.logo}}" mode="aspectFill" />
+        <view wx:else class="logo-placeholder">
+          <text class="logo-plus">+</text>
+          <text class="logo-hint">上传企业Logo</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="label">企业名称 <text class="required">*</text></view>
       <input placeholder="请输入企业名称" value="{{form.name}}" data-field="name" bindinput="onInput"/>
     </view>
     <view class="form-item">
-      <view class="label">联系人</view>
-      <input placeholder="选填" value="{{form.contactName}}" data-field="contactName" bindinput="onInput"/>
+      <view class="label">联系人 <text class="required">*</text></view>
+      <input placeholder="请输入联系人姓名" value="{{form.contactName}}" data-field="contactName" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <view class="label">联系电话 <text class="required">*</text></view>
+      <input type="number" placeholder="请输入联系电话" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onInput"/>
     </view>
     <view class="form-item">
       <view class="label">企业地址</view>
-      <input placeholder="选填" value="{{form.address}}" data-field="address" bindinput="onInput"/>
+      <input placeholder="请输入企业地址" value="{{form.address}}" data-field="address" bindinput="onInput"/>
+    </view>
+    <view class="form-item no-border">
+      <view class="label">企业规模</view>
+      <picker mode="selector" range="{{scaleOptions}}" bindchange="onScaleChange">
+        <view class="picker-value {{form.scale ? 'filled' : ''}}">
+          <text>{{form.scale || '请选择企业规模'}}</text>
+        </view>
+      </picker>
     </view>
   </block>
 

@@ -122,7 +122,7 @@ Page({
   },
 
   goLogin() {
-    wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+    wx.navigateTo({ url: '/pages/login/login' });
   },
 
   handleLogout() {
@@ -138,5 +138,13 @@ Page({
         }
       }
     });
+  },
+
+  onShareAppMessage() {
+    return { title: '我的 - 求职工具箱', path: '/pages/my/my' };
+  },
+
+  onShareTimeline() {
+    return { title: '我的 - 求职工具箱' };
   }
 });

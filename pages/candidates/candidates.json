@@ -1,5 +1,6 @@
 {
-  "navigationBarTitleText": "人才搜索",
+  "navigationBarTitleText": "候选人",
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "enterprise-tabbar": "/components/enterprise-tabbar/enterprise-tabbar"
   }

@@ -65,5 +65,13 @@ Page({
 
   goBrowse() {
     wx.switchTab({ url: '/pages/webs/webs' });
+  },
+
+  onShareAppMessage() {
+    return { title: '我的投递 - 追踪求职进度', path: '/pages/applications/applications' };
+  },
+
+  onShareTimeline() {
+    return { title: '我的投递 - 追踪求职进度' };
   }
 });

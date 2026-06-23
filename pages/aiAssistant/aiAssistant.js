@@ -22,6 +22,50 @@ Page({
   onLoad: function() {
     var sysInfo = wx.getSystemInfoSync();
     this.setData({ statusBarHeight: sysInfo.statusBarHeight || 20 });
+    this._loadHistory();
+  },
+
+  onHide: function() {
+    this._saveHistory();
+  },
+
+  _getHistoryKey: function() {
+    var userId = '';
+    try { var info = wx.getStorageSync('userInfo'); if (info && info.id) userId = info.id; } catch(e) {}
+    return 'ai_conv_' + userId;
+  },
+
+  _loadHistory: function() {
+    var key = this._getHistoryKey();
+    var history = [];
+    try { history = wx.getStorageSync(key) || []; } catch(e) {}
+    if (history.length > 0) {
+      this.setData({ messages: history, msgIdCounter: history.length });
+    }
+  },
+
+  _saveHistory: function() {
+    var key = this._getHistoryKey();
+    var maxLen = 20;
+    var msgs = this.data.messages;
+    var toSave = [];
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      if (m.type === 'user') {
+        toSave.push({ id: m.id, type: 'user', text: m.text });
+      } else if (m.type === 'assistant' && !m.loading) {
+        toSave.push({
+          id: m.id, type: 'assistant',
+          userText: m.userText,
+          analysis: m.analysis,
+          jobs: m.jobs,
+          noResult: m.noResult,
+          loading: false
+        });
+      }
+    }
+    if (toSave.length > maxLen) toSave = toSave.slice(toSave.length - maxLen);
+    try { wx.setStorageSync(key, toSave); } catch(e) {}
   },
 
   onInput: function(e) {
@@ -41,7 +85,7 @@ Page({
         cancelText: '暂不登录',
         success: function(res) {
           if (res.confirm) {
-            wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+            wx.navigateTo({ url: '/pages/login/login' });
           }
         }
       });
@@ -87,8 +131,20 @@ Page({
       scrollToId: 'msg-' + aiMsgId
     });
 
+    // 构建历史消息上下文
+    var history = [];
+    var msgs = this.data.messages;
+    for (var hi = 0; hi < msgs.length; hi++) {
+      var hm = msgs[hi];
+      if (hm.type === 'user') {
+        history.push({ role: 'user', text: hm.text });
+      } else if (hm.type === 'assistant' && !hm.loading && hm.analysis) {
+        history.push({ role: 'assistant', text: hm.userText || '', analysis: hm.analysis });
+      }
+    }
+
     // 调用AI分析接口
-    api.aiAssistant.analyze(text).then(function(result) {
+    api.aiAssistant.analyze(text, history).then(function(result) {
       that.processResult(aiMsgId, result);
     }).catch(function(err) {
       that.updateMessage(aiMsgId, {
@@ -114,7 +170,7 @@ Page({
     });
 
     // 重新调用AI分析接口
-    api.aiAssistant.analyze(text).then(function(result) {
+    api.aiAssistant.analyze(text, []).then(function(result) {
       that.processResult(msgId, result);
     }).catch(function(err) {
       that.updateMessage(msgId, {
@@ -145,9 +201,9 @@ Page({
       jobs = platformJobs.map(function(job) {
         var salaryText = '面议';
         if (job.salary_min && job.salary_max) {
-          salaryText = job.salary_min + '-' + job.salary_max + 'K';
+          salaryText = job.salary_min + '-' + job.salary_max + '元/月';
         } else if (job.salary_min) {
-          salaryText = job.salary_min + 'K起';
+          salaryText = job.salary_min + '元/月起';
         }
 
         return {
@@ -201,5 +257,13 @@ Page({
 
   goBack: function() {
     wx.navigateBack();
+  },
+
+  onShareAppMessage() {
+    return { title: 'AI求职助手 - 智能匹配岗位', path: '/pages/aiAssistant/aiAssistant' };
+  },
+
+  onShareTimeline() {
+    return { title: 'AI求职助手 - 智能匹配岗位' };
   }
 });

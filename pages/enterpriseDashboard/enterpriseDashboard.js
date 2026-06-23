@@ -81,16 +81,16 @@ Page({
 
   buildJobs() {
     return [
-      { id: 1, title: '高级前端工程师', company: '字节跳动', salary: '30K-50K', time: '1小时前', statusText: '已上线', statusClass: 'online' },
-      { id: 2, title: '资深后端开发', company: '阿里巴巴', salary: '35K-55K', time: '2小时前', statusText: '审核中', statusClass: 'pending' },
-      { id: 3, title: '产品总监', company: '腾讯', salary: '50K-80K', time: '3小时前', statusText: '已上线', statusClass: 'online' },
-      { id: 4, title: '数据分析负责人', company: '美团', salary: '40K-60K', time: '4小时前', statusText: '已上线', statusClass: 'online' },
-      { id: 5, title: 'UI设计专家', company: '小红书', salary: '25K-45K', time: '5小时前', statusText: '暂停', statusClass: 'paused' },
-      { id: 6, title: '算法工程师', company: '百度', salary: '40K-70K', time: '6小时前', statusText: '已上线', statusClass: 'online' },
-      { id: 7, title: '测试架构师', company: '京东', salary: '30K-50K', time: '7小时前', statusText: '已上线', statusClass: 'online' },
-      { id: 8, title: 'HRVP', company: '拼多多', salary: '60K-90K', time: '8小时前', statusText: '已下线', statusClass: 'closed' },
-      { id: 9, title: '运维负责人', company: '快手', salary: '35K-55K', time: '9小时前', statusText: '审核中', statusClass: 'pending' },
-      { id: 10, title: '市场总监', company: '滴滴', salary: '40K-65K', time: '10小时前', statusText: '已上线', statusClass: 'online' }
+      { id: 1, title: '高级前端工程师', company: '字节跳动', salary: '30000-50000元/月', time: '1小时前', statusText: '已上线', statusClass: 'online' },
+      { id: 2, title: '资深后端开发', company: '阿里巴巴', salary: '35000-55000元/月', time: '2小时前', statusText: '审核中', statusClass: 'pending' },
+      { id: 3, title: '产品总监', company: '腾讯', salary: '50000-80000元/月', time: '3小时前', statusText: '已上线', statusClass: 'online' },
+      { id: 4, title: '数据分析负责人', company: '美团', salary: '40000-60000元/月', time: '4小时前', statusText: '已上线', statusClass: 'online' },
+      { id: 5, title: 'UI设计专家', company: '小红书', salary: '25000-45000元/月', time: '5小时前', statusText: '暂停', statusClass: 'paused' },
+      { id: 6, title: '算法工程师', company: '百度', salary: '40000-70000元/月', time: '6小时前', statusText: '已上线', statusClass: 'online' },
+      { id: 7, title: '测试架构师', company: '京东', salary: '30000-50000元/月', time: '7小时前', statusText: '已上线', statusClass: 'online' },
+      { id: 8, title: 'HRVP', company: '拼多多', salary: '60000-90000元/月', time: '8小时前', statusText: '已下线', statusClass: 'closed' },
+      { id: 9, title: '运维负责人', company: '快手', salary: '35000-55000元/月', time: '9小时前', statusText: '审核中', statusClass: 'pending' },
+      { id: 10, title: '市场总监', company: '滴滴', salary: '40000-65000元/月', time: '10小时前', statusText: '已上线', statusClass: 'online' }
     ]
   },
 
@@ -200,5 +200,13 @@ Page({
           ctx.stroke()
         })
       })
+  },
+
+  onShareAppMessage() {
+    return { title: '数据概览', path: '/pages/enterpriseDashboard/enterpriseDashboard' };
+  },
+
+  onShareTimeline() {
+    return { title: '数据概览' };
   }
-})
+});

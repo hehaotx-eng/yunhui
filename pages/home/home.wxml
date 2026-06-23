@@ -46,12 +46,18 @@
       <text class="notice-more">更多 ›</text>
     </view>
 
-    <!-- 分类标签 -->
-    <scroll-view class="cat-scroll {{catSticky ? 'cat-sticky' : ''}}" style="{{stickyStyle}}" scroll-x enhanced show-scrollbar="{{false}}">
-      <view class="cat-inner">
-        <view wx:for="{{categories}}" wx:key="id" class="cat-item {{activeCategory === item.id ? 'cat-active' : ''}}" data-id="{{item.id}}" bindtap="onCategoryTap">{{item.name}}</view>
+    <!-- 分类标签 + 筛选 -->
+    <view class="cat-bar {{catSticky ? 'cat-sticky' : ''}}" style="{{stickyStyle}}">
+      <scroll-view class="cat-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="cat-inner">
+          <view wx:for="{{categories}}" wx:key="id" class="cat-item {{activeCategory === item.id ? 'cat-active' : ''}}" data-id="{{item.id}}" bindtap="onCategoryTap">{{item.name}}</view>
+        </view>
+      </scroll-view>
+      <view class="filter-btn" bindtap="onFilterTap">
+        <text>筛选</text>
+        <text class="filter-icon">☰</text>
       </view>
-    </scroll-view>
+    </view>
     <view wx:if="{{catSticky}}" style="height: 88rpx;"></view>
 
     <view class="container">
@@ -60,7 +66,7 @@
         <view class="vip-card-glow"></view>
         <view class="vip-card-inner">
           <view class="vip-left">
-            <!-- <text class="vip-crown">👑</text> -->
+
             <view class="vip-info">
               <text class="vip-title" wx:if="{{!isVip}}">开通 AI 智能求职会员</text>
               <text class="vip-title" wx:else>VIP会员</text>
@@ -123,6 +129,51 @@
       </view>
     </view>
   </block>
+</view>
+
+<view wx:if="{{!isLoggedIn}}" class="login-tip-bar" bindtap="goLogin">
+  <text class="login-tip-text">登录后查看更多职位机会</text>
+  <view class="login-tip-btn">去登录 ›</view>
+</view>
+
+<!-- 筛选弹窗 -->
+<view wx:if="{{showFilter}}" class="filter-mask" bindtap="closeFilter"></view>
+<view class="filter-sheet {{showFilter ? 'show' : ''}}">
+  <view class="filter-header">
+    <text class="filter-header-cancel" bindtap="closeFilter">取消</text>
+    <text class="filter-header-title">筛选</text>
+    <text class="filter-header-reset" bindtap="resetFilter">重置</text>
+  </view>
+
+  <scroll-view class="filter-body" scroll-y>
+    <!-- 区域 -->
+    <view class="filter-section">
+      <text class="filter-section-title">区域</text>
+      <view class="filter-tags">
+        <view wx:for="{{filterOptions.areas}}" wx:key="*this" class="filter-tag {{filter.area === item ? 'active' : ''}}" bindtap="setFilter" data-key="area" data-value="{{item}}">{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 薪资 -->
+    <view class="filter-section">
+      <text class="filter-section-title">薪资范围</text>
+      <view class="filter-tags">
+        <view wx:for="{{filterOptions.salaries}}" wx:key="*this" class="filter-tag {{filter.salary === item ? 'active' : ''}}" bindtap="setFilter" data-key="salary" data-value="{{item}}">{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 福利待遇 -->
+    <view class="filter-section">
+      <text class="filter-section-title">福利待遇</text>
+      <view class="filter-tags">
+        <view wx:for="{{filterOptions.benefits}}" wx:key="*this" class="filter-tag {{filter.benefits[item] ? 'active' : ''}}" bindtap="toggleBenefit" data-value="{{item}}">{{item}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="filter-footer">
+    <view class="filter-submit" bindtap="applyFilter">查看结果</view>
+  </view>
 </view>
 
 <custom-tab-bar />

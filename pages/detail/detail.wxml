@@ -14,7 +14,7 @@
     <view class="job-header">
       <view class="job-title-row">
         <text class="job-title">{{detail.title}}</text>
-        <text class="job-salary">{{detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + 'K' : '面议')}}</text>
+        <text class="job-salary">{{detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + '元/月' : '面议')}}</text>
       </view>
       <view class="job-tags">
         <text class="tag">{{detail.location || '地点不限'}}</text>
@@ -72,7 +72,7 @@
       <view wx:for="{{companyJobs}}" wx:key="id" class="related-job" bindtap="goRelated" data-id="{{item.id}}">
         <view class="rj-top">
           <text class="rj-title">{{item.title}}</text>
-          <text class="rj-salary">{{item.salary || (item.salary_min + '-' + item.salary_max + 'K')}}</text>
+          <text class="rj-salary">{{item.salary || (item.salary_min + '-' + item.salary_max + '元/月')}}</text>
         </view>
         <text class="rj-meta">{{item.location || '地点不限'}} · {{item.experience || '经验不限'}}</text>
       </view>

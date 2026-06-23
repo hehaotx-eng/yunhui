@@ -67,7 +67,7 @@
       <view wx:for="{{enterprise.jobs || jobs}}" wx:key="id" class="job-item job-animate" style="animation-delay: {{index * 0.08}}s" bindtap="goJob" data-id="{{item.id}}">
         <view class="job-top">
           <text class="job-title">{{item.title}}</text>
-          <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + 'K' : '面议')}}</text>
+          <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + '元/月' : '面议')}}</text>
         </view>
         <view class="job-meta">
           <text>{{item.location || item.area || '地点不限'}}</text>

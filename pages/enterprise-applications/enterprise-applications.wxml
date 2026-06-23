@@ -9,7 +9,8 @@
       <view wx:for="{{list}}" wx:key="id" class="card">
         <view class="card-top">
           <view class="app-info">
-            <view class="app-avatar">{{wxs.firstChar(item.user_name)}}</view>
+            <image wx:if="{{item.user_avatar}}" class="app-avatar-img" src="{{item.user_avatar}}" mode="aspectFill" />
+            <view wx:else class="app-avatar">{{wxs.firstChar(item.user_name)}}</view>
             <view class="app-detail">
               <text class="app-name">{{item.user_name || '候选人'}}</text>
               <text class="app-job">{{item.job_title || ''}}</text>
@@ -19,7 +20,7 @@
         </view>
         <view class="card-actions">
           <view class="action-left">
-            <text class="action-btn resume-btn" bindtap="viewResume" data-resumeid="{{item.resume_id}}">📄 简历</text>
+            <view class="action-btn resume-btn" bindtap="viewResume" data-resumeid="{{item.resume_id}}"><view class="icon-ph"></view><text> 简历</text></view>
             <text class="status-tag status-{{item.status}}">{{item.status === 'pending' ? '待处理' : item.status === 'viewed' ? '已查看' : item.status === 'accepted' ? '已通过' : item.status === 'rejected' ? '已拒绝' : item.status}}</text>
           </view>
           <view class="action-btns">
@@ -31,7 +32,7 @@
       </view>
 
       <view wx:if="{{showEmpty}}" class="empty">
-        <view class="empty-icon">📋</view>
+        <view class="empty-icon icon-ph"></view>
         <text class="empty-text">暂无投递记录</text>
       </view>
       <view wx:if="{{loading}}" class="loading">加载中...</view>

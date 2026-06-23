@@ -91,12 +91,12 @@ Page({
   _render(list) {
     const data = (list || []).map(conv => ({
       id: conv.id,
-      name: this._getName(conv),
-      avatar: this._getAvatar(conv),
-      avatarChar: (this._getName(conv) || '联').charAt(0),
-      lastMessage: conv.lastMessage || '暂无消息',
-      unreadCount: conv.unreadCount || 0,
-      time: this._formatTime(conv.lastTime)
+      name: conv.name || this._getName(conv),
+      avatar: conv.avatar || this._getAvatar(conv),
+      avatarChar: (conv.name || this._getName(conv) || '聘').charAt(0),
+      lastMessage: conv.lastMessage || conv.last_message || '暂无消息',
+      unreadCount: conv.unreadCount || conv.unread_count || 0,
+      time: this._formatTime(conv.lastTime || conv.last_message_at)
     }));
 
     this.setData({
@@ -145,15 +145,27 @@ Page({
   // 数据标准化（唯一转换层）
   // ======================
   _normalize(list) {
-    return (list || []).map(conv => ({
-      id: conv.id,
-      name: this._getName(conv),
-      avatar: this._getAvatar(conv),
-      lastMessage: conv.last_message || '',
-      lastTime: conv.last_message_time || new Date().toISOString(),
-      unreadCount: conv.unread_count || 0,
-      userId: conv.user_id || ''
-    }));
+    return (list || []).map(conv => {
+      var lastMsg = conv.last_message || '';
+      if (lastMsg.charAt(0) === '{') {
+        try {
+          var parsed = JSON.parse(lastMsg);
+          if (parsed.type === 'job') lastMsg = '[职位] ' + (parsed.title || '');
+          else lastMsg = '[消息]';
+        } catch (e) {}
+      }
+      return {
+        id: conv.id,
+        name: this._getName(conv),
+        avatar: this._getAvatar(conv),
+        lastMessage: lastMsg,
+        lastTime: conv.last_message_at || conv.last_message_time || new Date().toISOString(),
+        unreadCount: conv.unread_count || 0,
+        userId: conv.user_id || '',
+        other_name: conv.other_name || '',
+        company_name: conv.company_name || ''
+      };
+    });
   },
 
   // ======================
@@ -181,9 +193,11 @@ Page({
   _getName(conv) {
     return conv.company_name ||
       conv.enterprise_name ||
+      conv.other_name ||
       conv.nick_name ||
+      conv.nickname ||
       conv.title ||
-      '联系人';
+      '招聘者';
   },
 
   _getAvatar(conv) {
@@ -281,7 +295,7 @@ Page({
 
   goLogin() {
     wx.navigateTo({
-      url: '/pages/login-phone/login-phone'
+      url: '/pages/login/login'
     });
   },
 
@@ -289,5 +303,13 @@ Page({
     this.loadConversations().finally(() => {
       wx.stopPullDownRefresh();
     });
+  },
+
+  onShareAppMessage() {
+    return { title: '消息 - 与招聘者沟通', path: '/pages/msg/msg' };
+  },
+
+  onShareTimeline() {
+    return { title: '消息 - 与招聘者沟通' };
   }
 });

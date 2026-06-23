@@ -96,7 +96,7 @@ Page({
       cancelText: '暂不登录',
       success: function(res) {
         if (res.confirm) {
-          wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+          wx.navigateTo({ url: '/pages/login/login' });
         }
       }
     });
@@ -280,5 +280,13 @@ Page({
       tabBar.setRole(app.globalData.isEnterprise ? 'enterprise' : 'user');
       tabBar.setSelected(2);
     }
+  },
+
+  onShareAppMessage() {
+    return { title: 'AI推荐 - 智能匹配好工作', path: '/pages/aiRecommend/aiRecommend' };
+  },
+
+  onShareTimeline() {
+    return { title: 'AI推荐 - 智能匹配好工作' };
   }
 });

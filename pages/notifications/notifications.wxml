@@ -14,7 +14,7 @@
     </view>
 
     <view wx:if="{{showEmpty}}" class="empty-card">
-      <view class="empty-icon">🔔</view>
+      <view class="empty-icon icon-ph"></view>
       <view class="empty-text">暂无通知</view>
     </view>
     <view wx:if="{{loading}}" class="loading">加载中...</view>

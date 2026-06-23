@@ -7,6 +7,7 @@ Page({
     vipEndTime: '',
     selectedPlan: 'quarter',
     loading: false,
+    showLoginModal: false,
     plans: [
       { key: 'month', name: '月卡', price: '29.9', period: '1个月', tag: '' },
       { key: 'quarter', name: '季卡', price: '69.9', period: '3个月', tag: '推荐' },
@@ -27,11 +28,18 @@ Page({
     this.setData({
       statusBarHeight: sysInfo.statusBarHeight || 20
     });
+    this._checkLogin();
     this._loadVipStatus();
   },
 
   onShow() {
+    this._checkLogin();
     this._loadVipStatus();
+  },
+
+  _checkLogin() {
+    var token = wx.getStorageSync('token');
+    this.setData({ showLoginModal: !token });
   },
 
   _loadVipStatus: function () {
@@ -106,7 +114,25 @@ Page({
       String(d.getDate()).padStart(2, '0');
   },
 
+  preventTouch() {},
+
   goBack() {
     wx.navigateBack();
+  },
+
+  goLogin() {
+    wx.navigateTo({ url: '/pages/login/login' });
+  },
+
+  closeLoginModal() {
+    this.setData({ showLoginModal: false });
+  },
+
+  onShareAppMessage() {
+    return { title: 'VIP会员 - 解锁AI智能求职', path: '/pages/vip/vip' };
+  },
+
+  onShareTimeline() {
+    return { title: 'VIP会员 - 解锁AI智能求职' };
   }
 });

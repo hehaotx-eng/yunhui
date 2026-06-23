@@ -1,75 +1,103 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
+
 <view class="page">
-  <view class="body">
-    <view class="welcome">
-      <text class="welcome-greeting">欢迎回来</text>
-      <text class="welcome-name">{{companyName}}</text>
+
+  <!-- 🧠 1. 顶部信息 -->
+  <view class="header">
+    <view class="title">欢迎回来</view>
+    <view class="sub">{{companyName}}</view>
+  </view>
+
+  <!-- 📊 2. 核心数据（最重要） -->
+  <view class="metrics">
+    <view class="metric">
+      <text class="num">{{stats.jobs}}</text>
+      <text class="label">职位</text>
     </view>
 
-    <view class="stats-grid">
-      <view class="stat-card">
-        <text class="stat-value">{{stats.jobs}}</text>
-        <text class="stat-label">发布职位</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-value online">{{stats.online}}</text>
-        <text class="stat-label">在线中</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-value">{{stats.applicants}}</text>
-        <text class="stat-label">收到投递</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-value">{{stats.candidates}}</text>
-        <text class="stat-label">候选人</text>
-      </view>
+    <view class="metric">
+      <text class="num blue">{{stats.online}}</text>
+      <text class="label">在线</text>
     </view>
 
-    <view class="quick-actions">
-      <view class="action-item" bindtap="goPostJob">
-        <view class="action-icon add">+</view>
-        <text class="action-text">发布职位</text>
-      </view>
-      <view class="action-item" bindtap="goJobs">
-        <view class="action-icon list">≡</view>
-        <text class="action-text">我的岗位</text>
-      </view>
-      <view class="action-item" bindtap="goApplications">
-        <view class="action-icon search">◉</view>
-        <text class="action-text">投递管理</text>
-      </view>
+    <view class="metric">
+      <text class="num">{{stats.applicants}}</text>
+      <text class="label">投递</text>
     </view>
 
-    <view class="section">
-      <view class="section-header">
-        <text class="section-title">最近投递</text>
-      </view>
-      <view wx:if="{{recentApps.length === 0}}" class="empty">暂无投递记录</view>
-      <view wx:for="{{recentApps}}" wx:key="id" class="app-row">
-        <view class="app-avatar">{{wxs.firstChar(item.user_name)}}</view>
-        <view class="app-info">
-          <text class="app-name">{{item.user_name || '匿名'}}</text>
-          <text class="app-job">{{item.job_title || ''}}</text>
-        </view>
-        <text class="app-status status-{{item.status}}" bindtap="onChangeStatus" data-id="{{item.id}}" data-status="{{item.status}}">{{item.status === 'pending' ? '待处理' : item.status === 'viewed' ? '已查看' : item.status === 'accepted' ? '已通过' : item.status === 'rejected' ? '已拒绝' : item.status}}</text>
-      </view>
-    </view>
-
-    <view class="section">
-      <view class="section-header">
-        <text class="section-title">我的职位</text>
-        <text class="section-more" bindtap="goJobs">查看全部</text>
-      </view>
-      <view wx:if="{{myJobs.length === 0}}" class="empty">暂无职位，去发布一个吧</view>
-      <view wx:for="{{myJobs}}" wx:key="id" class="job-card" bindtap="goDetail" data-id="{{item.id}}">
-        <view class="job-top">
-          <text class="job-title">{{item.title}}</text>
-          <text class="job-status status-{{item.status}}">{{item.status === 'online' ? '在线' : item.status === 'offline' ? '已下线' : item.status === 'draft' ? '草稿' : item.status}}</text>
-        </view>
-        <text class="job-salary">{{item.salary || (item.salary_min && item.salary_max ? item.salary_min + '-' + item.salary_max + '元' : '薪资面议')}}</text>
-      </view>
+    <view class="metric">
+      <text class="num">{{stats.candidates}}</text>
+      <text class="label">候选</text>
     </view>
   </view>
-</view>
 
-<enterprise-tabbar current="home" />
+  <!-- ⚡ 3. 操作入口（重点优化） -->
+  <view class="actions">
+
+    <view class="action" bindtap="goPostJob">
+      <view class="icon add">＋</view>
+      <text>发布职位</text>
+    </view>
+
+    <view class="action" bindtap="goJobs">
+      <view class="icon list">≡</view>
+      <text>我的岗位</text>
+    </view>
+
+    <view class="action" bindtap="goApplications">
+      <view class="icon msg">◎</view>
+      <text>投递管理</text>
+    </view>
+
+  </view>
+
+  <!-- 4. 内容区 -->
+  <view class="section">
+
+    <view class="section-title">最近投递</view>
+
+    <view wx:if="{{recentApps.length === 0}}" class="empty">
+      暂无投递记录
+    </view>
+
+    <view wx:for="{{recentApps}}" wx:key="id" class="row">
+
+      <view class="avatar">{{wxs.firstChar(item.user_name)}}</view>
+
+      <view class="info">
+        <view class="name">{{item.user_name}}</view>
+        <view class="sub">{{item.job_title}}</view>
+      </view>
+
+      <view class="status status-{{item.status}}">
+        {{item.status}}
+      </view>
+
+    </view>
+
+  </view>
+
+  <!-- 5. 我的职位 -->
+  <view class="section">
+
+    <view class="section-head">
+      <text class="section-title">我的职位</text>
+      <text class="more" bindtap="goJobs">更多</text>
+    </view>
+
+    <view wx:for="{{myJobs}}" wx:key="id" class="job">
+
+      <view class="job-title">{{item.title}}</view>
+
+      <view class="job-bottom">
+        <text class="salary">{{item.salary || '薪资面议'}}</text>
+        <text class="job-status">{{item.status}}</text>
+      </view>
+
+    </view>
+
+  </view>
+
+  <enterprise-tabbar current="home" />
+
+</view>

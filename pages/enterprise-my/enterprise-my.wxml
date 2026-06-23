@@ -1,32 +1,44 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="page">
   <view class="body">
-    <view class="profile-card">
-      <view class="avatar">{{wxs.firstChar(userInfo.nickname)}}</view>
+    <view class="profile-card" bindtap="goEditProfile">
+      <image wx:if="{{companyInfo.logo}}" class="avatar-img" src="{{companyInfo.logo}}" mode="aspectFill" />
+      <view wx:else class="avatar">{{wxs.firstChar(companyInfo.name)}}</view>
       <view class="profile-info">
-        <text class="profile-name">{{userInfo.nickname || userInfo.username || '企业用户'}}</text>
-        <text class="profile-role">企业账号</text>
+        <text class="profile-name">{{companyInfo.name || '未设置公司'}}</text>
+        <text class="profile-role">{{userInfo.nickname || ''}}</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="stats-card">
+      <view class="stat-item" bindtap="goJobs">
+        <text class="stat-value">{{stats.jobs || 0}}</text>
+        <text class="stat-label">发布职位</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="goApplications">
+        <text class="stat-value">{{stats.applications || 0}}</text>
+        <text class="stat-label">收到投递</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item" bindtap="goFavorites">
+        <text class="stat-value">{{stats.favorites || 0}}</text>
+        <text class="stat-label">我的收藏</text>
       </view>
     </view>
 
-      <view class="stats-card">
-        <view class="stat-item" bindtap="goJobs">
-          <text class="stat-value">{{stats.jobs || 0}}</text>
-          <text class="stat-label">发布职位</text>
-        </view>
-        <view class="stat-divider"></view>
-        <view class="stat-item" bindtap="goApplications">
-          <text class="stat-value">{{stats.applications || 0}}</text>
-          <text class="stat-label">收到投递</text>
-        </view>
-        <view class="stat-divider"></view>
-        <view class="stat-item" bindtap="goFavorites">
-          <text class="stat-value">{{stats.favorites || 0}}</text>
-          <text class="stat-label">我的收藏</text>
-        </view>
-      </view>
-
     <view class="menu-card">
+      <view class="menu-item" bindtap="goEditProfile">
+        <text class="menu-icon-text">👤</text>
+        <text class="menu-text">个人信息</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goEditCompany">
+        <text class="menu-icon-text">🏢</text>
+        <text class="menu-text">企业信息</text>
+        <text class="menu-arrow">›</text>
+      </view>
       <view class="menu-item" bindtap="goJobs">
         <text class="menu-icon-text">□</text>
         <text class="menu-text">岗位管理</text>
@@ -40,7 +52,7 @@
       <view class="menu-item" bindtap="goFavorites">
         <text class="menu-icon-text">♥</text>
         <text class="menu-text">我的收藏</text>
-        <text class="menu-badge">{{stats.favorites || 0}}</text>
+        <text wx:if="{{stats.favorites > 0}}" class="menu-count">{{stats.favorites}}</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>

@@ -3,3 +3,14 @@
 @import './styles/feed.wxss';
 @import './styles/card.wxss';
 @import './styles/components.wxss';
+
+/* Emoji 占位灰块 — 待替换为 PNG */
+.icon-ph {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: #d1d5db;
+  border-radius: 4rpx;
+  vertical-align: middle;
+  flex-shrink: 0;
+}

@@ -1,5 +1,12 @@
 <wxs src="../../utils/wxs.wxs" module="wxs" />
 <view class="job-card" bindtap="onCardTap">
+  <!-- Row 0: job_type label + vip + publish time -->
+  <view class="card-row-meta" wx:if="{{item.job_type || item.created_at || item.vip_required}}">
+    <text wx:if="{{item.job_type}}" class="card-type-tag">{{wxs.jobType(item.job_type)}}</text>
+    <text wx:if="{{item.vip_required}}" class="card-vip-tag">VIP</text>
+    <text wx:if="{{item.created_at}}" class="card-time">{{wxs.timeAgo(item.created_at)}}</text>
+  </view>
+
   <!-- Row 1: title + salary -->
   <view class="card-row-top">
     <text class="card-title line-clamp-1">{{item.title}}</text>
@@ -27,9 +34,6 @@
     </view>
     <view class="card-info-right">
       <text class="info-location">{{item.location || ''}}</text>
-      <view class="close-btn" catchtap="onClose">
-        <text>×</text>
-      </view>
     </view>
   </view>
 </view>

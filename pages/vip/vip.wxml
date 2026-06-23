@@ -55,4 +55,20 @@
       </view>
     </view>
   </view>
+
+  <!-- 未登录弹窗 -->
+  <view wx:if="{{showLoginModal}}" class="modal-overlay" catchtouchmove="preventTouch">
+    <view class="modal-content">
+      <view class="modal-close" bindtap="closeLoginModal">
+        <text class="modal-close-icon">关闭</text>
+      </view>
+      <view class="modal-icon-wrap">
+        <view class="modal-icon icon-ph"></view>
+      </view>
+      <text class="modal-title">登录后开通会员</text>
+      <text class="modal-desc">开通VIP会员，解锁AI智能求职全部功能</text>
+      <view class="modal-btn" bindtap="goLogin">去登录</view>
+      <view class="modal-cancel" bindtap="closeLoginModal">暂时跳过</view>
+    </view>
+  </view>
 </view>

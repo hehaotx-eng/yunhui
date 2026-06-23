@@ -1,8 +1,8 @@
 <view class="page">
 
 <view class="hero">
-  <view class="hero-title">欢迎回来</view>
-  <view class="hero-desc">{{role === 'enterprise' ? '登录后管理职位、招募人才' : '登录后查看职位、投递简历'}}</view>
+  <view class="hero-title">手机号登录</view>
+  <view class="hero-desc">新用户将自动注册并完善信息</view>
 </view>
 
 <view class="form-card">
@@ -11,7 +11,7 @@
     <input class="input-field" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" type="number" maxlength="11" />
   </view>
   <view class="form-item">
-    <view class="label">登录密码</view>
+    <view class="label">密    码</view>
     <input class="input-field" password placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
   </view>
 </view>
@@ -50,13 +50,31 @@
       <view class="dialog-title">创建新企业</view>
       <view class="create-form">
         <view class="cf-item">
-          <input placeholder="企业名称" value="{{createForm.name}}" data-field="name" bindinput="onCreateInput" />
+          <view class="logo-uploader" bindtap="chooseLogo">
+            <image wx:if="{{createForm.logo}}" class="logo-preview" src="{{createForm.logo}}" mode="aspectFill" />
+            <view wx:else class="logo-placeholder">
+              <text class="logo-plus">+</text>
+              <text class="logo-hint">企业Logo</text>
+            </view>
+          </view>
         </view>
         <view class="cf-item">
-          <input placeholder="所属行业（如：互联网）" value="{{createForm.industry}}" data-field="industry" bindinput="onCreateInput" />
+          <input placeholder="企业名称 *" value="{{createForm.name}}" data-field="name" bindinput="onCreateInput" />
         </view>
         <view class="cf-item">
-          <input placeholder="公司规模（如：20-99人）" value="{{createForm.scale}}" data-field="scale" bindinput="onCreateInput" />
+          <input placeholder="联系人 *" value="{{createForm.contactName}}" data-field="contactName" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="联系电话 *" value="{{createForm.contactPhone}}" data-field="contactPhone" bindinput="onCreateInput" type="number" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="企业地址" value="{{createForm.address}}" data-field="address" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="企业规模" value="{{createForm.scale}}" data-field="scale" bindinput="onCreateInput" />
+        </view>
+        <view class="cf-item">
+          <input placeholder="所属行业（选填）" value="{{createForm.industry}}" data-field="industry" bindinput="onCreateInput" />
         </view>
         <view class="cf-item">
           <input placeholder="企业简介（选填）" value="{{createForm.description}}" data-field="description" bindinput="onCreateInput" />

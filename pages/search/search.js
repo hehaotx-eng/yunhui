@@ -1,4 +1,5 @@
 var feedStream = require('../../services/core/feedStream');
+var vip = require('../../services/core/vip');
 
 var HISTORY_KEY = 'search_history';
 
@@ -72,7 +73,8 @@ Page({
     this.setData({ loading: true, showResults: true });
     try {
       var userData = this._getUserData();
-      var result = await feedStream.get({ keyword: keyword, page: 1, limit: 20, userData: userData });
+      var isVip = vip.isVip();
+      var result = await feedStream.get({ keyword: keyword, page: 1, limit: 20, userData: userData, excludeVip: !isVip });
       var list = result.list || [];
       this.setData({ exactResults: list.slice(0, 10), recommendResults: list.slice(10, 20) });
     } catch (e) {
@@ -103,5 +105,13 @@ Page({
     });
   },
 
-  goBack: function () { wx.navigateBack(); }
+  goBack: function () { wx.navigateBack(); },
+
+  onShareAppMessage() {
+    return { title: '搜索职位 - 发现好工作', path: '/pages/search/search' };
+  },
+
+  onShareTimeline() {
+    return { title: '搜索职位 - 发现好工作' };
+  }
 });

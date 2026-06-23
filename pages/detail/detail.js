@@ -4,6 +4,7 @@ var auth = services.auth;
 var enterprise = services.enterprise;
 var jobSvc = services.job;
 var resolve = require('../../utils/image').resolve;
+var cached = require('../../utils/cached-request');
 
 Page({
   data: {
@@ -31,6 +32,7 @@ Page({
   },
 
   onPullDownRefresh() {
+    cached.bust('/api/v1/jobs/' + this.data.id);
     this.loadDetail().finally(function() { wx.stopPullDownRefresh(); });
   },
 
@@ -47,7 +49,14 @@ Page({
     if (!that.data.id) return;
     that.setData({ skeleton: true });
 
-    var p1 = api.jobs.getById(that.data.id);
+    // 职位详情走缓存，10分钟有效
+    var p1 = cached.cachedGet('/api/v1/jobs/' + that.data.id, {}, {
+      ttl: 10 * 60 * 1000,
+      onUpdate: function(data) {
+        if (data && data.company_logo) data.company_logo = resolve(data.company_logo);
+        that.setData({ detail: data });
+      }
+    });
     var p2 = that.data.isEnterprise ? Promise.resolve({ favorited: false }) : api.favorites.check(that.data.id).catch(function() { return { favorited: false }; });
 
     Promise.all([p1, p2]).then(function(results) {
@@ -55,6 +64,20 @@ Page({
       var fav = results[1];
       if (detail.company_logo) detail.company_logo = resolve(detail.company_logo);
       that.setData({ detail: detail, isFavorite: fav.favorited });
+      if (detail.vip_required && !auth.isLoggedIn()) {
+        wx.showModal({
+          title: 'VIP专属岗位',
+          content: '该岗位仅对VIP会员开放',
+          confirmText: '去开通',
+          cancelText: '返回',
+          success: function(res) {
+            if (res.confirm) wx.navigateTo({ url: '/pages/vip/vip' });
+            else wx.navigateBack();
+          }
+        });
+        that.setData({ skeleton: false });
+        return;
+      }
       if (detail.company_id) {
         that.loadCompanyJobs(detail.company_id);
       }
@@ -102,7 +125,7 @@ Page({
 
   onChat: function() {
     if (!auth.isLoggedIn()) {
-      wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+      wx.navigateTo({ url: '/pages/login/login' });
       return;
     }
     var that = this;
@@ -125,7 +148,7 @@ Page({
           id: detail.id,
           title: detail.title || '',
           company: detail.company_name || detail.enterprise_name || '',
-          salary: detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + 'K' : ''),
+          salary: detail.salary || (detail.salary_min && detail.salary_max ? detail.salary_min + '-' + detail.salary_max + '元/月' : ''),
           location: detail.location || ''
         });
         api.chat.sendMessage(conv.id, jobContent, 'job').then(function() {
@@ -157,7 +180,7 @@ Page({
 
   onApply: function() {
     if (!auth.isLoggedIn()) {
-      wx.navigateTo({ url: '/pages/login-phone/login-phone' });
+      wx.navigateTo({ url: '/pages/login/login' });
       return;
     }
     jobSvc.applyToJob(this.data.id).then(function() {

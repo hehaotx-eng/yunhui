@@ -23,11 +23,25 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/resume-preview/resume-preview",
-          "pathName": "pages/resume-preview/resume-preview",
+          "name": "pages/complete-profile/complete-profile",
+          "pathName": "pages/complete-profile/complete-profile",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "aiAssistant",
+          "pathName": "pages/aiAssistant/aiAssistant",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/resume-preview/resume-preview",
+          "pathName": "pages/resume-preview/resume-preview",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/my/my",

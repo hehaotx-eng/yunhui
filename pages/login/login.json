@@ -1,4 +1,5 @@
 {
-  "navigationBarTitleText": "选择身份",
+  "navigationBarTitleText": "登录",
+  "disableScroll": true,
   "usingComponents": {}
 }

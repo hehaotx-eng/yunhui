@@ -27,15 +27,8 @@ Page({
     }
   },
 
-  getNotifyIcon(type) {
-    const map = {
-      apply: '📋',
-      interview: '🎯',
-      system: '📢',
-      verify: '✅',
-      message: '💬'
-    };
-    return map[type] || '🔔';
+  getNotifyIcon() {
+    return '';
   },
 
   formatTime(timeStr) {
@@ -64,5 +57,13 @@ Page({
       await notifications.markRead(id);
       this.loadList();
     } catch (error) {}
+  },
+
+  onShareAppMessage() {
+    return { title: '通知消息', path: '/pages/notifications/notifications' };
+  },
+
+  onShareTimeline() {
+    return { title: '通知消息' };
   }
 });

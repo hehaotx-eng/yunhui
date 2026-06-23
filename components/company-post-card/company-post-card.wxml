@@ -43,16 +43,16 @@
   <view class="feed-footer">
     <view class="feed-action" data-action="like" catchtap="onAction">
       <view class="feed-action-icon {{item.is_liked ? 'feed-action-icon--active' : ''}}">
-        <text>{{item.is_liked ? '❤️' : '♡'}}</text>
+        <view class="icon-ph"></view>
       </view>
       <text class="feed-action-count">{{item.like_count || '赞'}}</text>
     </view>
     <view class="feed-action" data-action="comment" catchtap="onAction">
-      <view class="feed-action-icon"><text>💬</text></view>
+      <view class="feed-action-icon"><view class="icon-ph"></view></view>
       <text class="feed-action-count">{{item.comment_count || '评论'}}</text>
     </view>
     <view class="feed-action" data-action="share" catchtap="onAction">
-      <view class="feed-action-icon"><text>↗️</text></view>
+      <view class="feed-action-icon"><view class="icon-ph"></view></view>
       <text class="feed-action-label">分享</text>
     </view>
   </view>

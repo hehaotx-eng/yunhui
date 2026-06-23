@@ -27,10 +27,27 @@ var tools = {
       fulltime: '全职',
       parttime: '兼职',
       intern: '实习',
+      daily: '日结',
       normal: '全职',
       premium: '高端'
     };
     return map[type] || type || '';
+  },
+
+  timeAgo: function(t) {
+    if (!t) return '';
+    var d = getDate(t);
+    var now = getDate();
+    var diff = Math.floor((now.getTime() - d.getTime()) / 1000);
+    if (diff < 60) return '刚刚';
+    if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+    if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+    if (diff < 604800) return Math.floor(diff / 86400) + '天前';
+    var M = d.getMonth() + 1;
+    var D = d.getDate();
+    if (M < 10) M = '0' + M;
+    if (D < 10) D = '0' + D;
+    return M + '-' + D;
   },
   getStatusText: function(status) {
     var map = {

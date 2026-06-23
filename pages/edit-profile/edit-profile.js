@@ -1,97 +1,108 @@
-const { auth, resumes, upload } = require('../../utils/api.js');
-const { resolve } = require('../../utils/image.js');
+var api = require('../../utils/api');
+var { resolve } = require('../../utils/image');
 
 Page({
   data: {
-    nickname: '',
-    avatar: '',
-    avatarLetter: '',
-    phone: ''
+    form: { nickname: '', phone: '', avatar: '' },
+    saving: false
   },
 
-  onLoad() {
-    const app = getApp();
-    const user = app.globalData.userInfo || {};
+  onLoad: function() {
+    var info = wx.getStorageSync('userInfo') || {};
     this.setData({
-      nickname: user.nickname || '',
-      avatar: user.avatar ? resolve(user.avatar) : '',
-      avatarLetter: (user.nickname || user.phone || '用').substring(0, 1),
-      phone: user.phone || ''
+      form: {
+        nickname: info.nickname || '',
+        phone: info.phone || '',
+        avatar: info.avatar ? resolve(info.avatar) : ''
+      }
     });
   },
 
-  onNicknameInput(e) {
-    this.setData({ nickname: e.detail.value });
+  onInput: function(e) {
+    var field = e.currentTarget.dataset.field;
+    var obj = {};
+    obj['form.' + field] = e.detail.value;
+    this.setData(obj);
   },
 
-  onEditAvatar() {
+  chooseAvatar: function() {
+    var that = this;
     wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: async (res) => {
-        const filePath = res.tempFilePaths[0];
+      success: function(res) {
+        var filePath = res.tempFilePaths[0];
+        if (!filePath) return;
         wx.showLoading({ title: '上传中...' });
-        try {
-          const result = await upload.image(filePath, 'avatar');
-          this.setData({ avatar: resolve(result.url) });
-          wx.hideLoading();
-        } catch (e) {
-          wx.hideLoading();
-          wx.showToast({ title: e.message || '上传失败', icon: 'none' });
-        }
+        var token = wx.getStorageSync('token') || '';
+        wx.uploadFile({
+          url: api.BASE_URL + '/api/v1/upload/image',
+          filePath: filePath,
+          name: 'file',
+          formData: { type: 'avatar' },
+          header: { Authorization: 'Bearer ' + token },
+          success: function(uploadRes) {
+            try {
+              var data = JSON.parse(uploadRes.data);
+              if (data.code === 0 || data.code === 200) {
+                var url = (data.data && data.data.url) || '';
+                if (url) {
+                  that.setData({ 'form.avatar': resolve(url) });
+                  var userInfo = wx.getStorageSync('userInfo') || {};
+                  userInfo.avatar = url;
+                  wx.setStorageSync('userInfo', userInfo);
+                }
+                wx.showToast({ title: '头像已更新', icon: 'success' });
+              } else {
+                wx.showToast({ title: data.message || '上传失败', icon: 'none' });
+              }
+            } catch (e) {
+              wx.showToast({ title: '上传失败', icon: 'none' });
+            }
+          },
+          fail: function() {
+            wx.showToast({ title: '上传失败', icon: 'none' });
+          },
+          complete: function() {
+            wx.hideLoading();
+          }
+        });
       }
     });
   },
 
-  async saveProfile() {
-    const nickname = this.data.nickname.trim();
-    if (!nickname) {
-      wx.showToast({ title: '昵称不能为空', icon: 'none' });
-      return;
+  save: function() {
+    var that = this;
+    if (that.data.saving) return;
+    var form = that.data.form;
+    if (!form.nickname.trim()) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' }); return;
     }
-
-    wx.showLoading({ title: '保存中...' });
-    try {
-      const updated = await auth.updateProfile({ nickname });
-      const app = getApp();
-      const token = app.globalData.token || wx.getStorageSync('token');
-
-      if (updated.avatar) updated.avatar = resolve(updated.avatar);
-      if (this.data.avatar) {
-        updated.avatar = this.data.avatar;
-      }
-
-      app.updateUserState(updated, token);
-
-      this.syncResumeName(nickname);
-
-      wx.hideLoading();
+    that.setData({ saving: true });
+    api.request({
+      url: '/api/v1/users/profile',
+      method: 'PUT',
+      data: { nickname: form.nickname.trim(), phone: form.phone.trim() }
+    }).then(function() {
+      var userInfo = wx.getStorageSync('userInfo') || {};
+      userInfo.nickname = form.nickname.trim();
+      userInfo.phone = form.phone.trim();
+      wx.setStorageSync('userInfo', userInfo);
       wx.showToast({ title: '保存成功', icon: 'success' });
-      setTimeout(() => wx.navigateBack(), 800);
-    } catch (e) {
-      wx.hideLoading();
+      setTimeout(function() { wx.navigateBack(); }, 800);
+    }).catch(function(e) {
       wx.showToast({ title: e.message || '保存失败', icon: 'none' });
-    }
+    }).finally(function() {
+      that.setData({ saving: false });
+    });
   },
 
-  async syncResumeName(name) {
-    try {
-      const myResumes = await resumes.getMy();
-      if (Array.isArray(myResumes) && myResumes.length > 0) {
-        const first = myResumes[0];
-        const detail = await resumes.getById(first.id);
-        if (detail && detail.content) {
-          detail.content.name = name;
-          await resumes.update(first.id, detail.content);
-        }
-      }
-    } catch (e) {
-      console.error('同步简历姓名失败:', e);
-    }
+  onShareAppMessage() {
+    return { title: '编辑个人资料', path: '/pages/edit-profile/edit-profile' };
   },
 
-  goBack() {
-    wx.navigateBack();
+  onShareTimeline() {
+    return { title: '编辑个人资料' };
   }
 });

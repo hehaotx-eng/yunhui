@@ -90,7 +90,9 @@ function createJobCard(data = {}) {
     favorite_count: data.favorite_count || 0,
     comment_count: data.comment_count || 0,
     created_at: data.created_at || '',
-    updated_at: data.updated_at || ''
+    updated_at: data.updated_at || '',
+    job_type: data.job_type || '',
+    vip_required: data.vip_required || false
   };
 }
 
@@ -116,9 +118,9 @@ function createCompanyCard(data = {}) {
 function createAICard(data = {}) {
   var salary = data.salary || '';
   if (!salary && data.salary_min && data.salary_max) {
-    salary = data.salary_min + '-' + data.salary_max + 'K';
+    salary = data.salary_min + '-' + data.salary_max + '元/月';
   } else if (!salary && data.salary_min) {
-    salary = data.salary_min + 'K起';
+    salary = data.salary_min + '元/月起';
   }
 
   // match_score 后端返回的是百分比(0-100)或小数(0-1)

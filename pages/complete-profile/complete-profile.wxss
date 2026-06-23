@@ -1,0 +1,29 @@
+page { background: #f6f7f9; overflow: hidden; height: 100%; }
+.page { height: 100vh; background: #fff; padding: 0 48rpx; box-sizing: border-box; overflow: hidden; }
+
+.hero { padding: 200rpx 0 60rpx; }
+.hero-title { font-size: 58rpx; font-weight: 700; color: #111827; }
+.hero-desc { margin-top: 14rpx; font-size: 28rpx; color: #6b7280; }
+
+.role-group { display: flex; flex-direction: column; gap: 24rpx; }
+.role-card { display: flex; align-items: center; gap: 24rpx; padding: 32rpx; background: #fff; border-radius: 24rpx; border: 2rpx solid #f0f0f0; box-shadow: 0 4rpx 16rpx rgba(15,23,42,.03); transition: all .2s; }
+.role-card.active { border-color: #111827; background: #fafafa; }
+.role-icon { font-size: 48rpx; }
+.role-info { flex: 1; }
+.role-title { display: block; font-size: 32rpx; font-weight: 700; color: #111827; }
+.role-desc { display: block; font-size: 24rpx; color: #9ca3af; margin-top: 6rpx; }
+.role-check { width: 44rpx; height: 44rpx; border-radius: 22rpx; background: #111827; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24rpx; font-weight: 700; }
+
+.form-card { background: #fff; border-radius: 24rpx; overflow: hidden; box-shadow: 0 8rpx 24rpx rgba(15,23,42,.03); }
+.form-item { padding: 28rpx 32rpx; border-bottom: 1rpx solid #f3f4f6; }
+.form-item:last-child { border: none; }
+.label { margin-bottom: 10rpx; font-size: 24rpx; color: #9ca3af; }
+.required { color: #ef4444; }
+.input-field { width: 100%; font-size: 30rpx; color: #111827; }
+.input-field::placeholder { color: #c4c7ce; }
+
+.floating-bar { position: fixed; left: 24rpx; right: 24rpx; bottom: 24rpx; z-index: 999; }
+.submit-btn { height: 96rpx; border-radius: 24rpx; background: #111827; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 30rpx; font-weight: 600; box-shadow: 0 16rpx 40rpx rgba(17,24,39,.16); flex: 1; }
+.submit-btn.disabled { opacity: .6; }
+.submit-btn-row { display: flex; gap: 16rpx; }
+.submit-btn-outline { height: 96rpx; border-radius: 24rpx; background: #f3f4f6; color: #111827; display: flex; align-items: center; justify-content: center; font-size: 30rpx; font-weight: 600; padding: 0 40rpx; }

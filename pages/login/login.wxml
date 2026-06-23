@@ -1,36 +1,22 @@
 <view class="page">
-
   <view class="hero">
-    <view class="title">选择身份</view>
-    <view class="subtitle">请选择你的使用身份</view>
+    <view class="hero-title">欢迎回来</view>
+    <view class="hero-desc">登录后查看职位、投递简历</view>
   </view>
 
-  <view class="role-section">
-    <view class="role-card {{role === 'user' ? 'active' : ''}}" data-role="user" bindtap="selectRole">
-      <view class="role-icon">👤</view>
-      <view class="role-info">
-        <view class="role-name">求职者</view>
-        <view class="role-desc">浏览职位、投递简历、在线沟通</view>
-      </view>
-      <view class="role-check {{role === 'user' ? 'checked' : ''}}">{{role === 'user' ? '✓' : ''}}</view>
+  <view class="btn-group">
+    <view class="btn btn-wechat" bindtap="wxLogin">
+      <text>微信快捷登录</text>
     </view>
-    <view class="role-card {{role === 'enterprise' ? 'active' : ''}}" data-role="enterprise" bindtap="selectRole">
-      <view class="role-icon">🏢</view>
-      <view class="role-info">
-        <view class="role-name">企业用户</view>
-        <view class="role-desc">发布职位、管理人才、在线招聘</view>
-      </view>
-      <view class="role-check {{role === 'enterprise' ? 'checked' : ''}}">{{role === 'enterprise' ? '✓' : ''}}</view>
+    <view class="btn btn-phone" bindtap="phoneLogin">
+      <text>手机号登录</text>
     </view>
   </view>
 
-  <view class="login-card">
-    <view class="action-primary" bindtap="phoneLogin">手机号{{role === 'enterprise' ? '（企业）' : ''}}登录</view>
-    <view class="action-secondary" bindtap="goRegister">创建新账号</view>
+  <view class="footer">
+    <text class="footer-text">登录即表示同意</text>
+    <text class="footer-link">《用户协议》</text>
+    <text class="footer-text">和</text>
+    <text class="footer-link">《隐私政策》</text>
   </view>
-
-  <view class="agreement">
-    登录即表示同意《用户协议》与《隐私政策》
-  </view>
-
 </view>

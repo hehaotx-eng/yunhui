@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "投递管理",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

@@ -15,3 +15,4 @@
     <view class="tab-text">{{item.text}}</view>
   </view>
 </view>
+<view class="tab-bar-bottom-blur"></view>

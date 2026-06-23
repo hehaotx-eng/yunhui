@@ -1,185 +1,96 @@
 .page {
   min-height: 100vh;
-  background: linear-gradient(145deg, #E8F0FE 0%, #F3E8FF 50%, #FDE8F0 100%);
-  position: relative;
-}
-
-.page::before {
-  content: '';
-  position: fixed;
-  top: -20%;
-  right: -10%;
-  width: 400rpx;
-  height: 400rpx;
-  border-radius: 50%;
-  background: rgba(79, 124, 255, 0.15);
-  filter: blur(80rpx);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.page::after {
-  content: '';
-  position: fixed;
-  bottom: -10%;
-  left: -10%;
-  width: 500rpx;
-  height: 500rpx;
-  border-radius: 50%;
-  background: rgba(255, 154, 118, 0.12);
-  filter: blur(100rpx);
-  z-index: 0;
-  pointer-events: none;
-}
-
-page {
-  overflow: hidden;
-}
-
-.top-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  height: 88rpx;
-  padding: 0 24rpx;
-  gap: 16rpx;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(40rpx) saturate(180%);
-  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
-}
-
-.nav-logo {
-  font-size: 34rpx;
-  font-weight: 800;
-  color: #1A2332;
-  flex-shrink: 0;
-}
-
-.nav-search {
-  flex: 1;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(10px);
-  border-radius: 32rpx;
-  padding: 0 20rpx;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  gap: 12rpx;
-}
-
-.search-icon {
-  font-size: 24rpx;
-  opacity: 0.6;
-  flex-shrink: 0;
-}
-
-.search-input {
-  flex: 1;
-  height: 100%;
-  font-size: 26rpx;
-  color: #1A2332;
-  background: transparent;
-}
-
-.search-placeholder {
-  color: #A0B0C4;
-  font-size: 26rpx;
+  background: #f6f7fb;
 }
 
 .body {
-  height: 100vh;
-  padding: 120rpx 24rpx 160rpx;
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-}
-
-.list {
-  padding-top: 8rpx;
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 20rpx;
-  border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 24rpx;
-  margin-bottom: 20rpx;
-  position: relative;
 }
 
+/* ===== list ===== */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+/* ===== 核心卡片（去重阴影） ===== */
+.glass-card {
+  background: #fff;
+  border: 1px solid #eef0f3;
+  border-radius: 18rpx;
+  padding: 20rpx;
+  transition: all 0.2s ease;
+}
+
+.glass-card:active {
+  transform: scale(0.985);
+  background: #fafafa;
+}
+
+/* ===== top ===== */
 .card-top {
   display: flex;
   align-items: center;
-  gap: 18rpx;
-  margin-bottom: 16rpx;
+}
+
+/* 头像升级：更“身份感” */
+.card-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg,#3b82f6,#60a5fa);
+  color: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  font-size: 26rpx;
 }
 
 .card-avatar-img {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.card-avatar {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4F7CFF, #7B61FF);
-  color: #fff;
-  font-size: 30rpx;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
 }
 
 .card-info {
+  margin-left: 14rpx;
   flex: 1;
-  min-width: 0;
 }
 
 .card-name {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #1A2332;
-  display: block;
-  margin-bottom: 4rpx;
+  font-size: 30rpx;
+  font-weight: 650;
+  color: #111;
 }
 
 .card-title {
-  font-size: 26rpx;
-  color: #4F7CFF;
-  display: block;
+  font-size: 24rpx;
+  color: #8c8c8c;
+  margin-top: 4rpx;
 }
 
+/* ===== skills（重点：内容化标签） ===== */
 .card-tags {
+  margin-top: 12rpx;
   display: flex;
   flex-wrap: wrap;
-  gap: 10rpx;
-  margin-bottom: 14rpx;
+  gap: 8rpx;
 }
 
 .tag {
   font-size: 22rpx;
-  color: #6B7A8F;
-  background: rgba(255, 255, 255, 0.4);
-  padding: 4rpx 14rpx;
-  border-radius: 6rpx;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  font-weight: 500;
+  padding: 4rpx 10rpx;
+  border-radius: 8rpx;
+  background: #f5f7fa;
+  color: #4b5563;
+  border: 1px solid #eef0f3;
 }
 
+/* ===== meta（弱信息） ===== */
 .card-meta {
+  margin-top: 12rpx;
   display: flex;
   flex-wrap: wrap;
   gap: 10rpx;
@@ -187,40 +98,30 @@ page {
 
 .meta-item {
   font-size: 22rpx;
-  color: #A0B0C4;
-  padding: 4rpx 12rpx;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 6rpx;
+  color: #9aa0a6;
 }
 
+/* ===== empty ===== */
 .empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 160rpx 0;
+  text-align: center;
+  padding: 80rpx 0;
+  color: #c0c4cc;
 }
 
 .empty-icon {
-  font-size: 80rpx;
-  margin-bottom: 20rpx;
-  opacity: 0.6;
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
 }
 
 .empty-text {
-  font-size: 28rpx;
-  color: #A0B0C4;
+  font-size: 24rpx;
 }
 
-.loading {
-  text-align: center;
-  padding: 60rpx;
-  font-size: 26rpx;
-  color: #A0B0C4;
-}
-
+/* ===== loading ===== */
+.loading,
 .loading-more {
   text-align: center;
-  padding: 30rpx;
   font-size: 24rpx;
-  color: #A0B0C4;
+  color: #aaa;
+  padding: 20rpx 0;
 }

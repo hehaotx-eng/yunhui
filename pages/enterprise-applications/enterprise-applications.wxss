@@ -116,6 +116,13 @@
   flex-shrink: 0;
 }
 
+.app-avatar-img {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .app-detail {
   flex: 1;
   min-width: 0;

@@ -1,0 +1,28 @@
+<view class="job-card" bindtap="onViewDetail">
+  <view class="job-card-header">
+    <text class="job-card-icon">💼</text>
+    <text class="job-card-label">职位推荐</text>
+  </view>
+  
+  <text class="job-card-title">{{job.title}}</text>
+  
+  <view class="job-card-meta">
+    <text class="job-card-salary">{{job.salary}}</text>
+    <text class="job-card-location">{{job.location}}</text>
+  </view>
+  
+  <text class="job-card-company">{{job.company}}</text>
+  
+  <view wx:if="{{job.tags && job.tags.length > 0}}" class="job-card-tags">
+    <text wx:for="{{job.tags}}" wx:key="*this" class="job-card-tag">{{item}}</text>
+  </view>
+  
+  <view class="job-card-footer">
+    <view class="job-card-btn secondary" catchtap="onViewDetail">
+      <text>查看详情</text>
+    </view>
+    <view class="job-card-btn primary {{isApplied ? 'applied' : ''}}" catchtap="onApply">
+      <text>{{isApplied ? '已投递' : '立即投递'}}</text>
+    </view>
+  </view>
+</view>

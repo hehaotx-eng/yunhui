@@ -31,5 +31,13 @@ Page({
 
   goBack() {
     wx.navigateBack();
+  },
+
+  onShareAppMessage() {
+    return { title: '企业收藏', path: '/pages/enterprise-favorites/enterprise-favorites' };
+  },
+
+  onShareTimeline() {
+    return { title: '企业收藏' };
   }
 });

@@ -2,19 +2,19 @@ const { request, toQuery } = require('../core/request');
 
 module.exports = {
   getAll(params = {}) {
-    return request({ url: `/api/v1/jobs${toQuery(params)}`, needAuth: false });
+    return request({ url: `/api/v1/jobs${toQuery(params)}`, needAuth: true });
   },
 
   search(params = {}) {
-    return request({ url: `/api/v1/jobs/search${toQuery(params)}`, needAuth: false });
+    return request({ url: `/api/v1/jobs/search${toQuery(params)}`, needAuth: true });
   },
 
   recommend(params = {}) {
-    return request({ url: `/api/v1/jobs/recommend${toQuery(params)}`, needAuth: false });
+    return request({ url: `/api/v1/jobs/recommend${toQuery(params)}`, needAuth: true });
   },
 
   getById(id) {
-    return request({ url: `/api/v1/jobs/${id}`, needAuth: false });
+    return request({ url: `/api/v1/jobs/${id}`, needAuth: true });
   },
 
   getMyList() {

@@ -36,7 +36,7 @@ function checkAuth(page, options = {}) {
       confirmText: '去登录',
       success: (res) => {
         if (res.confirm) {
-          wx.navigateTo({ url: '/pages/login-phone/login-phone' })
+          wx.navigateTo({ url: '/pages/login/login' })
         }
       }
     })

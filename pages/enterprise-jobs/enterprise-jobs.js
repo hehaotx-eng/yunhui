@@ -64,7 +64,7 @@ Page({
   },
 
   goEdit: function(e) {
-    wx.showToast({ title: '编辑功能开发中', icon: 'none' });
+    wx.navigateTo({ url: '/pages/post-job/post-job?id=' + e.currentTarget.dataset.id });
   },
 
   toggleStatus: function(e) {
@@ -101,5 +101,13 @@ Page({
         }
       }
     });
+  },
+
+  onShareAppMessage() {
+    return { title: '岗位管理', path: '/pages/enterprise-jobs/enterprise-jobs' };
+  },
+
+  onShareTimeline() {
+    return { title: '岗位管理' };
   }
 });

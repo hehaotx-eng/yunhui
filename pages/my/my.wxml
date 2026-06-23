@@ -5,12 +5,27 @@
     </view>
   </view>
 
-  <view wx:if="{{!isLoggedIn}}" class="login-prompt" bindtap="goLogin">
+  <view wx:if="{{!isLoggedIn}}" class="login-prompt">
     <view class="login-avatar-circle">
       <text class="login-avatar-text">用</text>
     </view>
-    <text class="login-title">点击登录</text>
-    <text class="login-desc">登录后体验更多功能</text>
+    <text class="login-title">登录账号</text>
+    <text class="login-desc">求职更高效·简历管理·智能推荐</text>
+    <view class="login-btn" bindtap="goLogin">立即登录</view>
+    <view class="login-features">
+      <view class="login-feature">
+        <view class="lf-icon icon-ph"></view>
+        <text class="lf-text">简历管理</text>
+      </view>
+      <view class="login-feature">
+        <view class="lf-icon icon-ph"></view>
+        <text class="lf-text">智能推荐</text>
+      </view>
+      <view class="login-feature">
+        <view class="lf-icon icon-ph"></view>
+        <text class="lf-text">在线沟通</text>
+      </view>
+    </view>
   </view>
 
   <block wx:else>
@@ -21,7 +36,7 @@
           <image wx:if="{{userInfo.avatar}}" class="profile-avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
           <view wx:else class="profile-avatar profile-avatar-fallback">{{avatarLetter}}</view>
           <view class="avatar-edit-badge">
-            <text class="avatar-edit-icon">📷</text>
+            <text class="avatar-edit-icon icon-ph"></text>
           </view>
         </view>
         <view class="profile-info">
@@ -43,7 +58,7 @@
       <view class="vip-identity-glow"></view>
       <view class="vip-identity-content">
         <view class="vip-identity-left">
-          <text class="vip-identity-crown">👑</text>
+          <view class="vip-identity-crown icon-ph"></view>
           <view class="vip-identity-info">
             <text class="vip-identity-title">VIP会员</text>
             <text class="vip-identity-desc">尊享全部AI智能功能</text>
@@ -59,7 +74,7 @@
     <view class="vip-guide-card" wx:if="{{!isVip && isLoggedIn}}" bindtap="goPage" data-url="/pages/vip/vip">
       <view class="vip-guide-content">
         <view class="vip-guide-left">
-          <text class="vip-guide-icon">👑</text>
+          <view class="vip-guide-icon icon-ph"></view>
           <view class="vip-guide-info">
             <text class="vip-guide-title">开通VIP会员</text>
             <text class="vip-guide-desc">解锁AI推荐、简历优化等特权</text>
@@ -94,7 +109,7 @@
     <view class="section-body">
       <view class="resume-card" wx:for="{{resumeList}}" wx:key="id" data-id="{{item.id}}" bindtap="goPreviewResume">
         <view class="resume-icon">
-          <text class="resume-icon-text">📄</text>
+          <view class="resume-icon-text icon-ph"></view>
         </view>
         <view class="resume-info">
           <text class="resume-title">{{item.title || '我的简历'}}</text>

@@ -3,7 +3,7 @@
   position: fixed;
   left: 32rpx;
   right: 32rpx;
-  bottom: 48rpx;
+  bottom: 56rpx;
   height: 100rpx;
   background: rgba(255,255,255,.35);
   backdrop-filter: blur(50rpx) saturate(180%);
@@ -13,6 +13,8 @@
   box-sizing: border-box;
   z-index: 999;
 }
+
+
 
 .tab-item {
   flex: 1;
@@ -85,4 +87,15 @@
 .tab-item.active .tab-text {
   color: #1a1a2e;
   font-weight: 700;
+}
+
+.tab-bar-bottom-blur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 150rpx;
+  background: linear-gradient(to bottom, #ffffff11 0%,  #fff 100%);
+  z-index: 998;
+  pointer-events: none;
 }

@@ -59,7 +59,7 @@
             <view class="node-wrapper">
               <view class="node {{step.active ? 'node-active' : ''}} {{step.result === 'pass' ? 'node-pass' : ''}} {{step.result === 'fail' ? 'node-fail' : ''}} {{step.done && !step.active && !step.result ? 'node-done' : ''}}">
                 <text wx:if="{{step.result === 'pass'}}">✓</text>
-                <text wx:elif="{{step.result === 'fail'}}">✕</text>
+                <text wx:elif="{{step.result === 'fail'}}">否</text>
                 <text wx:elif="{{step.active}}">●</text>
                 <text wx:else>○</text>
               </view>

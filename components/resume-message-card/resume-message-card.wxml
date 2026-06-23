@@ -1,0 +1,21 @@
+<view class="resume-card">
+  <view class="resume-card-header">
+    <text class="resume-card-icon">📄</text>
+    <text class="resume-card-label">简历</text>
+    <view class="resume-status {{status === 'read' ? 'read' : 'unread'}}">
+      <text>{{status === 'read' ? '已读' : '未读'}}</text>
+    </view>
+  </view>
+
+  <view class="resume-card-body" bindtap="onViewResume">
+    <text class="resume-card-name">{{resume.name || '求职者'}}</text>
+    <text class="resume-card-intention">{{resume.intention || '求职意向'}}</text>
+    <view class="resume-card-info">
+      <text wx:if="{{resume.experience}}" class="resume-card-experience">{{resume.experience}}经验</text>
+      <text wx:if="{{resume.education}}" class="resume-card-education">{{resume.education}}</text>
+    </view>
+    <view class="resume-card-action">
+      <text>查看简历 ›</text>
+    </view>
+  </view>
+</view>

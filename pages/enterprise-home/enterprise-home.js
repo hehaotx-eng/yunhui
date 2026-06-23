@@ -2,72 +2,117 @@ const { jobs, applications, request } = require('../../utils/api.js');
 
 Page({
   data: {
-    loading: true,
-    stats: { jobs: 0, online: 0, applicants: 0, candidates: 0 },
+    loading: false,
+
+    stats: {
+      jobs: 0,
+      online: 0,
+      applicants: 0,
+      candidates: 0
+    },
+
     myJobs: [],
     recentApps: []
   },
 
   onLoad() {
-    this.loadData();
+    this.checkCompanyStatus();
   },
 
   onShow() {
-    this.loadData();
+    this.checkCompanyStatus();
+  },
+
+  async checkCompanyStatus() {
+    try {
+      const companyInfo = await request({ url: '/api/v1/enterprise/company-info' });
+      if (!companyInfo || companyInfo.status !== 'approved') {
+        wx.redirectTo({ url: '/pages/approval-pending/approval-pending' });
+        return;
+      }
+      this.loadData();
+    } catch (e) {
+      console.log('检查企业状态失败:', e.message);
+      wx.redirectTo({ url: '/pages/approval-pending/approval-pending' });
+    }
   },
 
   async loadData() {
     this.setData({ loading: true });
+
     try {
-      let jobList = [];
-      try {
-        const result = await jobs.getMyList();
-        jobList = Array.isArray(result) ? result : (result.list || result.rows || []);
-      } catch (e) {
-        console.log('jobs fallback:', e.message);
-      }
+      const [jobList, appList] = await Promise.all([
+        this.fetchJobs(),
+        this.fetchApplications()
+      ]);
 
-      let recentApps = [];
-      try {
-        recentApps = await request({ url: '/api/v1/enterprise/applications' });
-      } catch (e) {
-        console.log('apps fallback:', e.message);
-      }
-
-      const applicants = recentApps.length;
-      const uniqueCandidates = new Set();
-      for (let i = 0; i < recentApps.length; i++) {
-        uniqueCandidates.add(recentApps[i].user_name);
-      }
+      const stats = this.calcStats(jobList, appList);
 
       this.setData({
-        stats: {
-          jobs: jobList.length,
-          online: jobList.filter(function(item) { return item.status === 'online'; }).length,
-          applicants: applicants,
-          candidates: uniqueCandidates.size
-        },
-        recentApps: recentApps.slice(0, 5),
+        stats,
         myJobs: jobList.slice(0, 5),
+        recentApps: appList.slice(0, 5),
         loading: false
       });
-    } catch (e) {
-      console.error('加载企业数据失败:', e);
+
+    } catch (err) {
+      console.error('加载企业数据失败:', err);
       this.setData({ loading: false });
     }
   },
 
+  /* ======================
+     数据请求层（拆清楚）
+  ====================== */
+
+  async fetchJobs() {
+    try {
+      const result = await jobs.getMyList();
+      return Array.isArray(result)
+        ? result
+        : (result.list || result.rows || []);
+    } catch (e) {
+      console.log('jobs fallback:', e.message);
+      return [];
+    }
+  },
+
+  async fetchApplications() {
+    try {
+      return await request({
+        url: '/api/v1/enterprise/applications'
+      }) || [];
+    } catch (e) {
+      console.log('apps fallback:', e.message);
+      return [];
+    }
+  },
+
+  /* ======================
+     统计逻辑（纯函数化）
+  ====================== */
+
+  calcStats(jobList, appList) {
+    const online = jobList.filter(item => item.status === 'online').length;
+
+    const uniqueUsers = new Set(
+      appList.map(item => item.user_name).filter(Boolean)
+    );
+
+    return {
+      jobs: jobList.length,
+      online,
+      applicants: appList.length,
+      candidates: uniqueUsers.size
+    };
+  },
+
+  /* ======================
+     页面跳转（保持不变）
+  ====================== */
+
   goPostJob() {
     wx.navigateTo({ url: '/pages/post-job/post-job' });
-  },
-
-  goJobs() {
-    wx.switchTab({ url: '/pages/enterprise-jobs/enterprise-jobs' });
-  },
-
-  goDetail(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   },
 
   goApplications() {
@@ -95,5 +140,13 @@ Page({
         });
       }
     });
+  },
+
+  onShareAppMessage() {
+    return { title: '企业首页 - 招聘管理', path: '/pages/enterprise-home/enterprise-home' };
+  },
+
+  onShareTimeline() {
+    return { title: '企业首页 - 招聘管理' };
   }
 });

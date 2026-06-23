@@ -20,8 +20,6 @@ Component({
       this.triggerEvent('action', { action, id: this.properties.item.job_id || this.properties.item.id });
     },
 
-    onClose() {
-      this.triggerEvent('action', { action: 'close', id: this.properties.item.job_id || this.properties.item.id });
-    }
+
   }
 });

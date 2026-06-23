@@ -5,7 +5,6 @@
   background: #f5f7fa;
 }
 
-/* ===== 顶部导航 ===== */
 .top-nav {
   position: fixed;
   top: 0;
@@ -61,7 +60,6 @@
   flex-shrink: 0;
 }
 
-/* ===== 消息区 ===== */
 .body {
   flex: 1;
   overflow: hidden;
@@ -104,7 +102,6 @@
   height: 10rpx;
 }
 
-/* ===== 消息项 ===== */
 .msg-item {
   display: flex;
   margin-bottom: 20rpx;
@@ -119,7 +116,6 @@
   justify-content: flex-start;
 }
 
-/* 头像 */
 .msg-avatar {
   width: 72rpx;
   height: 72rpx;
@@ -147,10 +143,17 @@
   font-weight: 600;
 }
 
-/* 消息内容 */
 .msg-content {
-  max-width: 65%;
+  max-width: 70%;
   margin: 0 16rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.job-card-wrapper,
+.resume-card-wrapper {
+  max-width: none;
+  width: 520rpx;
 }
 
 .msg-item.mine .msg-content {
@@ -161,7 +164,6 @@
   align-items: flex-start;
 }
 
-/* 气泡 */
 .msg-bubble {
   padding: 20rpx 24rpx;
   border-radius: 20rpx;
@@ -221,7 +223,6 @@
   font-weight: 700;
 }
 
-/* 时间 */
 .msg-time {
   font-size: 20rpx;
   color: #8a9aa8;
@@ -233,7 +234,241 @@
   text-align: right;
 }
 
-/* ===== 输入栏 ===== */
+.job-card {
+  width: 520rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06);
+  padding: 24rpx;
+}
+
+.mine-job {
+  border-radius: 20rpx 4rpx 20rpx 20rpx;
+}
+
+.other-job {
+  border-radius: 4rpx 20rpx 20rpx 20rpx;
+}
+
+.job-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.job-card-icon {
+  font-size: 28rpx;
+}
+
+.job-card-label {
+  font-size: 22rpx;
+  color: #8a9aa8;
+}
+
+.job-card-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 12rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.job-card-salary {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ff5c39;
+}
+
+.job-card-location {
+  font-size: 24rpx;
+  color: #8a9aa8;
+  background: #f5f5f5;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.job-card-company {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.job-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+
+.job-card-tag {
+  font-size: 22rpx;
+  color: #607d8b;
+  background: #e8f5e9;
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+}
+
+.job-card-footer {
+  display: flex;
+  gap: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.job-card-btn {
+  flex: 1;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.job-card-btn.secondary {
+  background: #f5f7fa;
+}
+
+.job-card-btn.secondary text {
+  color: #666;
+}
+
+.job-card-btn.primary {
+  background: linear-gradient(135deg, #299ff0, #1a8fe0);
+}
+
+.job-card-btn.primary text {
+  color: #fff;
+}
+
+.job-card-btn.applied {
+  background: #e8ecf0;
+}
+
+.job-card-btn.applied text {
+  color: #8a9aa8;
+}
+
+.resume-card {
+  width: 520rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06);
+  padding: 24rpx;
+}
+
+.mine-resume {
+  border-radius: 20rpx 4rpx 20rpx 20rpx;
+}
+
+.other-resume {
+  border-radius: 4rpx 20rpx 20rpx 20rpx;
+}
+
+.resume-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.resume-card-icon {
+  font-size: 28rpx;
+}
+
+.resume-card-label {
+  font-size: 22rpx;
+  color: #8a9aa8;
+  flex: 1;
+}
+
+.resume-status {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.resume-status.unread {
+  background: #f5f5f5;
+}
+
+.resume-status.unread text {
+  color: #8a9aa8;
+}
+
+.resume-status.read {
+  background: #e8f5e9;
+}
+
+.resume-status.read text {
+  color: #4caf50;
+}
+
+.resume-card-body {
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.resume-card-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.resume-card-intention {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.resume-card-info {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.resume-card-experience,
+.resume-card-education {
+  font-size: 22rpx;
+  color: #8a9aa8;
+  background: #f5f5f5;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.resume-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  background: linear-gradient(135deg, #299ff0, #1a8fe0);
+  border-radius: 32rpx;
+}
+
+.resume-card-action text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
 .input-bar {
   background: #ffffff;
   padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
@@ -241,6 +476,83 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
+}
+
+.location-card-wrapper {
+  max-width: none;
+  width: 480rpx;
+}
+
+.location-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,.06);
+}
+
+.mine-location {
+  border-radius: 20rpx 4rpx 20rpx 20rpx;
+}
+
+.other-location {
+  border-radius: 4rpx 20rpx 20rpx 20rpx;
+}
+
+.location-icon {
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.location-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.location-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-address {
+  font-size: 24rpx;
+  color: #8a9aa8;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input-tools {
+  display: flex;
+  gap: 12rpx;
+}
+
+.tool-btn {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tool-btn:active {
+  background: #e8ecf0;
+}
+
+.tool-icon {
+  font-size: 32rpx;
 }
 
 .input-wrap {
@@ -264,11 +576,6 @@
   box-sizing: border-box;
 }
 
-.input-placeholder {
-  color: #a0b0c0;
-}
-
-/* 发送按钮 */
 .send-btn {
   width: 120rpx;
   height: 72rpx;
@@ -291,9 +598,75 @@
   color: #ffffff;
 }
 
-/* 隐藏滚动条 */
 .msg-list::-webkit-scrollbar {
   width: 0;
   height: 0;
   display: none;
+}
+
+.quick-phrases-modal-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.qpm-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.qpm-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  max-height: 70vh;
+}
+
+.qpm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.qpm-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.qpm-close {
+  font-size: 40rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+.qpm-list {
+  padding: 16rpx;
+  max-height: calc(70vh - 80rpx);
+  overflow-y: auto;
+}
+
+.qpm-item {
+  padding: 24rpx;
+  margin-bottom: 12rpx;
+  background: #f5f7fa;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.qpm-item:active {
+  background: #e8ecf0;
 }

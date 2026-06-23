@@ -28,9 +28,14 @@ Component({
     attached() {
       this.fetchUnread();
       this.startPolling();
+      this._onStateChange = this._handleSocketStateChange.bind(this);
+      socket.on('stateChange', this._onStateChange);
     },
     detached() {
       this.stopPolling();
+      if (this._onStateChange) {
+        socket.off('stateChange', this._onStateChange);
+      }
     }
   },
 
@@ -70,6 +75,14 @@ Component({
       var badges = this.data.badges;
       badges[index] = count;
       this.setData({ badges: badges });
+    },
+
+    _handleSocketStateChange(data) {
+      if (data.state === 'CONNECTED') {
+        this.stopPolling();
+      } else if (data.state === 'IDLE' || data.state === 'RECONNECTING' || data.state === 'CLOSED') {
+        this.startPolling();
+      }
     },
 
     startPolling() {

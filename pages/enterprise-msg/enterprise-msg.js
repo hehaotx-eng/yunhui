@@ -28,7 +28,15 @@ Page({
       var processed = arr.map(function(conv) {
         var avatar = conv.target_user_avatar || conv.avatar_url || conv.avatar || '';
         if (avatar) avatar = resolve(avatar);
-        return Object.assign({}, conv, { target_user_avatar: avatar });
+        var lastMsg = conv.last_message || '';
+        if (lastMsg.charAt(0) === '{') {
+          try {
+            var parsed = JSON.parse(lastMsg);
+            if (parsed.type === 'job') lastMsg = '[职位] ' + (parsed.title || '');
+            else lastMsg = '[消息]';
+          } catch (e) {}
+        }
+        return Object.assign({}, conv, { target_user_avatar: avatar, last_message: lastMsg });
       });
       that.setData({ conversations: processed, loading: false, showEmpty: processed.length === 0 });
       var totalUnread = 0;
@@ -48,5 +56,13 @@ Page({
     var name = e.currentTarget.dataset.name || '';
     var avatar = e.currentTarget.dataset.avatar || '';
     wx.navigateTo({ url: '/pages/chat/chat?conversationId=' + id + '&targetName=' + encodeURIComponent(name) + '&targetAvatar=' + encodeURIComponent(avatar) });
+  },
+
+  onShareAppMessage() {
+    return { title: '企业消息', path: '/pages/enterprise-msg/enterprise-msg' };
+  },
+
+  onShareTimeline() {
+    return { title: '企业消息' };
   }
 });

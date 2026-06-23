@@ -220,8 +220,8 @@ const ai = {
 
 // ========== AI 助手 ==========
 const aiAssistant = {
-  analyze(input) {
-    return request({ url: '/api/v1/ai-assistant/analyze', method: 'POST', data: { input } });
+  analyze(input, history) {
+    return request({ url: '/api/v1/ai-assistant/analyze', method: 'POST', data: { input, history: history || [] } });
   }
 };
 

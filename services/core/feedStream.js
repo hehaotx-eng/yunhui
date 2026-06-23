@@ -42,68 +42,67 @@ var FeedStream = {
     params.limit = params.limit || 10;
 
     var keyword = params.keyword || '';
-    var categoryId = params.categoryId || '';
+    var jobType = params.jobType || '';
     var userData = params.userData || null;
     var isSearch = !!keyword;
     var tier = _getTier(userData);
+    var excludeVip = params.excludeVip === true;
+    var location = params.location || '';
+    var salaryRange = params.salaryRange || '';
+    var benefits = params.benefits || '';
 
-    // ===== L1: 数据源级兜底 =====
+    // ===== L1: 数据源级 =====
     var jobFeed = EMPTY_FEED;
-    var aiFeed = EMPTY_FEED;
+    var l1Failed = false;
 
     try {
       if (isSearch) {
-        var searchResult = await job.searchJobs({ keyword: keyword, page: params.page, limit: params.limit });
+        var searchParams = { keyword: keyword, page: params.page, limit: params.limit };
+        if (excludeVip) searchParams.exclude_vip = true;
+        if (location) searchParams.location = location;
+        if (salaryRange) searchParams.salary_range = salaryRange;
+        if (benefits) searchParams.benefits = benefits;
+        var searchResult = await job.searchJobs(searchParams);
         jobFeed = searchResult || EMPTY_FEED;
       } else {
-        var feedParams = { page: params.page, limit: params.limit };
-        if (categoryId) feedParams.category_id = categoryId;
+        var feedParams = { page: params.page, limit: params.limit, sort: 'created_at', order: 'desc' };
+        if (jobType) feedParams.job_type = jobType;
+        if (excludeVip) feedParams.exclude_vip = true;
+        if (params.location) feedParams.location = params.location;
+        if (params.salaryRange) feedParams.salary_range = params.salaryRange;
+        if (params.benefits) feedParams.benefits = params.benefits;
         var feedResult = await job.getJobFeed(feedParams);
         jobFeed = feedResult || EMPTY_FEED;
       }
     } catch (e) {
       jobFeed = EMPTY_FEED;
+      l1Failed = true;
     }
 
     var jobList = _ensureFeedItems(jobFeed.list || []);
 
-    // ===== L2: 合并级兜底 =====
+    // ===== L2: 客户端VIP过滤 =====
+    if (excludeVip && jobList.length > 0) {
+      var filtered = [];
+      for (var fi = 0; fi < jobList.length; fi++) {
+        var fp = jobList[fi].payload || {};
+        if (!fp.vip_required) filtered.push(jobList[fi]);
+      }
+      jobList = filtered;
+    }
+
+    // ===== L3: 兜底 — 仅当 L1 失败且无主动过滤条件时 =====
     var merged = jobList.slice();
 
     if (!merged || merged.length === 0) {
-      merged = jobList.slice();
-    }
-
-    // ===== L3: 硬兜底 =====
-    if (!merged || merged.length === 0) {
-      try {
-        var basicFeed = await job.getJobFeed({ page: 1, limit: params.limit });
-        merged = _ensureFeedItems((basicFeed && basicFeed.list) || []);
-      } catch (e) { merged = []; }
-    }
-
-    // ===== L4: 终极兜底 — 直接请求 /api/v1/jobs =====
-    if (!merged || merged.length === 0) {
-      try {
-        var raw = await new Promise(function (resolve, reject) {
-          wx.request({
-            url: BASE_URL + '/api/v1/jobs?page=1&limit=' + (params.limit || 10),
-            method: 'GET',
-            header: { 'Content-Type': 'application/json' },
-            success: function (res) {
-              var body = res.data || {};
-              if (res.statusCode >= 200 && res.statusCode < 300 && (body.code === 0 || body.code === 200)) {
-                resolve(body.data || { list: [] });
-              } else { reject(new Error('fail')); }
-            },
-            fail: function () { reject(new Error('network fail')); }
-          });
-        });
-        var rawList = raw.list || raw.rows || raw || [];
-        if (Array.isArray(rawList)) {
-          merged = _ensureFeedItems(rawList);
-        }
-      } catch (e) { merged = []; }
+      if (l1Failed && !jobType) {
+        try {
+          var fallbackParams = { page: 1, limit: params.limit, sort: 'created_at', order: 'desc' };
+          if (excludeVip) fallbackParams.exclude_vip = true;
+          var basicFeed = await job.getJobFeed(fallbackParams);
+          merged = _ensureFeedItems((basicFeed && basicFeed.list) || []);
+        } catch (e) { merged = []; }
+      }
     }
 
     // ===== 增强排序 =====

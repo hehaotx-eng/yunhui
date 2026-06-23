@@ -16,5 +16,13 @@ Page({
   },
   goDetail(e) {
     wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` });
+  },
+
+  onShareAppMessage() {
+    return { title: '我的收藏 - 心仪岗位', path: '/pages/favorites/favorites' };
+  },
+
+  onShareTimeline() {
+    return { title: '我的收藏 - 心仪岗位' };
   }
 });

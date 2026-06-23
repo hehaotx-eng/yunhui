@@ -1,4 +1,6 @@
 var api = require('../../utils/api');
+var { resolve } = require('../../utils/image');
+var cached = require('../../utils/cached-request');
 
 Page({
   data: {
@@ -27,14 +29,36 @@ Page({
   loadData: function() {
     var that = this;
     that.setData({ loading: true });
-    api.request({ url: '/api/v1/enterprise/applications' }).then(function(list) {
-      that.setData({ allList: list });
+
+    // 走 SWR 缓存：5分钟内不重复请求
+    cached.cachedGet('/api/v1/enterprise/applications', {}, {
+      ttl: 5 * 60 * 1000,
+      onUpdate: function(data) {
+        var list = Array.isArray(data) ? data : [];
+        var processed = list.map(function(item) {
+          return Object.assign({}, item, { user_avatar: item.user_avatar ? resolve(item.user_avatar) : '' });
+        });
+        that.setData({ allList: processed });
+        that.filterList();
+      }
+    }).then(function(data) {
+      var list = Array.isArray(data) ? data : [];
+      var processed = list.map(function(item) {
+        return Object.assign({}, item, { user_avatar: item.user_avatar ? resolve(item.user_avatar) : '' });
+      });
+      that.setData({ allList: processed });
       that.filterList();
     }).catch(function(e) {
       wx.showToast({ title: e.message || '加载失败', icon: 'none' });
     }).finally(function() {
       that.setData({ loading: false });
     });
+  },
+
+  onPullDownRefresh: function() {
+    cached.bust('/api/v1/enterprise/applications');
+    this.loadData();
+    wx.stopPullDownRefresh();
   },
 
   filterList: function() {
@@ -91,5 +115,13 @@ Page({
         });
       }
     });
+  },
+
+  onShareAppMessage() {
+    return { title: '投递管理', path: '/pages/enterprise-applications/enterprise-applications' };
+  },
+
+  onShareTimeline() {
+    return { title: '投递管理' };
   }
 });

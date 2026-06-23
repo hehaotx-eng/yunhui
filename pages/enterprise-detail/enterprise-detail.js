@@ -46,5 +46,15 @@ Page({
   callPhone() {
     const phone = this.data.enterprise?.contact_phone || this.data.enterprise?.contactPhone;
     if (phone) wx.makePhoneCall({ phoneNumber: phone });
+  },
+
+  onShareAppMessage() {
+    var data = this.data.enterprise;
+    return { title: (data && data.name) || '企业详情', path: '/pages/enterprise-detail/enterprise-detail?id=' + this.data.id };
+  },
+
+  onShareTimeline() {
+    var data = this.data.enterprise;
+    return { title: (data && data.name) || '企业详情' };
   }
 });

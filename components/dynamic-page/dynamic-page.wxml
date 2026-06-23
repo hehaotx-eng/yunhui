@@ -145,12 +145,127 @@
           </block>
         </view>
       </block>
+
+      <!-- 导航栏 -->
+      <block wx:elif="{{item.type === 'nav_bar'}}">
+        <view class="dp-nav-bar" style="background-color: {{item.props.bgColor || '#ffffff'}};">
+          <view wx:if="{{item.props.showBack !== false}}" class="dp-nav-back" style="color: {{item.props.textColor || '#000'}};" bindtap="onNavBack">‹</view>
+          <text class="dp-nav-title" style="color: {{item.props.textColor || '#000'}};">{{item.props.title || ''}}</text>
+          <view class="dp-nav-space"></view>
+        </view>
+      </block>
+
+      <!-- 图片导航 -->
+      <block wx:elif="{{item.type === 'image_nav'}}">
+        <view class="dp-imgnav">
+          <view class="dp-imgnav-item" wx:for="{{item.props.items}}" wx:for-item="nav" wx:key="index" wx:if="{{index < (item.props.columns || 4) * 2}}" style="width: {{100 / (item.props.columns || 4)}}%;" data-link="{{nav.link}}" bindtap="onQuickLinkTap">
+            <image wx:if="{{nav.icon}}" class="dp-imgnav-icon-img" src="{{nav.icon}}" mode="aspectFit" />
+            <view wx:else class="dp-imgnav-icon-text" style="background: {{navIconColors[index % 4]}};">{{nav.label[0] || '·'}}</view>
+            <text class="dp-imgnav-label">{{nav.label || '导航'}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 用户信息卡 -->
+      <block wx:elif="{{item.type === 'user_card'}}">
+        <view class="dp-user-card" bindtap="onUserCardTap">
+          <view wx:if="{{item.props.showAvatar !== false}}" class="dp-user-avatar">
+            <image wx:if="{{userInfo.avatarUrl}}" class="dp-user-avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+            <text wx:else class="dp-user-avatar-placeholder">👤</text>
+          </view>
+          <view class="dp-user-info">
+            <text class="dp-user-greeting" wx:if="{{isLoggedIn}}">Hi，{{userInfo.nickName || '用户'}}</text>
+            <text class="dp-user-greeting" wx:else>{{item.props.greeting || 'Hi，欢迎来到招聘平台'}}</text>
+            <text class="dp-user-hint" wx:if="{{!isLoggedIn}}">登录后享受更多服务</text>
+          </view>
+          <view wx:if="{{item.props.showLoginBtn !== false && !isLoggedIn}}" class="dp-user-btn">登录</view>
+        </view>
+      </block>
+
+      <!-- 倒计时 -->
+      <block wx:elif="{{item.type === 'countdown'}}">
+        <view class="dp-countdown" style="background-color: {{item.props.bgColor || '#ff5c39'}};">
+          <view class="dp-cd-info">
+            <text class="dp-cd-title" style="color: {{item.props.textColor || '#fff'}};">{{item.props.title || '招聘会倒计时'}}</text>
+            <text class="dp-cd-sub" style="color: {{item.props.textColor || '#fff'}};">距截止还剩</text>
+          </view>
+          <view class="dp-cd-time">
+            <text class="dp-cd-num">{{cdHours}}</text>
+            <text class="dp-cd-dot">:</text>
+            <text class="dp-cd-num">{{cdMinutes}}</text>
+            <text class="dp-cd-dot">:</text>
+            <text class="dp-cd-num">{{cdSeconds}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 视频 -->
+      <block wx:elif="{{item.type === 'video'}}">
+        <view class="dp-video-section">
+          <text wx:if="{{item.props.title}}" class="dp-video-title">{{item.props.title}}</text>
+          <video class="dp-video-player" src="{{item.props.src}}" poster="{{item.props.poster}}" autoplay="{{item.props.autoplay || false}}" loop="{{item.props.loop || false}}" controls show-center-play-btn="{{true}}" />
+        </view>
+      </block>
+
+      <!-- 图文混排 -->
+      <block wx:elif="{{item.type === 'rich_text'}}">
+        <view class="dp-richtext">
+          <text wx:if="{{item.props.title}}" class="dp-rt-title">{{item.props.title}}</text>
+          <rich-text class="dp-rt-body" nodes="{{item.props.content || '企业介绍、福利待遇...'}}" />
+        </view>
+      </block>
+
+      <!-- 图片橱窗 -->
+      <block wx:elif="{{item.type === 'showcase'}}">
+        <view class="dp-showcase">
+          <text wx:if="{{item.props.title}}" class="dp-showcase-title">{{item.props.title}}</text>
+          <view class="dp-showcase-grid" style="grid-template-columns: repeat({{item.props.columns || 2}}, 1fr);">
+            <view class="dp-showcase-item" wx:for="{{item.props.items}}" wx:for-item="pic" wx:key="index" data-link="{{pic.link}}" bindtap="onQuickLinkTap">
+              <image wx:if="{{pic.image}}" class="dp-showcase-img" src="{{pic.image}}" mode="aspectFill" />
+              <view wx:else class="dp-showcase-img-placeholder" style="background: {{navIconColors[index % 4]}};"></view>
+              <text class="dp-showcase-name">{{pic.name || '照片'}}</text>
+              <text wx:if="{{pic.price}}" class="dp-showcase-price">¥{{pic.price}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 联系按钮 -->
+      <block wx:elif="{{item.type === 'contact_btn'}}">
+        <view class="dp-contact {{item.props.style === 'fixed' ? 'dp-contact-fixed' : ''}}" style="background-color: {{item.props.bgColor || '#07c160'}};" bindtap="onContactTap">
+          <text class="dp-contact-icon">📞</text>
+          <view class="dp-contact-mid">
+            <text class="dp-contact-text">{{item.props.text || '咨询招聘详情'}}</text>
+            <text class="dp-contact-name">{{item.props.contactName || '李小姐'}}</text>
+          </view>
+          <text class="dp-contact-arrow">›</text>
+        </view>
+        <view wx:if="{{item.props.qrImage}}" class="dp-contact-qr-wrap">
+          <image class="dp-contact-qr-img" src="{{item.props.qrImage}}" mode="aspectFit" show-menu-by-longpress="{{true}}" />
+          <text class="dp-contact-qr-hint">长按识别二维码添加{{item.props.contactName || '李小姐'}}</text>
+        </view>
+      </block>
+
+      <!-- 位置信息 -->
+      <block wx:elif="{{item.type === 'location_card'}}">
+        <view class="dp-location">
+          <map wx:if="{{item.props.showMap !== false && item.props.latitude && item.props.longitude}}" class="dp-loc-map" latitude="{{item.props.latitude}}" longitude="{{item.props.longitude}}" markers="{{locMarkers}}" show-location enable-scroll="{{false}}" bindtap="onLocMapTap" />
+          <view wx:else class="dp-loc-map-placeholder">📍</view>
+          <view class="dp-loc-info">
+            <text class="dp-loc-name">{{item.props.name || '面试地点'}}</text>
+            <text class="dp-loc-addr">{{item.props.address || '详细办公地址'}}</text>
+          </view>
+          <view wx:if="{{item.props.phone}}" class="dp-loc-phone" bindtap="onLocPhoneTap">
+            <text>📞 {{item.props.phone}}</text>
+          </view>
+        </view>
+      </block>
     </block>
   </block>
 
   <!-- 兜底：没有任何内容 -->
   <view wx:else class="dp-phase">
-    <text class="dp-empty-icon">📄</text>
+    <view class="dp-empty-icon icon-ph"></view>
     <text class="dp-loading-text">页面暂无内容</text>
   </view>
 </view>

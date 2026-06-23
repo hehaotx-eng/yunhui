@@ -125,12 +125,31 @@
   color: var(--c-text-3, #9ca3af);
 }
 
-.close-btn {
-  width: 32rpx;
-  height: 32rpx;
+.card-row-meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--c-text-3, #9ca3af);
-  font-size: var(--fs-md, 28rpx);
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.card-type-tag {
+  font-size: 20rpx;
+  color: #fff;
+  background: #1a1a2e;
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+}
+
+.card-vip-tag {
+  font-size: 20rpx;
+  color: #1a1a2e;
+  background: linear-gradient(135deg, #ffd700, #f0c000);
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 700;
+}
+
+.card-time {
+  font-size: 20rpx;
+  color: #9ca3af;
 }

@@ -1,4 +1,5 @@
 var { resumes, request, chat } = require('../../utils/api');
+var { resolve } = require('../../utils/image');
 
 Page({
   data: {
@@ -36,7 +37,7 @@ Page({
         wx.showToast({ title: '简历不存在', icon: 'none' });
         return;
       }
-      this.setData({ resume: data, avatar: data.avatar || '', loading: false });
+      this.setData({ resume: data, avatar: data.avatar ? resolve(data.avatar) : '', loading: false });
       if (data.content && data.content.phone) {
         this.setData({ displayPhone: this.maskPhone(data.content.phone) });
       }
@@ -119,5 +120,13 @@ Page({
 
   goEdit() {
     wx.navigateTo({ url: '/pages/create-resume/create-resume?id=' + this.data.resumeId });
+  },
+
+  onShareAppMessage() {
+    return { title: '简历预览', path: '/pages/resume-preview/resume-preview?id=' + this.data.resumeId };
+  },
+
+  onShareTimeline() {
+    return { title: '简历预览' };
   }
 });

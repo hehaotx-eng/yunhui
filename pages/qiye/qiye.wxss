@@ -297,3 +297,50 @@ page {
 
   color: #9ca3af;
 }
+
+/* ======================
+   Badge
+====================== */
+
+.badge {
+  margin-left: 8rpx;
+  padding: 2rpx 10rpx;
+  background: #ef4444;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 16rpx;
+  min-width: 32rpx;
+  text-align: center;
+}
+
+/* ======================
+   Audit Actions
+====================== */
+
+.audit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.audit-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+  min-width: 80rpx;
+}
+
+.audit-btn.approve {
+  background: #10b981;
+  color: #fff;
+}
+
+.audit-btn.reject {
+  background: #fff;
+  color: #ef4444;
+  border: 2rpx solid #ef4444;
+}

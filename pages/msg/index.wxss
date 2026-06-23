@@ -182,7 +182,7 @@
 }
 
 .msg-item.has-file .msg-preview::before {
-  content: '📄';
+  content: '';
   margin-right: 8rpx;
   font-size: 28rpx;
 }

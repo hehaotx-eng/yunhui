@@ -12,7 +12,7 @@
   <!-- 未登录提示 -->
   <view wx:if="{{!isLoggedIn}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
     <view class="empty-icon-wrap">
-      <text class="empty-icon">🔐</text>
+      <view class="empty-icon icon-ph"></view>
     </view>
     <text class="empty-title">登录后查看AI推荐</text>
     <text class="empty-subtitle">登录后系统将根据你的简历智能匹配职位</text>
@@ -24,7 +24,7 @@
   <!-- 非会员提示 -->
   <view wx:elif="{{!isVip}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
     <view class="empty-icon-wrap">
-      <text class="empty-icon">👑</text>
+      <view class="empty-icon icon-ph"></view>
     </view>
     <text class="empty-title">VIP会员专享</text>
     <text class="empty-subtitle">AI智能推荐是VIP会员专属功能，开通后即可享受精准职位匹配</text>

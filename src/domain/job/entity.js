@@ -25,8 +25,8 @@ JobEntity.prototype.isValid = function() { return !!this.id && !!this.title; };
 JobEntity.prototype.isActive = function() { return this.status === 'active' && this.auditStatus === 'approved'; };
 JobEntity.prototype.getSalaryText = function() {
   if (this.salary) return this.salary;
-  if (this.salaryMin && this.salaryMax) return this.salaryMin + '-' + this.salaryMax + 'K';
-  if (this.salaryMin) return this.salaryMin + 'K起';
+  if (this.salaryMin && this.salaryMax) return this.salaryMin + '-' + this.salaryMax + '元/月';
+  if (this.salaryMin) return this.salaryMin + '元/月起';
   return '面议';
 };
 

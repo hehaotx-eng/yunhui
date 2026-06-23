@@ -28,7 +28,14 @@ Component({
     categories: [{ id: '', name: '推荐' }],
     feedList: [],
     companyPosts: [],
-    skeleton: true
+    skeleton: true,
+    userInfo: {},
+    isLoggedIn: false,
+    cdHours: '00',
+    cdMinutes: '00',
+    cdSeconds: '00',
+    navIconColors: ['#ff5c39', '#3b82f6', '#22c55e', '#8b5cf6'],
+    locMarkers: []
   },
 
   lifetimes: {
@@ -95,7 +102,7 @@ Component({
 
     initWidgets(config) {
       console.log('[dynamic-page] initWidgets, types:', config.map(w => w.type).join(', '));
-      const needs = { banner: false, quick_links: false, notice_bar: false, category_tabs: false, job_list: false, company_posts: false };
+      const needs = { banner: false, quick_links: false, notice_bar: false, category_tabs: false, job_list: false, company_posts: false, user_card: false, countdown: false, location_card: false };
       config.forEach(w => { if (needs.hasOwnProperty(w.type)) needs[w.type] = true; });
       if (needs.banner) this.loadBanners();
       if (needs.quick_links) this.loadQuickLinks();
@@ -103,6 +110,9 @@ Component({
       if (needs.category_tabs) this.loadCategories();
       if (needs.job_list) this.loadJobs();
       if (needs.company_posts) this.loadCompanyPosts();
+      if (needs.user_card) this.loadUserInfo();
+      if (needs.countdown) this.startCountdown(config);
+      if (needs.location_card) this.initLocationMarkers(config);
     },
 
     async loadBanners() {
@@ -180,6 +190,93 @@ Component({
     },
     onNoticeTap() { wx.navigateTo({ url: '/pages/notifications/notifications' }); },
     onCustomBlockTap(e) { const link = e.currentTarget.dataset.link; if (link) wx.navigateTo({ url: link }); },
-    onPostDetail(e) { const id = e.currentTarget.dataset.id; if (id) wx.navigateTo({ url: `/pages/notifications/notifications?id=${id}` }); }
+    onPostDetail(e) { const id = e.currentTarget.dataset.id; if (id) wx.navigateTo({ url: `/pages/notifications/notifications?id=${id}` }); },
+
+    onNavBack() { wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/home/home' }) }); },
+
+    loadUserInfo() {
+      const app = getApp();
+      const info = app.globalData?.userInfo;
+      if (info) {
+        this.setData({ userInfo: info, isLoggedIn: true });
+      }
+    },
+
+    onUserCardTap() {
+      if (!this.data.isLoggedIn) {
+        wx.navigateTo({ url: '/pages/login/login' });
+      }
+    },
+
+    _cdTimer: null,
+    startCountdown(config) {
+      if (this._cdTimer) clearInterval(this._cdTimer);
+      const cdWidget = config.find(w => w.type === 'countdown');
+      if (!cdWidget || !cdWidget.props || !cdWidget.props.endTime) return;
+      const end = new Date(cdWidget.props.endTime).getTime();
+      const tick = () => {
+        const now = Date.now();
+        let diff = Math.max(0, end - now);
+        const h = Math.floor(diff / 3600000); diff %= 3600000;
+        const m = Math.floor(diff / 60000); diff %= 60000;
+        const s = Math.floor(diff / 1000);
+        this.setData({
+          cdHours: String(h).padStart(2, '0'),
+          cdMinutes: String(m).padStart(2, '0'),
+          cdSeconds: String(s).padStart(2, '0')
+        });
+        if (end <= now) clearInterval(this._cdTimer);
+      };
+      tick();
+      this._cdTimer = setInterval(tick, 1000);
+    },
+
+    initLocationMarkers(config) {
+      const locWidget = config.find(w => w.type === 'location_card');
+      if (locWidget && locWidget.props && locWidget.props.latitude && locWidget.props.longitude) {
+        this.setData({
+          locMarkers: [{
+            id: 1,
+            latitude: parseFloat(locWidget.props.latitude),
+            longitude: parseFloat(locWidget.props.longitude),
+            title: locWidget.props.name || '门店',
+            callout: { content: locWidget.props.name || '门店', display: 'ALWAYS', borderRadius: 8, padding: 8 }
+          }]
+        });
+      }
+    },
+
+    onLocMapTap(e) {
+      const locWidget = this.data.widgets.find(w => w.type === 'location_card');
+      if (locWidget && locWidget.props && locWidget.props.latitude) {
+        wx.openLocation({
+          latitude: parseFloat(locWidget.props.latitude),
+          longitude: parseFloat(locWidget.props.longitude),
+          name: locWidget.props.name || '门店',
+          address: locWidget.props.address || ''
+        });
+      }
+    },
+
+    onLocPhoneTap(e) {
+      const locWidget = this.data.widgets.find(w => w.type === 'location_card');
+      if (locWidget && locWidget.props && locWidget.props.phone) {
+        wx.makePhoneCall({ phoneNumber: locWidget.props.phone });
+      }
+    },
+
+    onContactTap() {
+      const contactWidget = this.data.widgets.find(w => w.type === 'contact_btn');
+      if (!contactWidget || !contactWidget.props) return;
+      const props = contactWidget.props;
+      if (props.phone) {
+        wx.makePhoneCall({ phoneNumber: props.phone });
+      } else if (props.wechat) {
+        wx.setClipboardData({
+          data: props.wechat,
+          success: () => wx.showToast({ title: '微信号已复制', icon: 'success' })
+        });
+      }
+    }
   }
 });
