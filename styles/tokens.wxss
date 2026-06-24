@@ -5,26 +5,26 @@
 
 page {
   /* ── 颜色 ── */
-  --c-bg:           #f6f7f9;
+  --c-bg:           #f8fafc;
   --c-card:         #ffffff;
-  --c-accent:       #ff5c39;
-  --c-accent-light: rgba(255,92,57,.08);
-  --c-ai:           #6d5efc;
-  --c-ai-light:     rgba(109,94,252,.06);
-  --c-ai-border:    rgba(109,94,252,.12);
-  --c-ai-bg:        linear-gradient(135deg, rgba(109,94,252,.05), rgba(109,94,252,.02));
-  --c-text:         #1a1a2e;
-  --c-text-2:       #6b7280;
-  --c-text-3:       #9ca3af;
-  --c-border:       #f0f0f0;
+  --c-accent:       #f97316;
+  --c-accent-light: rgba(249,115,22,.08);
+  --c-ai:           #6366f1;
+  --c-ai-light:     rgba(99,102,241,.08);
+  --c-ai-border:    rgba(99,102,241,.15);
+  --c-ai-bg:        linear-gradient(135deg, rgba(99,102,241,.06), rgba(99,102,241,.02));
+  --c-text:         #111827;
+  --c-text-2:       #64748b;
+  --c-text-3:       #94a3b8;
+  --c-border:       #e2e8f0;
   --c-success:      #22c55e;
   --c-success-light:rgba(34,197,94,.06);
   --c-success-border:rgba(34,197,94,.15);
   --c-warn:         #f59e0b;
   --c-warn-light:   rgba(245,158,11,.08);
   --c-danger:       #ef4444;
-  --c-skeleton:     #f0f0f0;
-  --c-skeleton-anim:#e8e8e8;
+  --c-skeleton:     #e2e8f0;
+  --c-skeleton-anim:#cbd5e1;
 
   /* ── 卡片 ── */
   --card-radius:    24rpx;

@@ -1,5 +1,6 @@
 var socket = require('./services/socket/socket');
 var swrCache = require('./utils/swr-cache');
+var store = require('./src/store/index');
 
 App({
   onLaunch() {
@@ -60,14 +61,14 @@ App({
   _connectSocket() {
     var token = wx.getStorageSync('token')
     if (token) {
-      socket.connect()
+      socket.connect(token)
     }
   },
 
   _reconnectSocket() {
     var token = wx.getStorageSync('token')
     if (token) {
-      socket.connect()
+      socket.connect(token)
     }
   },
 
@@ -97,6 +98,19 @@ App({
 
     wx.setStorageSync('token', token)
     wx.setStorageSync('userInfo', userInfo)
+
+    store.user.setAll({
+      id: userInfo.id || null,
+      phone: userInfo.phone || '',
+      nickname: userInfo.nickname || '',
+      avatar: userInfo.avatar || '',
+      role: userInfo.role || '',
+      companyId: userInfo.company_id || null,
+      isLoggedIn: true
+    });
+
+    socket.disconnect();
+    socket.connect(token);
 
     this.updateTabBar(isEnterprise ? 'enterprise' : 'user')
   },
@@ -156,7 +170,7 @@ App({
             'pages/post-job/post-job',
             'pages/chat/chat',
             'pages/approval-pending/approval-pending',
-            'pages/complete-profile/complete-profile'
+            'pages/register/register'
           ]
           if (!enterprisePages.includes(currentRoute)) {
             wx.reLaunch({ url: '/pages/enterprise-home/enterprise-home' })

@@ -51,7 +51,7 @@
     </view>
   </block>
 
-  <block wx:else>
+  <block wx:elif="{{role === 'enterprise'}}">
     <view class="form-item">
       <view class="label">企业 Logo</view>
       <view class="logo-uploader" bindtap="chooseLogo">

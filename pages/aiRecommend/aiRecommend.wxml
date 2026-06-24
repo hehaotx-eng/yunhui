@@ -36,7 +36,7 @@
   <!-- 无简历提示 -->
   <view wx:elif="{{!hasResume}}" class="empty-state" style="margin-top: {{statusBarHeight + 88}}px;">
     <view class="empty-icon-wrap">
-      <text class="empty-icon">📝</text>
+      <view class="empty-icon icon-resume"></view>
     </view>
     <text class="empty-title">创建简历获取AI推荐</text>
     <text class="empty-subtitle">完善简历信息，AI将为你精准匹配职位</text>
@@ -56,8 +56,13 @@
             <text class="header-title">智能匹配中</text>
             <text class="header-desc">已分析 {{totalCount}} 个机会，找到 {{matchCount}} 个高匹配</text>
           </view>
-          <view class="header-action" bindtap="onRefresh">
-            <text class="refresh-text">刷新</text>
+          <view class="header-action" bindtap="onRefresh" wx:if="{{!loading}}">
+            <view class="refresh-icon"></view>
+            <text class="refresh-text">重新推荐</text>
+          </view>
+          <view class="header-action loading" wx:else>
+            <view class="loading-spinner"></view>
+            <text class="refresh-text">推荐中...</text>
           </view>
         </view>
 
@@ -114,7 +119,7 @@
 
   <!-- AI 助手悬浮球 -->
   <view class="fab-button" bindtap="goAiAssistant">
-    <view class="fab-icon">🤖</view>
+    <view class="fab-icon"></view>
     <text class="fab-text">AI助手</text>
   </view>
 </view>

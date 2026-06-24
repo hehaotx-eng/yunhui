@@ -126,7 +126,7 @@ Page({
       return Promise.resolve();
     }
 
-    this.setData({ skeleton: true });
+    this.setData({ skeleton: true, loading: true });
     return aiService.getRecommendationFeed().then(function(feed) {
       var list = feed.list || [];
       var totalCount = list.length;
@@ -146,12 +146,23 @@ Page({
       console.error('加载推荐失败:', e);
       wx.showToast({ title: '加载失败', icon: 'none' });
     }).finally(function() {
-      that.setData({ skeleton: false });
+      that.setData({ skeleton: false, loading: false });
     });
   },
 
   onRefresh: function() {
-    this.loadRecommendations();
+    var that = this;
+    wx.showModal({
+      title: '重新推荐',
+      content: '确定要使用AI重新分析并获取新的职位推荐吗？',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: function(res) {
+        if (res.confirm) {
+          that.loadRecommendations();
+        }
+      }
+    });
   },
 
   onFilterTap: function(e) {

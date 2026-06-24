@@ -1,18 +1,18 @@
 page {
-  --c-bg: #f6f7f9;
+  --c-bg: #f8fafc;
   --c-card: #ffffff;
-  --c-accent: #ff5c39;
-  --c-ai: #6d5efc;
-  --c-ai-light: rgba(109,94,252,.06);
-  --c-ai-border: rgba(109,94,252,.12);
-  --c-text: #1a1a2e;
-  --c-text-2: #6b7280;
-  --c-text-3: #9ca3af;
-  --c-border: #f0f0f0;
+  --c-accent: #f97316;
+  --c-ai: #6366f1;
+  --c-ai-light: rgba(99,102,241,.08);
+  --c-ai-border: rgba(99,102,241,.15);
+  --c-text: #111827;
+  --c-text-2: #64748b;
+  --c-text-3: #94a3b8;
+  --c-border: #e2e8f0;
   --c-success: #22c55e;
   --c-warn: #f59e0b;
-  --shadow-card: 0 2rpx 12rpx rgba(15,23,42,.04);
-  --shadow-float: 0 8rpx 32rpx rgba(15,23,42,.08);
+  --shadow-card: 0 2rpx 12rpx rgba(99,102,241,.06);
+  --shadow-float: 0 8rpx 32rpx rgba(99,102,241,.10);
   --r-card: 24rpx;
   --r-tag: 12rpx;
 

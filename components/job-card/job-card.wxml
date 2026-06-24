@@ -14,8 +14,8 @@
   </view>
   <view class="card-footer">
     <view class="company">
-      <view class="company-logo" wx:if="{{job.company_logo || job.logo}}">
-        <image src="{{job.company_logo || job.logo}}" mode="aspectFill" />
+      <view class="company-logo" wx:if="{{logoUrl}}">
+        <image src="{{logoUrl}}" mode="aspectFill" />
       </view>
       <view class="company-logo company-logo-placeholder" wx:else>
         {{wxs.firstChar(job.enterprise_name)}}

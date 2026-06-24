@@ -4,7 +4,8 @@ Component({
   },
 
   data: {
-    scoreLevel: 'high'
+    scoreLevel: 'high',
+    logoUrl: ''
   },
 
   observers: {
@@ -12,6 +13,11 @@ Component({
       if (val >= 80) this.setData({ scoreLevel: 'high' });
       else if (val >= 60) this.setData({ scoreLevel: 'medium' });
       else this.setData({ scoreLevel: 'low' });
+    },
+    'item': function(item) {
+      const raw = item.company_logo || item.enterprise_logo || '';
+      const logoUrl = typeof raw === 'string' ? raw : (raw && raw.url ? raw.url : '');
+      this.setData({ logoUrl: logoUrl });
     }
   },
 

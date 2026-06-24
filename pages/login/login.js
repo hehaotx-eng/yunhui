@@ -30,9 +30,7 @@ Page({
             app.updateUserState(userInfo, token);
             wx.hideLoading();
 
-            if (data.isNew) {
-              wx.redirectTo({ url: '/pages/complete-profile/complete-profile' });
-            } else if (userInfo.company_id) {
+            if (userInfo.company_id) {
               // 企业用户 → 检查企业审核状态
               api.request({ url: '/api/v1/enterprise/company-info' }).then(function(company) {
                 if (company && company.status === 'approved') {
@@ -45,7 +43,14 @@ Page({
               });
             } else {
               wx.showToast({ title: '登录成功', icon: 'success' });
-              setTimeout(function() { wx.switchTab({ url: '/pages/home/home' }); }, 800);
+              setTimeout(function() {
+                var pages = getCurrentPages();
+                if (pages.length > 1) {
+                  wx.navigateBack();
+                } else {
+                  wx.reLaunch({ url: '/pages/home/home' });
+                }
+              }, 800);
             }
           }).catch(function() {
             wx.hideLoading();

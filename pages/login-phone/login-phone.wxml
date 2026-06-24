@@ -2,7 +2,7 @@
 
 <view class="hero">
   <view class="hero-title">手机号登录</view>
-  <view class="hero-desc">新用户将自动注册并完善信息</view>
+  <view class="hero-desc">新用户请先注册账号</view>
 </view>
 
 <view class="form-card">
@@ -16,77 +16,12 @@
   </view>
 </view>
 
-<view class="tips">新用户首次登录将自动创建账号</view>
+<view class="tips" bindtap="goRegister">还没有账号？<text class="link">立即注册</text></view>
 
 <view class="floating-bar">
   <view class="submit-btn" bindtap="handleLogin">{{role === 'enterprise' ? '企业登录' : '登录'}}</view>
 </view>
 
-<!-- 企业选择/创建弹窗 -->
-<view wx:if="{{showCompanyDialog}}" class="dialog-mask" catchtap="closeDialog">
-  <view class="dialog" catchtap="">
-
-    <view wx:if="{{!createMode}}" class="dialog-body">
-      <view class="dialog-title">选择企业</view>
-      <scroll-view class="company-list" scroll-y>
-        <view wx:for="{{enterprises}}" wx:key="id" class="company-item" data-id="{{item.id}}" bindtap="handleJoin">
-          <view class="ci-left">
-            <view class="ci-logo">{{item.name ? item.name.substring(0,1) : '企'}}</view>
-            <view class="ci-info">
-              <text class="ci-name">{{item.name}}</text>
-              <text class="ci-meta">{{item.industry || ''}} {{item.scale || ''}}</text>
-            </view>
-          </view>
-          <text class="ci-arrow">加入</text>
-        </view>
-        <view wx:if="{{enterprises.length === 0}}" class="empty-tip">暂无可加入的企业</view>
-      </scroll-view>
-      <view class="dialog-footer">
-        <view class="df-btn primary" bindtap="switchCreateMode">创建新企业</view>
-      </view>
-    </view>
-
-    <view wx:else class="dialog-body">
-      <view class="dialog-title">创建新企业</view>
-      <view class="create-form">
-        <view class="cf-item">
-          <view class="logo-uploader" bindtap="chooseLogo">
-            <image wx:if="{{createForm.logo}}" class="logo-preview" src="{{createForm.logo}}" mode="aspectFill" />
-            <view wx:else class="logo-placeholder">
-              <text class="logo-plus">+</text>
-              <text class="logo-hint">企业Logo</text>
-            </view>
-          </view>
-        </view>
-        <view class="cf-item">
-          <input placeholder="企业名称 *" value="{{createForm.name}}" data-field="name" bindinput="onCreateInput" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="联系人 *" value="{{createForm.contactName}}" data-field="contactName" bindinput="onCreateInput" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="联系电话 *" value="{{createForm.contactPhone}}" data-field="contactPhone" bindinput="onCreateInput" type="number" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="企业地址" value="{{createForm.address}}" data-field="address" bindinput="onCreateInput" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="企业规模" value="{{createForm.scale}}" data-field="scale" bindinput="onCreateInput" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="所属行业（选填）" value="{{createForm.industry}}" data-field="industry" bindinput="onCreateInput" />
-        </view>
-        <view class="cf-item">
-          <input placeholder="企业简介（选填）" value="{{createForm.description}}" data-field="description" bindinput="onCreateInput" />
-        </view>
-      </view>
-      <view class="dialog-footer">
-        <view class="df-btn" bindtap="switchCreateMode">返回列表</view>
-        <view class="df-btn primary" bindtap="handleCreate">创建并加入</view>
-      </view>
-    </view>
-
-  </view>
-</view>
+<view class="safe-bottom"></view>
 
 </view>

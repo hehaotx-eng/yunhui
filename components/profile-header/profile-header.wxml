@@ -9,7 +9,7 @@
   <!-- 头像 + 信息 -->
   <view class="header-body">
     <view class="profile-avatar">
-      <image wx:if="{{info.logo || info.avatar}}" src="{{info.logo || info.avatar}}" mode="aspectFill" />
+      <image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill" />
       <text wx:else>{{wxs.firstChar(info.name)}}</text>
     </view>
 

@@ -189,11 +189,9 @@ page {
   animation: fadeUp 0.6s ease 0.12s both;
 }
 
-.tips::before {
-  content: '•';
-  margin-right: 8rpx;
+.tips .link {
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* ==================== 底部悬浮登录按钮 ==================== */

@@ -323,20 +323,8 @@ const banners = {
 };
 
 const enterprises = {
-  getById(id) {
-    return request({ url: `/api/v1/enterprises/${id}`, needAuth: false });
-  },
-  getList() {
-    return cache.cachedFetch('enterprises_list', function() {
-      return request({ url: '/api/v1/enterprises', needAuth: false });
-    }, 30 * 60 * 1000);
-  },
   create(data) {
-    cache.removeCache('enterprises_list');
     return request({ url: '/api/v1/enterprises', method: 'POST', data });
-  },
-  join(id) {
-    return request({ url: `/api/v1/enterprises/${id}/join`, method: 'POST' });
   }
 };
 

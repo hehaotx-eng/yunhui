@@ -3,7 +3,7 @@
   <!-- HEADER -->
   <view class="feed-header" bindtap="onCompanyTap">
     <view class="feed-header-avatar">
-      <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+      <image wx:if="{{logoUrl}}" src="{{logoUrl}}" mode="aspectFill" />
       <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
     </view>
     <view class="feed-header-info">

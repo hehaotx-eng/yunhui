@@ -27,7 +27,7 @@
   <view class="card-row-bottom" bindtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}" catchtap="onCompanyTap">
     <view class="company-info-left">
       <view class="company-logo">
-        <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+        <image wx:if="{{logoUrl}}" src="{{logoUrl}}" mode="aspectFill" />
         <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
       </view>
       <text class="company-name line-clamp-1">{{item.company_name || item.enterprise_name || ''}}</text>

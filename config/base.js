@@ -14,7 +14,7 @@ if (!BASE_URL) {
   } catch (e) {}
 
   if (envVersion === 'develop') {
-    BASE_URL = 'https://stats-rose-handling-destiny.trycloudflare.com';
+    BASE_URL = 'https://domestic-treat-hazards-poker.trycloudflare.com';
   } else {
     throw new Error('BASE_URL 未配置，trial/release 环境必须配置 BASE_URL');
   }

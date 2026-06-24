@@ -29,6 +29,7 @@ var heartbeatInterval = 30000;
 var heartbeatPaused = false;
 
 var lastMessageTime = null;
+var lastToken = '';
 
 var SUPPORTED_TYPES = [
   'NEW_MESSAGE',
@@ -57,25 +58,21 @@ function isDisabled() {
   return disabled;
 }
 
-function connect() {
+function connect(token) {
   if (disabled) return;
   if (state === STATE.CONNECTED || state === STATE.CONNECTING) {
     return;
   }
 
-  var token = '';
-  try {
-    token = wx.getStorageSync('token') || '';
-  } catch (e) {}
-
   if (!token) {
     return;
   }
 
+  lastToken = token;
   _setState(STATE.CONNECTING);
 
   socketTask = wx.connectSocket({
-    url: WS_URL + '?token=' + token,
+    url: WS_URL,
     success: function () {},
     fail: function () {
       _setState(STATE.RECONNECTING);
@@ -90,6 +87,10 @@ function connect() {
     failCount = 0;
     disabled = false;
     lastHeartbeat = Date.now();
+
+    // 连接建立后通过第一条消息鉴权，避免 token 暴露在 URL 中
+    send({ type: 'auth', token: token });
+
     if (!heartbeatPaused) {
       _startHeartbeat();
     }
@@ -191,7 +192,7 @@ function resumeHeartbeat() {
   }
 }
 
-function reconnect() {
+function reconnect(token) {
   if (reconnectLock) return;
   reconnectLock = true;
   setTimeout(function () { reconnectLock = false; }, 5000);
@@ -201,7 +202,7 @@ function reconnect() {
   }
 
   _setState(STATE.RECONNECTING);
-  connect();
+  connect(token);
 }
 
 function _syncOfflineMessages() {
@@ -250,7 +251,7 @@ function _scheduleReconnect() {
   reconnectTimer = setTimeout(function () {
     reconnectTimer = null;
     reconnectCount++;
-    connect();
+    connect(lastToken);
   }, 5000);
 }
 

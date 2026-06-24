@@ -5,6 +5,18 @@ Component({
     isOwner: { type: Boolean, value: false }
   },
 
+  data: {
+    avatarUrl: ''
+  },
+
+  observers: {
+    'info': function(info) {
+      const raw = info.logo || info.avatar || '';
+      const avatarUrl = typeof raw === 'string' ? raw : (raw && raw.url ? raw.url : '');
+      this.setData({ avatarUrl: avatarUrl });
+    }
+  },
+
   methods: {
     onFollow() {
       this.triggerEvent('follow');

@@ -54,7 +54,7 @@
     <!-- 企业行 -->
     <view class="company-row">
       <view class="company-avatar" catchtap="onCompanyTap" data-id="{{item.company_id || item.enterprise_id}}">
-        <image wx:if="{{item.company_logo || item.enterprise_logo}}" src="{{item.company_logo || item.enterprise_logo}}" mode="aspectFill" />
+        <image wx:if="{{logoUrl}}" src="{{logoUrl}}" mode="aspectFill" />
         <text wx:else>{{wxs.firstChar(item.company_name || item.enterprise_name)}}</text>
       </view>
       <view class="company-info">
