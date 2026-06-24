@@ -121,8 +121,7 @@ Page({
         const serverId = res && (res.id || res.message_id) ? String(res.id || res.message_id) : null;
         this._updateStatus(tempId, 'success', serverId);
       })
-      .catch(err => {
-        console.error('发送欢迎消息失败:', err);
+      .catch(() => {
         this._updateStatus(tempId, 'failed');
       });
   },
@@ -150,7 +149,6 @@ Page({
     const id = this.data.conversationId;
 
     if (!id) {
-      console.error('conversationId 为空');
       this.setData({ loading: false, messages: [] });
       return;
     }
@@ -162,8 +160,7 @@ Page({
         const list = Array.isArray(res) ? res : (res && res.list ? res.list : []);
         this._render(list);
       })
-      .catch(err => {
-        console.error('加载消息失败:', err);
+      .catch(() => {
         wx.showToast({ title: '加载失败', icon: 'none' });
         this.setData({ messages: [] });
       })
@@ -394,8 +391,7 @@ Page({
         const serverId = res && (res.id || res.message_id) ? String(res.id || res.message_id) : null;
         this._updateStatus(tempId, 'success', serverId);
       })
-      .catch(err => {
-        console.error('发送失败:', err);
+      .catch(() => {
         this._updateStatus(tempId, 'failed');
       });
   },
@@ -505,25 +501,17 @@ Page({
     });
 
     this.setData({ messages: updatedMessages });
-    console.log('投递职位:', jobId);
   },
 
   showQuickPhrases() {
-    console.log('showQuickPhrases called, setting showQuickPhrasesModal to true');
-    try {
-      this.setData({ 
-        showQuickPhrasesModal: true,
-        quickPhrases: QUICK_PHRASES
-      });
-      console.log('setData success, showQuickPhrasesModal:', this.data.showQuickPhrasesModal);
-    } catch (e) {
-      console.error('setData error:', e);
-    }
+    this.setData({ 
+      showQuickPhrasesModal: true,
+      quickPhrases: QUICK_PHRASES
+    });
   },
 
   onQuickPhraseSelect(e) {
     const phrase = e.currentTarget.dataset.phrase;
-    console.log('Selected phrase:', phrase);
     this.setData({
       inputValue: phrase,
       showQuickPhrasesModal: false
@@ -574,8 +562,7 @@ Page({
                 const serverId = res && (res.id || res.message_id) ? String(res.id || res.message_id) : null;
                 this._updateStatus(tempId, 'success', serverId);
               })
-              .catch(err => {
-                console.error('发送位置失败:', err);
+              .catch(() => {
                 this._updateStatus(tempId, 'failed');
               });
           },
@@ -641,13 +628,11 @@ Page({
             const serverId = res && (res.id || res.message_id) ? String(res.id || res.message_id) : null;
             this._updateStatus(tempId, 'success', serverId);
           })
-          .catch(err => {
-            console.error('发送简历失败:', err);
+          .catch(() => {
             this._updateStatus(tempId, 'failed');
           });
       })
-      .catch(err => {
-        console.error('获取简历失败:', err);
+      .catch(() => {
         wx.showToast({ title: '获取简历失败', icon: 'none' });
       });
   },
